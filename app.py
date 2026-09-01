@@ -643,7 +643,6 @@ def render_admin():
                         st.rerun()
 
     # --- Skills Tab ---
-    # --- Skills Tab ---
     with tabs[1]:
         # Custom CSS for Admin Skills Section
         st.markdown("""
