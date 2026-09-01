@@ -560,31 +560,69 @@ def render_admin():
                         st.success("Profile updated successfully!")
                         st.rerun()
 
-    # --- Skills Tab ---
-    with tabs[1]:
-        st.subheader("Manage Skills")
-        skills = get_skills()
-        for s in skills:
-            cols = st.columns([3, 2, 2, 1])
-            cols[0].write(s["name"])
-            cols[1].write(s["category"])
-            cols[2].write(s["level"])
-            if cols[3].button("🗑️", key=f"del_sk_{s['id']}"):
-                delete_skill(s["id"])
+   # ==========================================
+# ADMIN PANEL: SKILLS MANAGEMENT
+# ==========================================
+st.subheader("Manage Skills")
+
+# ১. নতুন স্কিল যোগ করার সেকশন
+with st.expander("➕ Add New Skill", expanded=True):
+    # ডাটাবেজ থেকে বিদ্যমান ক্যাটাগরিগুলো নিয়ে আসা
+    try:
+        skills_res = supabase.table("skills").select("category").execute()
+        existing_categories = list(set([item["category"] for item in skills_res.data if item.get("category")]))
+    except Exception:
+        existing_categories = []
+
+    # ড্রপডাউন অপশন তৈরি
+    options = ["-- Select Existing Category --"] + existing_categories + ["+ Add New Category"]
+    selected_option = st.selectbox("Category", options)
+
+    # নতুন ক্যাটাগরি ইনপুট ফিল্ড
+    if selected_option == "+ Add New Category":
+        category = st.text_input("Enter New Category Name (e.g., Programming, Databases)")
+    elif selected_option != "-- Select Existing Category --":
+        category = selected_option
+    else:
+        category = ""
+
+    skill_name = st.text_input("Skill Name (e.g., Python, PostgreSQL)")
+    proficiency = st.slider("Proficiency Level (%)", min_value=0, max_value=100, value=80, step=5)
+
+    if st.button("Save Skill"):
+        if category and skill_name:
+            try:
+                supabase.table("skills").insert({
+                    "name": skill_name,
+                    "category": category,
+                    "proficiency": proficiency
+                }).execute()
+                st.success(f"'{skill_name}' successfully added under '{category}'!")
                 st.rerun()
-                
-        st.write("---")
-        st.write("**Add New Skill**")
-        with st.form("add_skill_form"):
-            sk_name = st.text_input("Skill Name")
-            sk_cat = st.text_input("Category")
-            sk_level = st.selectbox("Level", ["Beginner", "Intermediate", "Advanced"], index=1)
-            sk_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Skill"):
-                if sk_name and sk_cat:
-                    add_skill({"name": sk_name, "category": sk_cat, "level": sk_level, "display_order": sk_order})
-                    st.success("Skill added.")
+            except Exception as e:
+                st.error(f"Error saving skill: {e}")
+        else:
+            st.warning("Please enter both Skill Name and Category.")
+
+# ২. বিদ্যমান স্কিল দেখার ও মুছে ফেলার সেকশন
+st.markdown("---")
+st.write("### Existing Skills")
+try:
+    all_skills = supabase.table("skills").select("*").execute()
+    if all_skills.data:
+        for skill in all_skills.data:
+            col_info, col_del = st.columns([4, 1])
+            with col_info:
+                st.write(f"**{skill.get('name')}** ({skill.get('category')}) - {skill.get('proficiency')}%")
+            with col_del:
+                if st.button("Delete", key=f"del_skill_{skill.get('id')}"):
+                    supabase.table("skills").delete().eq("id", skill.get("id")).execute()
+                    st.success("Skill deleted!")
                     st.rerun()
+    else:
+        st.info("No skills added yet.")
+except Exception as e:
+        st.error(f"Error loading skills: {e}")
 
     # --- Projects Tab ---
     with tabs[2]:
