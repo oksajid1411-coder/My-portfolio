@@ -624,13 +624,13 @@ try:
 except Exception as e:
         st.error(f"Error loading skills: {e}")
 
-    # --- Projects Tab ---
+# --- Projects Tab ---
     with tabs[2]:
         st.subheader("Manage Projects")
         projects = get_projects()
         for p in projects:
             cols = st.columns([4, 2, 1])
-            cols[0].write(f"**{p['title']}** ({p['category']})")
+            cols[0].write(f"**{p['title']}** ({p.get('category', 'N/A')})")
             cols[1].write(f"Order: {p.get('display_order', 1)}")
             if cols[2].button("🗑️", key=f"del_proj_{p['id']}"):
                 delete_project(p["id"])
@@ -638,11 +638,23 @@ except Exception as e:
                 
         st.write("---")
         st.write("**Add New Project**")
+        
+        # পূর্বে ব্যবহৃত ক্যাটাগরিগুলো ডাইনামিকালি নিয়ে আসা
+        existing_proj_cats = list(set([p.get("category") for p in projects if p.get("category")]))
+        default_cats = ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"]
+        all_cats = list(set(default_cats + existing_proj_cats))
+        
+        cat_options = ["-- Select Category --"] + all_cats + ["+ Add New Category"]
+
         with st.form("add_proj_form"):
             p_title = st.text_input("Project Title")
-            p_cat = st.selectbox("Category", ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"])
+            
+            # ক্যাটাগরি ড্রপডাউন ও নতুন ইনপুট
+            selected_p_cat = st.selectbox("Category", cat_options)
+            new_p_cat = st.text_input("New Category Name (Select '+ Add New Category' above to use this)")
+            
             p_desc = st.text_area("Short Description")
-            p_tech = st.text_input("Technologies (comma separated)")
+            p_tech = st.text_input("Technologies (comma separated, e.g. Python, Pandas, Streamlit)")
             p_gh = st.text_input("GitHub URL")
             p_demo = st.text_input("Demo URL")
             p_feat = st.checkbox("Featured Project", value=False)
@@ -655,20 +667,37 @@ except Exception as e:
             p_results = st.text_area("Results")
             
             if st.form_submit_button("Add Project"):
+                # ফাইনাল ক্যাটাগরি ফিল্টার করা
+                final_p_cat = ""
+                if selected_p_cat == "+ Add New Category":
+                    final_p_cat = new_p_cat.strip()
+                elif selected_p_cat != "-- Select Category --":
+                    final_p_cat = selected_p_cat
+
                 if p_gh and not is_valid_url(p_gh):
                     st.error("Invalid GitHub URL.")
                 elif p_demo and not is_valid_url(p_demo):
                     st.error("Invalid Demo URL.")
-                elif p_title and p_desc:
+                elif p_title and p_desc and final_p_cat:
                     add_project({
-                        "title": p_title, "category": p_cat, "description": p_desc,
-                        "technologies": p_tech, "github_url": p_gh, "demo_url": p_demo,
-                        "featured": p_feat, "display_order": p_order, "overview": p_overview,
-                        "problem": p_problem, "dataset": p_dataset, "approach": p_approach,
+                        "title": p_title,
+                        "category": final_p_cat,
+                        "description": p_desc,
+                        "technologies": p_tech,
+                        "github_url": p_gh,
+                        "demo_url": p_demo,
+                        "featured": p_feat,
+                        "display_order": p_order,
+                        "overview": p_overview,
+                        "problem": p_problem,
+                        "dataset": p_dataset,
+                        "approach": p_approach,
                         "results": p_results
                     })
-                    st.success("Project added.")
+                    st.success("Project added successfully!")
                     st.rerun()
+                else:
+                    st.error("Please fill in Project Title, Description, and Category.")
 
     # --- Services Tab ---
     with tabs[3]:
