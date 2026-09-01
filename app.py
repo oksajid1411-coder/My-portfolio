@@ -700,7 +700,7 @@ with tabs[2]:
                     st.error("Please fill in Project Title, Description, and Category.")
 
     # --- Services Tab ---
-    with tabs[3]:
+with tabs[3]:
         st.subheader("Manage Services")
         services = get_services()
         for srv in services:
@@ -723,7 +723,7 @@ with tabs[2]:
                 st.rerun()
 
     # --- Experience Tab ---
-    with tabs[4]:
+with tabs[4]:
         st.subheader("Manage Experience")
         exps = get_experience()
         for e in exps:
@@ -747,7 +747,7 @@ with tabs[2]:
                 st.rerun()
 
     # --- Learning Journey Tab ---
-    with tabs[5]:
+with tabs[5]:
         st.subheader("Manage Learning Journey")
         items = get_learning_journey()
         for item in items:
@@ -768,7 +768,7 @@ with tabs[2]:
                 st.rerun()
 
     # --- Social Links Tab ---
-    with tabs[6]:
+with tabs[6]:
         st.subheader("Manage Social Links")
         socials = get_social_links()
         for soc in socials:
