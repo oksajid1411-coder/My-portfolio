@@ -242,30 +242,95 @@ st.markdown("""
 def render_home():
     profile = get_profile()
     
+    # CSS Custom Styling for Animations & Cards
+    st.markdown("""
+        <style>
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0px;
+            background: -webkit-linear-gradient(45deg, #FF4B4B, #FF8F8F);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .profile-card {
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+        .stButton>button {
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     if not profile:
         st.warning("No profile data found. Please add profile info from the Admin panel.")
         return
-    
-    col1, col2 = st.columns([1, 2], gap="large")
+
+    # --- HERO SECTION ---
+    st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+    col1, col2 = st.columns([1.2, 2], gap="large")
     
     with col1:
         img_url = profile.get("profile_image", "")
         if img_url:
             st.image(img_url, use_container_width=True)
+        else:
+            st.image("https://via.placeholder.com/300", caption="No Image Available", use_container_width=True)
             
     with col2:
-        st.title(profile.get("name", "MD. Omar Kamran Chy"))
-        st.subheader(profile.get("title", ""))
+        name = profile.get("name", "MD. Omar Kamran Chy")
+        title = profile.get("title", "Data Scientist & Developer")
+        
+        st.markdown(f'<h1 class="hero-title">{name}</h1>', unsafe_allow_html=True)
+        st.subheader(title)
         
         location = profile.get("location", "")
         if location:
-            st.write("📍 " + location)
+            st.markdown(f"📍 **{location}**")
             
         bio = profile.get("bio", "")
         if bio:
             st.write(bio)
+            
+        st.write("") # Spacer
 
-# ==========================================
+        # CTA Buttons
+        btn_col1, btn_col2, btn_col3 = st.columns(3)
+        with btn_col1:
+            if st.button("🚀 View Projects", use_container_width=True):
+                st.session_state["nav_selection"] = "Projects" # আপনার নেভিগেশন স্টেটের নাম অনুযায়ী
+                st.rerun()
+        with btn_col2:
+            if st.button("📩 Contact Me", use_container_width=True):
+                st.session_state["nav_selection"] = "Contact"
+                st.rerun()
+        with btn_col3:
+            resume_url = profile.get("resume_url", "")
+            if resume_url:
+                st.link_button("📄 Resume", resume_url, use_container_width=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("---")
+
+    # --- QUICK STATS SECTION ---
+    stat_col1, stat_col2, stat_col3 = st.columns(3)
+    with stat_col1:
+        st.metric(label="Experience", value="2+ Years", delta="Active Learner")
+    with stat_col2:
+        st.metric(label="Completed Projects", value="10+", delta="Data & ML")
+    with stat_col3:
+        st.metric(label="Core Expertise", value="Data Science", delta="Python & SQL")# ==========================================
 # ABOUT PAGE
 # ==========================================
 def render_about():
