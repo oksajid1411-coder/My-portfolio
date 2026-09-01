@@ -767,7 +767,7 @@ def render_admin():
         
         # পূর্বে ব্যবহৃত ক্যাটাগরিগুলো ডাইনামিকালি নিয়ে আসা
         existing_proj_cats = list(set([p.get("category") for p in projects if p.get("category")]))
-        default_cats = ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"]
+        default_cats = ["Data Analysis", "Machine Learning", "Deep Learning", "Data collection"]
         all_cats = list(set(default_cats + existing_proj_cats))
         
         cat_options = ["-- Select Category --"] + all_cats + ["+ Add New Category"]
