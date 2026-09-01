@@ -75,8 +75,14 @@ def is_valid_email(email: str) -> bool:
 
 # Profiles
 def get_profile():
-    res = supabase.table("profiles").select("*").limit(1).execute()
-    return res.data[0] if res.data else {}
+    try:
+        res = supabase.table("profiles").select("*").limit(1).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
+        return None
+    except Exception as e:
+        st.error(f"Error fetching profile: {e}")
+        return None
 
 def update_profile(profile_id, data):
     return supabase.table("profiles").update(data).eq("id", profile_id).execute()
@@ -236,6 +242,10 @@ st.markdown("""
 def render_home():
     profile = get_profile()
     
+    if not profile:
+        st.warning("No profile data found. Please add profile info from the Admin panel.")
+        return
+    
     col1, col2 = st.columns([1, 2], gap="large")
     
     with col1:
@@ -246,68 +256,14 @@ def render_home():
     with col2:
         st.title(profile.get("name", "MD. Omar Kamran Chy"))
         st.subheader(profile.get("title", ""))
-        st.write("📍 " + profile.get("location", "Chattogram, Bangladesh"))
-        st.markdown(f"*{profile.get('bio', '')}*")
         
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            if st.button("📁 View Projects"):
-                st.session_state["nav"] = "Projects"
-                st.rerun()
-        with c2:
-            if st.button("✉️ Contact Me"):
-                st.session_state["nav"] = "Contact"
-                st.rerun()
-        with c3:
-            st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue)]({profile.get('email', '')})")
-
-    st.markdown("---")
-    st.header("Core Expertise")
-    
-    col_a, col_b, col_c = st.columns(3)
-    
-    with col_a:
-        st.markdown("""
-        <div class="custom-card">
-            <h3>📊 Data Analysis</h3>
-            <p>Cleaning, processing, and evaluating dataset structures for business context.</p>
-            <span class="badge">Data Cleaning</span>
-            <span class="badge">EDA</span>
-            <span class="badge">Visualization</span>
-            <span class="badge">Statistical Analysis</span>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with col_b:
-        st.markdown("""
-        <div class="custom-card">
-            <h3>🤖 Machine Learning</h3>
-            <p>Designing predictive, classification, and clustering workflow pipelines.</p>
-            <span class="badge">Regression</span>
-            <span class="badge">Classification</span>
-            <span class="badge">Feature Eng.</span>
-            <span class="badge">Evaluation</span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_c:
-        st.markdown("""
-        <div class="custom-card">
-            <h3>🧠 Deep Learning</h3>
-            <p>Building neural networks and computer vision solutions.</p>
-            <span class="badge">Neural Networks</span>
-            <span class="badge">CNN</span>
-            <span class="badge">Image Class.</span>
-            <span class="badge">TensorFlow/PyTorch</span>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    st.markdown("---")
-    st.header("Quick Stats")
-    sc1, sc2, sc3 = st.columns(3)
-    sc1.metric("Experience", f"{profile.get('experience_years', 1)}+ Year")
-    sc2.metric("Primary Stack", "Python Ecosystem")
-    sc3.metric("Domains", "Data + ML + DL")
+        location = profile.get("location", "")
+        if location:
+            st.write("📍 " + location)
+            
+        bio = profile.get("bio", "")
+        if bio:
+            st.write(bio)
 
 # ==========================================
 # ABOUT PAGE
