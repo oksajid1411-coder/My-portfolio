@@ -324,13 +324,15 @@ def render_home():
     st.write("---")
 
     # --- QUICK STATS SECTION ---
-    stat_col1, stat_col2, stat_col3 = st.columns(3)
+    stat_col1, stat_col2, stat_col3,stat_col4 = st.columns(4)
     with stat_col1:
-        st.metric(label="Experience", value="2+ Years", delta="Active Learner")
+        st.metric(label="Experience", value="1+ Years", delta="Active Learner")
     with stat_col2:
         st.metric(label="Completed Projects", value="10+", delta="Data & ML")
     with stat_col3:
-        st.metric(label="Core Expertise", value="Data Science", delta="Python & SQL")# ==========================================
+        st.metric(label="Core Expertise", value="Data Analysis", delta="Python|Pandas|Excel|Power BI")# ==========================================
+    with stat_col3:
+        st.metric(label="Other Expertise", value="ML & DL", delta="Python |Tensorflow | Pytorch| SKLearn")# ==========================================
 # ABOUT PAGE
 # ==========================================
 def render_about():
