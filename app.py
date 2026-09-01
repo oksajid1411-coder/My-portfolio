@@ -75,14 +75,8 @@ def is_valid_email(email: str) -> bool:
 
 # Profiles
 def get_profile():
-    try:
-        res = supabase.table("profiles").select("*").limit(1).execute()
-        if res.data and len(res.data) > 0:
-            return res.data[0]
-        return None
-    except Exception as e:
-        st.error(f"Error fetching profile: {e}")
-        return None
+    res = supabase.table("profiles").select("*").limit(1).execute()
+    return res.data[0] if res.data else {}
 
 def update_profile(profile_id, data):
     return supabase.table("profiles").update(data).eq("id", profile_id).execute()
@@ -240,12 +234,6 @@ st.markdown("""
 # HOME PAGE
 # ==========================================
 def render_home():
-    profile = get_profile()
-    if not profile:
-        st.warning("No profile data found. Please add profile info from the Admin panel.")
-        return
-    
-    # ... আপনার বাকি হোম পেজের কোড ...
     profile = get_profile()
     
     col1, col2 = st.columns([1, 2], gap="large")
@@ -560,77 +548,39 @@ def render_admin():
                         st.success("Profile updated successfully!")
                         st.rerun()
 
-   # ==========================================
-# ADMIN PANEL: SKILLS MANAGEMENT
-# ==========================================
-st.subheader("Manage Skills")
-
-# ১. নতুন স্কিল যোগ করার সেকশন
-with st.expander("➕ Add New Skill", expanded=True):
-    # ডাটাবেজ থেকে বিদ্যমান ক্যাটাগরিগুলো নিয়ে আসা
-    try:
-        skills_res = supabase.table("skills").select("category").execute()
-        existing_categories = list(set([item["category"] for item in skills_res.data if item.get("category")]))
-    except Exception:
-        existing_categories = []
-
-    # ড্রপডাউন অপশন তৈরি
-    options = ["-- Select Existing Category --"] + existing_categories + ["+ Add New Category"]
-    selected_option = st.selectbox("Category", options)
-
-    # নতুন ক্যাটাগরি ইনপুট ফিল্ড
-    if selected_option == "+ Add New Category":
-        category = st.text_input("Enter New Category Name (e.g., Programming, Databases)")
-    elif selected_option != "-- Select Existing Category --":
-        category = selected_option
-    else:
-        category = ""
-
-    skill_name = st.text_input("Skill Name (e.g., Python, PostgreSQL)")
-    proficiency = st.slider("Proficiency Level (%)", min_value=0, max_value=100, value=80, step=5)
-
-    if st.button("Save Skill"):
-        if category and skill_name:
-            try:
-                supabase.table("skills").insert({
-                    "name": skill_name,
-                    "category": category,
-                    "proficiency": proficiency
-                }).execute()
-                st.success(f"'{skill_name}' successfully added under '{category}'!")
+    # --- Skills Tab ---
+    with tabs[1]:
+        st.subheader("Manage Skills")
+        skills = get_skills()
+        for s in skills:
+            cols = st.columns([3, 2, 2, 1])
+            cols[0].write(s["name"])
+            cols[1].write(s["category"])
+            cols[2].write(s["level"])
+            if cols[3].button("🗑️", key=f"del_sk_{s['id']}"):
+                delete_skill(s["id"])
                 st.rerun()
-            except Exception as e:
-                st.error(f"Error saving skill: {e}")
-        else:
-            st.warning("Please enter both Skill Name and Category.")
-
-# ২. বিদ্যমান স্কিল দেখার ও মুছে ফেলার সেকশন
-st.markdown("---")
-st.write("### Existing Skills")
-try:
-    all_skills = supabase.table("skills").select("*").execute()
-    if all_skills.data:
-        for skill in all_skills.data:
-            col_info, col_del = st.columns([4, 1])
-            with col_info:
-                st.write(f"**{skill.get('name')}** ({skill.get('category')}) - {skill.get('proficiency')}%")
-            with col_del:
-                if st.button("Delete", key=f"del_skill_{skill.get('id')}"):
-                    supabase.table("skills").delete().eq("id", skill.get("id")).execute()
-                    st.success("Skill deleted!")
+                
+        st.write("---")
+        st.write("**Add New Skill**")
+        with st.form("add_skill_form"):
+            sk_name = st.text_input("Skill Name")
+            sk_cat = st.text_input("Category")
+            sk_level = st.selectbox("Level", ["Beginner", "Intermediate", "Advanced"], index=1)
+            sk_order = st.number_input("Display Order", value=1)
+            if st.form_submit_button("Add Skill"):
+                if sk_name and sk_cat:
+                    add_skill({"name": sk_name, "category": sk_cat, "level": sk_level, "display_order": sk_order})
+                    st.success("Skill added.")
                     st.rerun()
-    else:
-        st.info("No skills added yet.")
-except Exception as e:
-        st.error(f"Error loading skills: {e}")
 
-# --- Projects Tab ---
-with tabs[2]:
+    # --- Projects Tab ---
+    with tabs[2]:
         st.subheader("Manage Projects")
         projects = get_projects()
         for p in projects:
             cols = st.columns([4, 2, 1])
-            cols[0].write(f"**{p['title']}** ({p.get('category', 'N/A')})")
+            cols[0].write(f"**{p['title']}** ({p['category']})")
             cols[1].write(f"Order: {p.get('display_order', 1)}")
             if cols[2].button("🗑️", key=f"del_proj_{p['id']}"):
                 delete_project(p["id"])
@@ -638,23 +588,11 @@ with tabs[2]:
                 
         st.write("---")
         st.write("**Add New Project**")
-        
-        # পূর্বে ব্যবহৃত ক্যাটাগরিগুলো ডাইনামিকালি নিয়ে আসা
-        existing_proj_cats = list(set([p.get("category") for p in projects if p.get("category")]))
-        default_cats = ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"]
-        all_cats = list(set(default_cats + existing_proj_cats))
-        
-        cat_options = ["-- Select Category --"] + all_cats + ["+ Add New Category"]
-
         with st.form("add_proj_form"):
             p_title = st.text_input("Project Title")
-            
-            # ক্যাটাগরি ড্রপডাউন ও নতুন ইনপুট
-            selected_p_cat = st.selectbox("Category", cat_options)
-            new_p_cat = st.text_input("New Category Name (Select '+ Add New Category' above to use this)")
-            
+            p_cat = st.selectbox("Category", ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"])
             p_desc = st.text_area("Short Description")
-            p_tech = st.text_input("Technologies (comma separated, e.g. Python, Pandas, Streamlit)")
+            p_tech = st.text_input("Technologies (comma separated)")
             p_gh = st.text_input("GitHub URL")
             p_demo = st.text_input("Demo URL")
             p_feat = st.checkbox("Featured Project", value=False)
@@ -667,40 +605,23 @@ with tabs[2]:
             p_results = st.text_area("Results")
             
             if st.form_submit_button("Add Project"):
-                # ফাইনাল ক্যাটাগরি ফিল্টার করা
-                final_p_cat = ""
-                if selected_p_cat == "+ Add New Category":
-                    final_p_cat = new_p_cat.strip()
-                elif selected_p_cat != "-- Select Category --":
-                    final_p_cat = selected_p_cat
-
                 if p_gh and not is_valid_url(p_gh):
                     st.error("Invalid GitHub URL.")
                 elif p_demo and not is_valid_url(p_demo):
                     st.error("Invalid Demo URL.")
-                elif p_title and p_desc and final_p_cat:
+                elif p_title and p_desc:
                     add_project({
-                        "title": p_title,
-                        "category": final_p_cat,
-                        "description": p_desc,
-                        "technologies": p_tech,
-                        "github_url": p_gh,
-                        "demo_url": p_demo,
-                        "featured": p_feat,
-                        "display_order": p_order,
-                        "overview": p_overview,
-                        "problem": p_problem,
-                        "dataset": p_dataset,
-                        "approach": p_approach,
+                        "title": p_title, "category": p_cat, "description": p_desc,
+                        "technologies": p_tech, "github_url": p_gh, "demo_url": p_demo,
+                        "featured": p_feat, "display_order": p_order, "overview": p_overview,
+                        "problem": p_problem, "dataset": p_dataset, "approach": p_approach,
                         "results": p_results
                     })
-                    st.success("Project added successfully!")
+                    st.success("Project added.")
                     st.rerun()
-                else:
-                    st.error("Please fill in Project Title, Description, and Category.")
 
     # --- Services Tab ---
-with tabs[3]:
+    with tabs[3]:
         st.subheader("Manage Services")
         services = get_services()
         for srv in services:
@@ -723,7 +644,7 @@ with tabs[3]:
                 st.rerun()
 
     # --- Experience Tab ---
-with tabs[4]:
+    with tabs[4]:
         st.subheader("Manage Experience")
         exps = get_experience()
         for e in exps:
@@ -747,7 +668,7 @@ with tabs[4]:
                 st.rerun()
 
     # --- Learning Journey Tab ---
-with tabs[5]:
+    with tabs[5]:
         st.subheader("Manage Learning Journey")
         items = get_learning_journey()
         for item in items:
@@ -768,7 +689,7 @@ with tabs[5]:
                 st.rerun()
 
     # --- Social Links Tab ---
-with tabs[6]:
+    with tabs[6]:
         st.subheader("Manage Social Links")
         socials = get_social_links()
         for soc in socials:
