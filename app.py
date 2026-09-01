@@ -643,32 +643,114 @@ def render_admin():
                         st.rerun()
 
     # --- Skills Tab ---
+    # --- Skills Tab ---
     with tabs[1]:
-        st.subheader("Manage Skills")
+        # Custom CSS for Admin Skills Section
+        st.markdown("""
+            <style>
+            .skill-admin-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 10px;
+                padding: 12px 18px;
+                margin-bottom: 8px;
+                transition: all 0.3s ease;
+            }
+            .skill-admin-card:hover {
+                border-color: #FF4B4B;
+                background: rgba(255, 75, 75, 0.05);
+            }
+            .level-badge {
+                background: rgba(108, 92, 231, 0.2);
+                color: #A29BFE;
+                border: 1px solid rgba(108, 92, 231, 0.4);
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 0.8rem;
+                font-weight: 600;
+            }
+            .cat-badge {
+                background: rgba(0, 206, 201, 0.15);
+                color: #00CEC9;
+                border: 1px solid rgba(0, 206, 201, 0.3);
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 0.8rem;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+        st.subheader("🛠️ Manage Skills")
         skills = get_skills()
-        for s in skills:
-            cols = st.columns([3, 2, 2, 1])
-            cols[0].write(s["name"])
-            cols[1].write(s["category"])
-            cols[2].write(s["level"])
-            if cols[3].button("🗑️", key=f"del_sk_{s['id']}"):
-                delete_skill(s["id"])
-                st.rerun()
+        
+        # ১. বিদ্যমান স্কিল প্রদর্শনী ও ডিলিট অপশন
+        if skills:
+            st.caption("Current Active Skills in Portfolio:")
+            for s in skills:
+                with st.container():
+                    cols = st.columns([3, 2, 2, 1])
+                    with cols[0]:
+                        st.markdown(f"**{s.get('name')}**")
+                    with cols[1]:
+                        cat = s.get('category', 'N/A')
+                        st.markdown(f'<span class="cat-badge">📂 {cat}</span>', unsafe_allow_html=True)
+                    with cols[2]:
+                        lvl = s.get('level', 'N/A')
+                        st.markdown(f'<span class="level-badge">⭐ {lvl}</span>', unsafe_allow_html=True)
+                    with cols[3]:
+                        if st.button("🗑️", key=f"del_sk_{s['id']}", help="Delete Skill"):
+                            delete_skill(s["id"])
+                            st.toast(f"Skill '{s.get('name')}' deleted!", icon="🗑️")
+                            st.rerun()
+        else:
+            st.info("No skills added yet. Use the form below to add your first skill.")
                 
         st.write("---")
-        st.write("**Add New Skill**")
-        with st.form("add_skill_form"):
-            sk_name = st.text_input("Skill Name")
-            sk_cat = st.text_input("Category")
-            sk_level = st.selectbox("Level", ["Beginner", "Intermediate", "Advanced"], index=1)
-            sk_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Skill"):
-                if sk_name and sk_cat:
-                    add_skill({"name": sk_name, "category": sk_cat, "level": sk_level, "display_order": sk_order})
-                    st.success("Skill added.")
-                    st.rerun()
+        
+        # ২. নতুন স্কিল যোগ করার সেকশন (Styled Form)
+        st.markdown("### ➕ Add New Skill")
+        
+        # ডাটাবেজ থেকে পূর্বে তৈরি করা ক্যাটাগরিগুলো ডাইনামিকালি নিয়ে আসা
+        existing_skill_cats = list(set([s.get("category") for s in skills if s.get("category")]))
+        default_skill_cats = ["Programming", "Data Analysis", "Machine Learning", "Databases", "Tools & Frameworks"]
+        all_skill_cats = sorted(list(set(default_skill_cats + existing_skill_cats)))
+        
+        cat_options = ["-- Select Category --"] + all_skill_cats + ["+ Add New Category"]
 
-    # --- Projects Tab ---
+        with st.form("add_skill_form", clear_on_submit=True):
+            col_a, col_b = st.columns(2)
+            
+            with col_a:
+                sk_name = st.text_input("Skill Name", placeholder="e.g. Python, SQL, Power BI")
+                sk_level = st.selectbox("Proficiency Level", ["Beginner", "Intermediate", "Advanced"], index=1)
+                
+            with col_b:
+                selected_sk_cat = st.selectbox("Category Option", cat_options)
+                new_sk_cat = st.text_input("New Category Name", placeholder="Type here if selected '+ Add New Category'")
+                
+            sk_order = st.number_input("Display Order (Lower numbers appear first)", value=1, min_value=1)
+            
+            submit_btn = st.form_submit_button("🚀 Add Skill to Portfolio", use_container_width=True)
+            
+            if submit_btn:
+                # ইউজার কোন ক্যাটাগরি বেছে নিল তা ফিল্টার করা
+                final_sk_cat = ""
+                if selected_sk_cat == "+ Add New Category":
+                    final_sk_cat = new_sk_cat.strip()
+                elif selected_sk_cat != "-- Select Category --":
+                    final_sk_cat = selected_sk_cat
+
+                if sk_name and final_sk_cat:
+                    add_skill({
+                        "name": sk_name.strip(), 
+                        "category": final_sk_cat, 
+                        "level": sk_level, 
+                        "display_order": sk_order
+                    })
+                    st.success(f"✅ Skill '{sk_name}' added successfully under '{final_sk_cat}'!")
+                    st.rerun()
+                else:
+                    st.error("⚠️ Please provide both Skill Name and select/enter a Category.")
     # --- Projects Tab ---
     with tabs[2]:
         st.subheader("Manage Projects")
