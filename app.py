@@ -324,16 +324,22 @@ def render_home():
     st.write("---")
 
     # --- QUICK STATS SECTION ---
-    stat_col1, stat_col2, stat_col3,stat_col4 = st.columns(4)
+    stat_col1, stat_col2, stat_col3 = st.columns(3)
+    
     with stat_col1:
         st.metric(label="Experience", value="1+ Years", delta="Active Learner")
     with stat_col2:
         st.metric(label="Completed Projects", value="10+", delta="Data & ML")
     with stat_col3:
-        st.metric(label="Core Expertise", value="Data Analysis", delta="Python|Pandas|Excel|Power BI")# ==========================================
-    stat_col1 = st.columns(1)
-    with stat_col1:
-        st.metric(label="Other Expertise", value="ML & DL", delta="Python |Tensorflow | Pytorch| SKLearn")# ==========================================
+        st.metric(label="Core Expertise", value="Data Analysis", delta="Python | Pandas | Power BI")
+
+    st.write("") # হালকা ফাঁকা জায়গা তৈরির জন্য
+
+    # দ্বিতীয় লাইন: আলাদা কলামে মাঝখানে মেট্রিক রাখার জন্য [1, 2, 1] রেশিও
+    left_pad, center_col, right_pad = st.columns([1, 2, 1])
+    
+    with center_col:
+        st.metric(label="Other Expertise", value="ML & DL", delta="Tensorflow | PyTorch | SKLearn")
 # ABOUT PAGE
 # ==========================================
 def render_about():
