@@ -324,7 +324,7 @@ def render_home():
     st.write("---")
 
     # --- QUICK STATS SECTION ---
-    stat_col1, stat_col2, stat_col3 = st.columns([1,2,3])
+    stat_col1, stat_col2, stat_col3 = st.columns([1,2,1])
     
     with stat_col1:
         st.metric(label="Experience", value="1+ Years", delta="Active Learner")
