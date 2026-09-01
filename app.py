@@ -75,8 +75,14 @@ def is_valid_email(email: str) -> bool:
 
 # Profiles
 def get_profile():
-    res = supabase.table("profiles").select("*").limit(1).execute()
-    return res.data[0] if res.data else {}
+    try:
+        res = supabase.table("profiles").select("*").limit(1).execute()
+        if res.data and len(res.data) > 0:
+            return res.data[0]
+        return None
+    except Exception as e:
+        st.error(f"Error fetching profile: {e}")
+        return None
 
 def update_profile(profile_id, data):
     return supabase.table("profiles").update(data).eq("id", profile_id).execute()
@@ -234,6 +240,12 @@ st.markdown("""
 # HOME PAGE
 # ==========================================
 def render_home():
+    profile = get_profile()
+    if not profile:
+        st.warning("No profile data found. Please add profile info from the Admin panel.")
+        return
+    
+    # ... আপনার বাকি হোম পেজের কোড ...
     profile = get_profile()
     
     col1, col2 = st.columns([1, 2], gap="large")
