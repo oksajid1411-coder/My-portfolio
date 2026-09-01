@@ -625,7 +625,7 @@ except Exception as e:
         st.error(f"Error loading skills: {e}")
 
 # --- Projects Tab ---
-    with tabs[2]:
+with tabs[2]:
         st.subheader("Manage Projects")
         projects = get_projects()
         for p in projects:
