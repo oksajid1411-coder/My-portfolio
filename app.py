@@ -324,23 +324,89 @@ def render_home():
     st.write("---")
 
     # --- QUICK STATS SECTION ---
-    stat_col1, stat_col2, stat_col3 = st.columns([1,2,1])
-    
-    with stat_col1:
-        st.metric(label="Experience", value="1+ Years", delta="Active Learner")
-    with stat_col2:
-        st.metric(label="Completed Projects", value="10+", delta="Data & ML")
-    with stat_col3:
-        st.metric(label="Core Expertise", value="Data Analysis", delta="Python | Pandas | Power BI")
+    # --- QUICK STATS SECTION ---
+    # CSS Custom Card Style for Metrics
+    st.markdown("""
+        <style>
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #FF4B4B;
+            box-shadow: 0 4px 12px rgba(255, 75, 75, 0.2);
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #A0AAB0;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+        .stat-badge {
+            display: inline-block;
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ECC71;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        </style>
+    """, unsafe_allow_html=True)
 
-    st.write("") # হালকা ফাঁকা জায়গা তৈরির জন্য
+    # ১ম সারি: ৩টি কার্ড
+    col1, col2, col3 = st.columns(3)
 
-    # দ্বিতীয় লাইন: আলাদা কলামে মাঝখানে মেট্রিক রাখার জন্য [1, 2, 1] রেশিও
-    left_pad, center_col, right_pad = st.columns([1, 2, 1])
-    
+    with col1:
+        st.markdown("""
+            <div class="stat-card">
+                <div class="stat-label">Experience</div>
+                <div class="stat-value">1+ Years</div>
+                <div class="stat-badge">↑ Active Learner</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+            <div class="stat-card">
+                <div class="stat-label">Completed Projects</div>
+                <div class="stat-value">10+</div>
+                <div class="stat-badge">↑ Data & ML</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        st.markdown("""
+            <div class="stat-card">
+                <div class="stat-label">Core Expertise</div>
+                <div class="stat-value">Data Analysis</div>
+                <div class="stat-badge">↑ Python | Pandas | Power BI</div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    # ২য় সারি: মাঝখানে ৪র্থ কার্ড
+    _, center_col, _ = st.columns([1, 2, 1])
+
     with center_col:
-        st.metric(label="Other Expertise", value="ML & DL", delta="Tensorflow | PyTorch | SKLearn")
-# ABOUT PAGE
+        st.markdown("""
+            <div class="stat-card">
+                <div class="stat-label">Other Expertise</div>
+                <div class="stat-value">ML & DL</div>
+                <div class="stat-badge">↑ Tensorflow | PyTorch | SKLearn</div>
+            </div>
+        """, unsafe_allow_html=True)# ABOUT PAGE
 # ==========================================
 def render_about():
     profile = get_profile()
