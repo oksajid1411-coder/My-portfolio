@@ -382,7 +382,7 @@ def render_home():
         st.markdown("""
             <div class="stat-card">
                 <div class="stat-label">Completed Projects</div>
-                <div class="stat-value">10+</div>
+                <div class="stat-value">5+</div>
                 <div class="stat-badge">↑ Data & ML</div>
             </div>
         """, unsafe_allow_html=True)
