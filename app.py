@@ -331,7 +331,8 @@ def render_home():
         st.metric(label="Completed Projects", value="10+", delta="Data & ML")
     with stat_col3:
         st.metric(label="Core Expertise", value="Data Analysis", delta="Python|Pandas|Excel|Power BI")# ==========================================
-    with stat_col3:
+    stat_col1 = st.columns(1)
+    with stat_col1:
         st.metric(label="Other Expertise", value="ML & DL", delta="Python |Tensorflow | Pytorch| SKLearn")# ==========================================
 # ABOUT PAGE
 # ==========================================
