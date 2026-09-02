@@ -247,114 +247,162 @@ st.markdown("""
 def render_home():
     profile = get_profile()
     
-    # Custom Modern CSS for Glassmorphism & Animations
+    # Ultra-Modern Dark Theme CSS with Advanced Animations & Visual Effects
     st.markdown("""
         <style>
-        .glass-hero-container {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            margin-bottom: 25px;
+        /* Modern CSS Keyframes */
+        @keyframes subtleGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 75, 75, 0.15); }
+            50% { box-shadow: 0 0 30px rgba(108, 92, 231, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(255, 75, 75, 0.15); }
         }
-        .animated-hero-title {
-            font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(-45deg, #FF4B4B, #FF8F8F, #6C5CE7, #00CEC9);
-            background-size: 300% 300%;
-            animation: gradientBG 6s ease infinite;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+
+        @keyframes flowPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px #3B82F6); }
+            50% { transform: scale(1.15) translateX(3px); filter: drop-shadow(0 0 8px #60A5FA); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 2px #3B82F6); }
         }
-        @keyframes gradientBG {
+
+        @keyframes titleShimmer {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        
-        /* Workflow Container & Card Styles */
-        .workflow-box {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 20px 0;
+
+        /* Hero Glass Container */
+        .glass-hero-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 30px;
+            animation: subtleGlow 8s infinite alternate ease-in-out;
         }
-        .flow-container {
+
+        /* Animated Title Gradient */
+        .pro-hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        /* Premium Workflow Box */
+        .workflow-wrapper {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin: 30px 0;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .workflow-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #94A3B8;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .flow-flex {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding-top: 10px;
-        }
-        .flow-card {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 10px;
-            padding: 10px 16px;
-            color: #F8FAFC;
-            font-weight: 600;
-            font-size: 0.85rem;
-            backdrop-filter: blur(8px);
-            transition: all 0.35s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        .flow-card:hover {
-            transform: translateY(-4px) scale(1.03);
-            border-color: #FF4B4B;
-            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.25);
-            background: rgba(255, 75, 75, 0.1);
-        }
-        .flow-arrow {
-            color: #FF4B4B;
-            font-size: 1.2rem;
-            font-weight: bold;
-            animation: pulse 1.8s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0% { transform: translateX(0); opacity: 0.5; }
-            50% { transform: translateX(4px); opacity: 1; }
-            100% { transform: translateX(0); opacity: 0.5; }
+            gap: 12px;
         }
 
-        /* Stats Cards */
-        .custom-stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.4s ease;
-        }
-        .custom-stat-card:hover {
-            transform: translateY(-5px);
-            border-color: #FF4B4B;
-            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.2);
-        }
-        .stat-title {
-            font-size: 0.85rem;
-            color: #B2BEC3;
-            text-transform: uppercase;
+        /* Glassmorphism Process Step Chips */
+        .flow-chip {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 10px 18px;
+            color: #F8FAFC;
             font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
+
+        .flow-chip:hover {
+            transform: translateY(-6px) scale(1.05);
+            border-color: #3B82F6;
+            background: linear-gradient(145deg, rgba(59, 130, 246, 0.2), rgba(30, 41, 59, 0.9));
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
             color: #FFFFFF;
-            margin: 6px 0;
         }
-        .stat-badge-tag {
-            display: inline-block;
-            background: rgba(46, 204, 113, 0.15);
-            color: #2ECC71;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
+
+        .flow-chip-final {
+            border-color: rgba(46, 204, 113, 0.5) !important;
+        }
+        .flow-chip-final:hover {
+            border-color: #2ECC71 !important;
+            background: linear-gradient(145deg, rgba(46, 204, 113, 0.25), rgba(30, 41, 59, 0.9)) !important;
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.35) !important;
+        }
+
+        .flow-arrow-icon {
+            color: #3B82F6;
+            font-size: 1.2rem;
+            animation: flowPulse 2s infinite ease-in-out;
+        }
+
+        /* Metric Interactive Cards */
+        .pro-stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 22px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pro-stat-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 75, 75, 0.6);
+            box-shadow: 0 12px 30px rgba(255, 75, 75, 0.2);
+        }
+
+        .pro-stat-title {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
             font-weight: 600;
+        }
+
+        .pro-stat-val {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin: 8px 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .pro-stat-badge {
+            display: inline-block;
+            background: rgba(46, 204, 113, 0.12);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ECC71;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -364,7 +412,7 @@ def render_home():
         return
 
     # 1. HERO SECTION
-    st.markdown('<div class="glass-hero-container">', unsafe_allow_html=True)
+    st.markdown('<div class="glass-hero-card">', unsafe_allow_html=True)
     col1, col2 = st.columns([1.2, 2], gap="large")
     
     with col1:
@@ -378,7 +426,7 @@ def render_home():
         name = profile.get("name", "MD. Omar Kamran Chy")
         title = profile.get("title", "Data Scientist & Developer")
         
-        st.markdown(f'<h1 class="animated-hero-title">{name}</h1>', unsafe_allow_html=True)
+        st.markdown(f'<h1 class="pro-hero-title">{name}</h1>', unsafe_allow_html=True)
         st.subheader(title)
         
         location = profile.get("location", "")
@@ -391,7 +439,7 @@ def render_home():
             
         st.write("") 
 
-        # Call To Action Buttons
+        # Interactive Call To Action Buttons
         btn_col1, btn_col2, btn_col3 = st.columns(3)
         with btn_col1:
             if st.button("🚀 View Projects", use_container_width=True):
@@ -408,73 +456,74 @@ def render_home():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 2. WORKFLOW SECTION (HOME PAGE WORKFLOW)
+    # 2. ULTRA-ANIMATED WORKFLOW FLOWCHART
     st.markdown("""
-        <div class="workflow-box">
-            <h4 style="text-align: center; margin-bottom: 15px; color: #F8FAFC;">⚡ Analytical & Modeling Workflow</h4>
-            <div class="flow-container">
-                <div class="flow-card">📊 Data Collection</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card">🧹 Data Cleaning</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card">🔍 Exploratory EDA</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card">⚙️ Feature Engineering</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card">🤖 ML/DL Modeling</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card">📈 Model Evaluation</div>
-                <div class="flow-arrow">➔</div>
-                <div class="flow-card" style="border-color: #2ECC71;">💡 Insights & Solution</div>
+        <div class="workflow-wrapper">
+            <div class="workflow-title">⚡ End-to-End Analytical Workflow</div>
+            <div class="flow-flex">
+                <div class="flow-chip">📊 Data Collection</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip">🧹 Data Cleaning</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip">🔍 Exploratory EDA</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip">⚙️ Feature Engineering</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip">🤖 ML/DL Modeling</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip">📈 Model Evaluation</div>
+                <div class="flow-arrow-icon">➔</div>
+                <div class="flow-chip flow-chip-final">💡 Insights & Solution</div>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
     st.write("---")
 
-    # 3. QUICK STATS SECTION
+    # 3. INTERACTIVE METRIC STATS SECTION
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown("""
-            <div class="custom-stat-card">
-                <div class="stat-title">Experience</div>
-                <div class="stat-number">1+ Years</div>
-                <div class="stat-badge-tag">↑ Active Learner</div>
+            <div class="pro-stat-card">
+                <div class="pro-stat-title">Experience</div>
+                <div class="pro-stat-val">1+ Years</div>
+                <div class="pro-stat-badge">↑ Active Learner</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-            <div class="custom-stat-card">
-                <div class="stat-title">Completed Projects</div>
-                <div class="stat-number">10+</div>
-                <div class="stat-badge-tag">↑ Data & ML</div>
+            <div class="pro-stat-card">
+                <div class="pro-stat-title">Completed Projects</div>
+                <div class="pro-stat-val">10+</div>
+                <div class="pro-stat-badge">↑ Data & ML</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col3:
         st.markdown("""
-            <div class="custom-stat-card">
-                <div class="stat-title">Core Expertise</div>
-                <div class="stat-number">Data Analysis</div>
-                <div class="stat-badge-tag">↑ Python | Pandas | Power BI</div>
+            <div class="pro-stat-card">
+                <div class="pro-stat-title">Core Expertise</div>
+                <div class="pro-stat-val">Data Analysis</div>
+                <div class="pro-stat-badge">↑ Python | Pandas | Power BI</div>
             </div>
         """, unsafe_allow_html=True)
 
     st.write("")
 
-    # 4th Center Card
+    # Center-aligned 4th Metric Card
     _, center_col, _ = st.columns([1, 2, 1])
 
     with center_col:
         st.markdown("""
-            <div class="custom-stat-card">
-                <div class="stat-title">Other Expertise</div>
-                <div class="stat-number">ML & DL</div>
-                <div class="stat-badge-tag">↑ Tensorflow | PyTorch | SKLearn</div>
+            <div class="pro-stat-card">
+                <div class="pro-stat-title">Other Expertise</div>
+                <div class="pro-stat-val">ML & DL</div>
+                <div class="pro-stat-badge">↑ Tensorflow | PyTorch | SKLearn</div>
             </div>
         """, unsafe_allow_html=True)
+        
 #===========================================
 # ABOUT PAGE
 # ==========================================
@@ -616,68 +665,347 @@ def render_home():
 #     """, unsafe_allow_html=True)
 
 #     st.markdown('</div>', unsafe_allow_html=True)
-    # ==========================================
+# ==========================================
 # SKILLS PAGE
 # ==========================================
 def render_skills():
-    st.title("Technical Skills")
     skills = get_skills()
     
+    # Ultra-Modern CSS for Skills Grid & Glowing Badges
+    st.markdown("""
+        <style>
+        /* Animated Title Shimmer */
+        @keyframes titleShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .skills-header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .skills-sub-title {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Category Section Headers */
+        .cat-heading {
+            color: #F8FAFC;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 25px 0 15px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Glassmorphism Skill Card */
+        .skill-glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 18px 12px;
+            text-align: center;
+            margin-bottom: 15px;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .skill-glass-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.25);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+        }
+
+        .skill-name {
+            color: #F8FAFC;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* Proficiency Pills */
+        .level-pill {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .level-advanced {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.4);
+            color: #2ECC71;
+        }
+
+        .level-intermediate {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #60A5FA;
+        }
+
+        .level-beginner {
+            background: rgba(241, 196, 15, 0.15);
+            border: 1px solid rgba(241, 196, 15, 0.4);
+            color: #F1C40F;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Header Section
+    st.markdown('<h1 class="skills-header-title">Technical Expertise</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="skills-sub-title">Core competencies, tools, and technologies I work with.</p>', unsafe_allow_html=True)
+
     if not skills:
         st.info("No skills currently listed.")
         return
 
-    categories = list(set([s["category"] for s in skills]))
-    selected_cat = st.selectbox("Filter Category", ["All"] + categories)
+    # Filter System
+    categories = sorted(list(set([s.get("category", "General") for s in skills if s.get("category")])))
+    selected_cat = st.selectbox("🎯 Category Filter", ["All"] + categories)
     
-    filtered_skills = skills if selected_cat == "All" else [s for s in skills if s["category"] == selected_cat]
+    filtered_skills = skills if selected_cat == "All" else [s for s in skills if s.get("category") == selected_cat]
 
-    for cat in set([s["category"] for s in filtered_skills]):
-        st.subheader(cat)
-        cat_skills = [s for s in filtered_skills if s["category"] == cat]
-        cols = st.columns(4)
+    if not filtered_skills:
+        st.warning("No skills found under this category.")
+        return
+
+    # Unique Categories among Filtered Skills
+    active_cats = sorted(list(set([s.get("category", "General") for s in filtered_skills])))
+
+    for cat in active_cats:
+        st.markdown(f'<div class="cat-heading">📌 {cat}</div>', unsafe_allow_html=True)
+        
+        # Display skills in a 4-column layout
+        cat_skills = sorted(
+            [s for s in filtered_skills if s.get("category") == cat],
+            key=lambda x: x.get("display_order", 1)
+        )
+        
+        cols = st.columns(4, gap="medium")
         for idx, skill in enumerate(cat_skills):
-            with cols[idx % 4]:
+            col = cols[idx % 4]
+            
+            # Dynamic Class for Proficiency Levels
+            lvl = skill.get('level', 'Intermediate')
+            lvl_class = "level-intermediate"
+            if lvl.lower() == "advanced":
+                lvl_class = "level-advanced"
+            elif lvl.lower() == "beginner":
+                lvl_class = "level-beginner"
+
+            with col:
                 st.markdown(f"""
-                <div class="custom-card" style="padding:15px; text-align:center;">
-                    <h4>{skill['name']}</h4>
-                    <span class="badge badge-secondary">{skill['level']}</span>
-                </div>
+                    <div class="skill-glass-card">
+                        <div class="skill-name">{skill['name']}</div>
+                        <span class="level-pill {lvl_class}">⭐ {lvl}</span>
+                    </div>
                 """, unsafe_allow_html=True)
 
 # ==========================================
 # PROJECTS PAGE
 # ==========================================
 def render_projects():
-    st.title("Projects")
+    # Ultra-Modern CSS for Projects Page UI
+    st.markdown("""
+        <style>
+        /* Shimmer Title Animation */
+        @keyframes titleShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .proj-header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .proj-sub-title {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Project Glass Card */
+        .proj-glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .proj-glass-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.25);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+        }
+
+        .proj-title {
+            color: #F8FAFC;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .proj-category-badge {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60A5FA;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .proj-desc {
+            color: #CBD5E1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        /* Tech Badges Container */
+        .tech-pill-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .tech-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94A3B8;
+            font-size: 0.78rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Header Title
+    st.markdown('<h1 class="proj-header-title">Featured Projects</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="proj-sub-title">Explore my latest work across Data Science, Machine Learning, and Web Development.</p>', unsafe_allow_html=True)
+
     projects = get_projects()
-    
     if not projects:
-        st.info("No projects available.")
+        st.info("No projects available right now.")
         return
 
-    search = st.text_input("🔍 Search Projects", "")
-    categories = ["All"] + list(set([p["category"] for p in projects]))
-    selected_cat = st.selectbox("Category Filter", categories)
-    
+    # Filter Controls UI Section
+    f_col1, f_col2 = st.columns([2, 1])
+    with f_col1:
+        search = st.text_input("🔍 Search Projects", "", placeholder="Search by title or keyword...")
+    with f_col2:
+        categories = ["All"] + sorted(list(set([p.get("category", "General") for p in projects])))
+        selected_cat = st.selectbox("Category Filter", categories)
+
+    # Filtering Logic
     filtered = projects
     if selected_cat != "All":
-        filtered = [p for p in filtered if p["category"] == selected_cat]
+        filtered = [p for p in filtered if p.get("category") == selected_cat]
     if search:
-        filtered = [p for p in filtered if search.lower() in p["title"].lower() or search.lower() in p["description"].lower()]
+        search_lower = search.lower()
+        filtered = [
+            p for p in filtered 
+            if search_lower in p.get("title", "").lower() 
+            or search_lower in p.get("description", "").lower()
+            or search_lower in str(p.get("technologies", "")).lower()
+        ]
 
-    for proj in filtered:
-        with st.container():
-            st.markdown(f"""
-            <div class="custom-card">
-                <h3>{proj['title']} {'⭐' if proj.get('featured') else ''}</h3>
-                <span class="badge">{proj['category']}</span>
-                <p>{proj['description']}</p>
-                <p><strong>Technologies:</strong> {proj.get('technologies', 'N/A')}</p>
-            </div>
-            """, unsafe_allow_html=True)
+    st.write("")
+
+    if not filtered:
+        st.warning("No projects matched your search criteria.")
+        return
+
+    # Grid Display Layout (2 Columns)
+    cols = st.columns(2, gap="large")
+
+    for idx, proj in enumerate(filtered):
+        col = cols[idx % 2]
+        
+        # Prepare Tech Badges HTML
+        raw_techs = proj.get('technologies', '')
+        if isinstance(raw_techs, str):
+            tech_list = [t.strip() for t in raw_techs.split(',') if t.strip()]
+        else:
+            tech_list = raw_techs
             
-            with st.expander("📄 View Details"):
+        tech_html = "".join([f'<span class="tech-pill">{t}</span>' for t in tech_list])
+
+        featured_star = '⭐' if proj.get('featured') else ''
+        category_name = proj.get('category', 'Project')
+
+        with col:
+            st.markdown(f"""
+                <div class="proj-glass-card">
+                    <div>
+                        <div class="proj-title">
+                            <span>{proj['title']}</span>
+                            <span>{featured_star}</span>
+                        </div>
+                        <span class="proj-category-badge">{category_name}</span>
+                        <div class="proj-desc">{proj.get('description', '')}</div>
+                    </div>
+                    <div>
+                        <div class="tech-pill-wrapper">
+                            {tech_html}
+                        </div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Details & Links Accordion
+            with st.expander("📄 View Details & Links"):
                 if proj.get("overview"):
                     st.write(f"**Overview:** {proj['overview']}")
                 if proj.get("problem"):
@@ -688,93 +1016,561 @@ def render_projects():
                     st.write(f"**Approach:** {proj['approach']}")
                 if proj.get("results"):
                     st.write(f"**Results:** {proj['results']}")
-                    
-                c1, c2 = st.columns(2)
-                with c1:
+                
+                st.write("")
+                btn_c1, btn_c2 = st.columns(2)
+                with btn_c1:
                     if proj.get("github_url"):
-                        st.markdown(f"[🔗 GitHub Repository]({proj['github_url']})")
-                with c2:
+                        st.link_button("🔗 GitHub Repo", proj['github_url'], use_container_width=True)
+                with btn_c2:
                     if proj.get("demo_url"):
-                        st.markdown(f"[🚀 Live Demo]({proj['demo_url']})")
+                        st.link_button("🚀 Live Demo", proj['demo_url'], use_container_width=True)
 
+            st.write("") # Margin spacing between rows
 # ==========================================
 # SERVICES PAGE
 # ==========================================
 def render_services():
-    st.title("Services")
     services = get_services()
-    
     active_services = [s for s in services if s.get("active", True)]
-    
-    for srv in active_services:
-        st.markdown(f"""
-        <div class="custom-card">
-            <h3>{srv['title']}</h3>
-            <p>{srv['description']}</p>
-            <ul>
-                {''.join([f'<li>{item}</li>' for item in srv.get('items', [])])}
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+
+    # Ultra-Modern CSS for Services Cards & Grid
+    st.markdown("""
+        <style>
+        /* Shimmer Title Animation */
+        @keyframes titleShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .services-header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .services-sub-title {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 1rem;
+            margin-bottom: 35px;
+        }
+
+        /* Glassmorphism Card Container */
+        .service-glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 25px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .service-glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+        }
+
+        .service-title {
+            color: #F8FAFC;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-desc {
+            color: #CBD5E1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        /* List Items Styling */
+        .service-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .service-list-item {
+            color: #94A3B8;
+            font-size: 0.9rem;
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: color 0.3s ease;
+        }
+
+        .service-glass-card:hover .service-list-item {
+            color: #E2E8F0;
+        }
+
+        .service-badge {
+            color: #3B82F6;
+            font-weight: bold;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Header Title
+    st.markdown('<h1 class="services-header-title">My Services</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="services-sub-title">High-impact solutions tailored to solve complex data and software challenges.</p>', unsafe_allow_html=True)
+
+    if not active_services:
+        st.info("No active services available right now.")
+        return
+
+    # Responsive 2-Column Grid System
+    cols = st.columns(2, gap="large")
+
+    for idx, srv in enumerate(active_services):
+        col = cols[idx % 2]
+        
+        items_html = ""
+        for item in srv.get('items', []):
+            items_html += f'<li class="service-list-item"><span class="service-badge">✓</span> {item}</li>'
+
+        icon = srv.get('icon', '⚡') # Optional icon support
+
+        with col:
+            st.markdown(f"""
+                <div class="service-glass-card">
+                    <div>
+                        <div class="service-title"><span>{icon}</span> {srv['title']}</div>
+                        <div class="service-desc">{srv['description']}</div>
+                    </div>
+                    <div>
+                        <ul class="service-list">
+                            {items_html}
+                        </ul>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
 # ==========================================
 # EXPERIENCE PAGE
 # ==========================================
 def render_experience():
-    st.title("Experience & Learning Journey")
-    
-    st.subheader("Professional Experience")
+    # Ultra-Modern CSS for Vertical Timeline & Dynamic Hover Effects
+    st.markdown("""
+        <style>
+        /* Shimmer Title Animation */
+        @keyframes titleShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .exp-header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .exp-sub-title {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 1rem;
+            margin-bottom: 35px;
+        }
+
+        /* Timeline Main Wrapper */
+        .timeline-container {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0 40px 10px;
+            border-left: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Timeline Card Item */
+        .timeline-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+        }
+
+        /* Glowing Timeline Dot Node */
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            left: -39px;
+            top: 24px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #3B82F6;
+            border: 3px solid #0F172A;
+            box-shadow: 0 0 10px #3B82F6;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-card:hover::before {
+            background: #FF4B4B;
+            box-shadow: 0 0 15px #FF4B4B;
+            transform: scale(1.3);
+        }
+
+        .exp-role {
+            color: #F8FAFC;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .exp-org {
+            color: #3B82F6;
+            font-weight: 600;
+        }
+
+        .exp-date-badge {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60A5FA;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin: 8px 0 14px 0;
+        }
+
+        .exp-desc {
+            color: #CBD5E1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .section-tag {
+            color: #F8FAFC;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Page Header Title
+    st.markdown('<h1 class="exp-header-title">Experience & Journey</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="exp-sub-title">A timeline of my professional roles, milestones, and continuous learning path.</p>', unsafe_allow_html=True)
+
+    # 1. PROFESSIONAL EXPERIENCE SECTION
+    st.markdown('<div class="section-tag">💼 Professional Experience</div>', unsafe_allow_html=True)
     exps = get_experience()
-    for exp in exps:
-        st.markdown(f"""
-        <div class="timeline-item">
-            <h4>{exp['position']} - {exp['organization']}</h4>
-            <p><em>{exp['start_date']} - {exp['end_date']}</em></p>
-            <p>{exp['description']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    
+    if exps:
+        exp_html = '<div class="timeline-container">'
+        for exp in exps:
+            position = exp.get('position', 'Role')
+            organization = exp.get('organization', 'Company')
+            start_date = exp.get('start_date', '')
+            end_date = exp.get('end_date', 'Present')
+            description = exp.get('description', '')
 
-    st.markdown("---")
-    st.subheader("Learning Journey Timeline")
+            exp_html += f"""
+                <div class="timeline-card">
+                    <div class="exp-role">{position} <span class="exp-org">@ {organization}</span></div>
+                    <div class="exp-date-badge">🗓️ {start_date} - {end_date}</div>
+                    <p class="exp-desc">{description}</p>
+                </div>
+            """
+        exp_html += '</div>'
+        st.markdown(exp_html, unsafe_allow_html=True)
+    else:
+        st.info("No professional experience listed yet.")
+
+    st.write("---")
+
+    # 2. LEARNING JOURNEY TIMELINE SECTION
+    st.markdown('<div class="section-tag">🚀 Learning Journey Timeline</div>', unsafe_allow_html=True)
     journey = get_learning_journey()
-    for item in journey:
-        st.markdown(f"""
-        <div class="timeline-item">
-            <h4>{item['title']}</h4>
-            <p>{item['description']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    
+    if journey:
+        journey_html = '<div class="timeline-container">'
+        for item in journey:
+            title = item.get('title', 'Milestone')
+            description = item.get('description', '')
 
+            journey_html += f"""
+                <div class="timeline-card">
+                    <div class="exp-role">🎓 {title}</div>
+                    <p class="exp-desc" style="margin-top: 10px;">{description}</p>
+                </div>
+            """
+        journey_html += '</div>'
+        st.markdown(journey_html, unsafe_allow_html=True)
+    else:
+        st.info("No learning journey milestones listed yet.")
 # ==========================================
 # CONTACT PAGE
 # ==========================================
 def render_contact():
     profile = get_profile()
-    st.title("Contact Me")
     
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown(f"""
-        <div class="custom-card">
-            <h3>Contact Information</h3>
-            <p>📍 <strong>Location:</strong> {profile.get('location', '')}</p>
-            <p>📧 <strong>Email:</strong> {profile.get('email', '')}</p>
-        </div>
-        """, unsafe_allow_html=True)
-        st.markdown(f"[✉️ Send Direct Email](mailto:{profile.get('email', '')})")
+    # Ultra-Modern Dark Glass & Hover Animations CSS
+    st.markdown("""
+        <style>
+        /* Card Animations & Shimmer */
+        @keyframes subtleGlow {
+            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); }
+            50% { box-shadow: 0 0 30px rgba(108, 92, 231, 0.3); }
+            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); }
+        }
 
+        @keyframes titleShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Cards */
+        .contact-glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            height: 100%;
+            transition: all 0.4s ease-in-out;
+        }
+
+        .contact-glass-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+            transform: translateY(-4px);
+        }
+
+        /* Animated Section Header */
+        .contact-header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #FF4B4B, #FF8E53, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: titleShimmer 6s infinite linear;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .contact-sub-title {
+            text-align: center;
+            color: #94A3B8;
+            font-size: 1rem;
+            margin-bottom: 35px;
+        }
+
+        .card-header-text {
+            color: #F8FAFC;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        /* Contact Items */
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateX(6px);
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-val {
+            font-size: 1rem;
+            color: #F8FAFC;
+            font-weight: 600;
+        }
+
+        /* Social Link Buttons */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .social-chip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            color: #F8FAFC !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none !important;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .social-chip:hover {
+            transform: translateY(-5px) scale(1.03);
+            background: linear-gradient(135deg, rgba(255, 75, 75, 0.2), rgba(108, 92, 231, 0.3));
+            border-color: #FF4B4B;
+            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.25);
+            color: #FFFFFF !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Header Title
+    st.markdown('<h1 class="contact-header-title">Get In Touch</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="contact-sub-title">Have a project in mind or want to collaborate? Feel free to reach out!</p>', unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2, gap="large")
+
+    # LEFT COLUMN: Contact Details & Mail Link
+    with col1:
+        st.markdown("""
+            <div class="contact-glass-card">
+                <div class="card-header-text">📍 Contact Information</div>
+        """, unsafe_allow_html=True)
+        
+        email_val = profile.get('email', 'N/A')
+        loc_val = profile.get('location', 'N/A')
+
+        st.markdown(f"""
+            <div class="info-item">
+                <div class="info-icon">📍</div>
+                <div>
+                    <div class="info-label">Location</div>
+                    <div class="info-val">{loc_val}</div>
+                </div>
+            </div>
+            
+            <div class="info-item">
+                <div class="info-icon">📧</div>
+                <div>
+                    <div class="info-label">Email Address</div>
+                    <div class="info-val">{email_val}</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+        st.write("")
+        if email_val != 'N/A':
+            st.link_button("📩 Send Direct Email", f"mailto:{email_val}", use_container_width=True)
+            
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # RIGHT COLUMN: Interactive Social Profiles
     with col2:
         st.markdown("""
-        <div class="custom-card">
-            <h3>Social Profiles</h3>
-        </div>
+            <div class="contact-glass-card">
+                <div class="card-header-text">🌐 Connect With Me</div>
         """, unsafe_allow_html=True)
+        
         socials = get_social_links()
-        for soc in socials:
-            if soc.get("active", True):
-                st.markdown(f"🔗 [{soc['label']}]({soc['url']})")
+        active_socials = [s for s in socials if s.get("active", True)]
 
-# ==========================================
+        if active_socials:
+            social_html = '<div class="social-grid">'
+            for soc in active_socials:
+                label = soc.get('label', 'Link')
+                url = soc.get('url', '#')
+                social_html += f'<a href="{url}" target="_blank" class="social-chip">🔗 {label}</a>'
+            social_html += '</div>'
+            st.markdown(social_html, unsafe_allow_html=True)
+        else:
+            st.info("No social links available right now.")
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.write("---")
+
+    # OPTIONAL SECTION: Interactive Quick Message Form
+    st.markdown("### 💬 Send Me a Quick Message")
+    with st.form("contact_form", clear_on_submit=True):
+        col_form1, col_form2 = st.columns(2)
+        with col_form1:
+            user_name = st.text_input("Your Name", placeholder="John Doe")
+        with col_form2:
+            user_email = st.text_input("Your Email", placeholder="john@example.com")
+            
+        user_message = st.text_area("Your Message", placeholder="Type your message here...")
+        
+        submit_btn = st.form_submit_button("🚀 Send Message", use_container_width=True)
+        
+        if submit_btn:
+            if user_name and user_email and user_message:
+                st.success(f"Thank you, {user_name}! Your message has been sent successfully.")
+            else:
+                st.error("Please fill in all the fields before submitting.")# ==========================================
 # ADMIN PAGE
 # ==========================================
 def render_admin():
