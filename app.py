@@ -30,6 +30,24 @@ def init_supabase() -> Client:
 
 supabase = init_supabase()
 
+from supabase import create_client, Client
+
+@st.cache_resource
+def get_supabase_client() -> Client:
+
+    try:
+        # Streamlit Cloud Advanced Settings / secrets.toml থেকে ডাটা নেওয়া হচ্ছে
+        url = st.secrets["SUPABASE_URL"]
+        key = st.secrets["SUPABASE_KEY"]
+        return create_client(url, key)
+    except KeyError as e:
+        st.error(f"⚠️ Secrets missing: {e}. Please add SUPABASE_URL and SUPABASE_KEY in Secrets.")
+        return None
+    except Exception as e:
+        st.error(f"❌ Failed to connect to Supabase: {e}")
+        return None
+
+
 # ==========================================
 # AUTHENTICATION
 # ==========================================
@@ -1196,41 +1214,107 @@ def render_contact():
 # ==========================================
 # REVIEWS / TESTIMONIALS SYSTEM
 # ==========================================
-import streamlit as st
-from supabase import create_client, Client
-
-@st.cache_resource
-def get_supabase_client() -> Client:
-    """
-    Streamlit secrets (st.secrets) থেকে Supabase Credentials পড়ে
-    এবং কানেকশন তৈরি করে ক্লায়েন্ট রিটার্ন করে।
-    """
-    try:
-        # Streamlit Cloud Advanced Settings / secrets.toml থেকে ডাটা নেওয়া হচ্ছে
-        url = st.secrets["SUPABASE_URL"]
-        key = st.secrets["SUPABASE_KEY"]
-        return create_client(url, key)
-    except KeyError as e:
-        st.error(f"⚠️ Secrets missing: {e}. Please add SUPABASE_URL and SUPABASE_KEY in Secrets.")
-        return None
-    except Exception as e:
-        st.error(f"❌ Failed to connect to Supabase: {e}")
-        return None
-
 def render_reviews():
-    # ১. হেলপার ফাংশন দিয়ে ক্লায়েন্ট কল করা
+    # ১. Supabase Client কল করা
     supabase = get_supabase_client()
     if not supabase:
-        return  # সিক্রেটস না থাকলে বা এরর হলে কোড আর এগোবে না
+        return
 
     st.title("💬 Client Reviews & Testimonials")
-    
-    # ২. এরপর আপনার ডাটা কোয়েরি করবেন
-    try:
-        response = supabase.table("reviews").select("*").eq("is_approved", True).order("created_at", desc=True).execute()
-        approved_reviews = response.data
-    except Exception as e:
-        st.error(f"Error fetching data: {e}")
+
+    # ২. animations এবং UI এর জন্য CSS
+    reviews_css = (
+        "<style>"
+        "@keyframes fadeIn {"
+        "    from { opacity: 0; transform: translateY(10px); }"
+        "    to { opacity: 1; transform: translateY(0); }"
+        "}"
+        ".review-card {"
+        "    background: rgba(30, 41, 59, 0.7);"
+        "    backdrop-filter: blur(10px);"
+        "    border: 1px solid rgba(255, 255, 255, 0.08);"
+        "    border-radius: 14px;"
+        "    padding: 20px;"
+        "    margin-bottom: 16px;"
+        "    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);"
+        "    animation: fadeIn 0.5s ease-in-out;"
+        "    transition: all 0.3s ease;"
+        "}"
+        ".review-card:hover {"
+        "    border-color: rgba(59, 130, 246, 0.5);"
+        "    transform: translateY(-5px);"
+        "    box-shadow: 0 12px 20px 0 rgba(59, 130, 246, 0.2);"
+        "}"
+        ".reviewer-name { color: #f8fafc; font-weight: 700; font-size: 1.1em; }"
+        ".reviewer-role { color: #60a5fa; font-size: 0.85em; margin-bottom: 10px; }"
+        ".review-stars { color: #f59e0b; font-size: 1em; margin-bottom: 8px; }"
+        ".review-comment { color: #cbd5e1; font-size: 0.95em; line-height: 1.5; }"
+        "</style>"
+    )
+    st.markdown(reviews_css, unsafe_allow_html=True)
+
+    col1, col2 = st.columns([3, 2], gap="large")
+
+    # --------------------------------------
+    # LEFT COLUMN: DISPLAY REVIEWS
+    # --------------------------------------
+    with col1:
+        st.subheader("⭐ What People Say")
+        
+        try:
+            response = supabase.table("reviews").select("*").eq("is_approved", True).order("created_at", desc=True).execute()
+            approved_reviews = response.data
+        except Exception as e:
+            st.error(f"Error fetching data: {e}")
+            approved_reviews = []
+
+        if approved_reviews:
+            for rev in approved_reviews:
+                stars = "⭐" * rev.get("rating", 5)
+                card_html = (
+                    f'<div class="review-card">'
+                    f'    <div class="review-stars">{stars}</div>'
+                    f'    <div class="review-comment">"{rev.get("comment", "")}"</div>'
+                    f'    <hr style="border-color: rgba(255,255,255,0.05); margin: 12px 0;">'
+                    f'    <div class="reviewer-name">{rev.get("name", "Anonymous")}</div>'
+                    f'    <div class="reviewer-role">{rev.get("role", "")}</div>'
+                    f'</div>'
+                )
+                st.markdown(card_html, unsafe_allow_html=True)
+        else:
+            st.info("No approved reviews yet.")
+
+    # --------------------------------------
+    # RIGHT COLUMN: INPUT FIELDS FORM
+    # --------------------------------------
+    with col2:
+        st.subheader("✍️ Leave a Review")
+        
+        # Streamlit Form ব্যবহার করে Input Fields তৈরি
+        with st.form("submit_review_form", clear_on_submit=True):
+            name = st.text_input("Your Name *", placeholder="e.g. Abdullah")
+            role = st.text_input("Designation / Company", placeholder="e.g. Software Engineer")
+            rating = st.slider("Rating (Stars)", min_value=1, max_value=5, value=5)
+            comment = st.text_area("Your Review / Feedback *", placeholder="Write your experience working with me...", height=120)
+            
+            submit_btn = st.form_submit_button("🚀 Submit Review", use_container_width=True)
+            
+            if submit_btn:
+                if not name.strip() or not comment.strip():
+                    st.error("⚠️ Please fill in your name and comment.")
+                else:
+                    try:
+                        new_review = {
+                            "name": name.strip(),
+                            "role": role.strip(),
+                            "rating": rating,
+                            "comment": comment.strip(),
+                            "is_approved": False
+                        }
+                        supabase.table("reviews").insert(new_review).execute()
+                        st.success("✅ Thank you! Your review has been submitted for approval.")
+                    except Exception as e:
+                        st.error(f"Failed to submit review: {e}")
 
 # ==========================================
 # ADMIN PAGE (ENHANCED & DYNAMIC CATEGORIES)
