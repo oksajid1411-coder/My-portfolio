@@ -1842,1028 +1842,491 @@ def render_admin():
         return
 
 
-    # ==========================================
-    # ADMIN HEADER
-    # ==========================================
-
-    st.markdown("""
-    <div class="admin-wrapper">
-
-        <div class="admin-header">
-
-            <div class="admin-title">
-                ⚙️ Portfolio Admin
-            </div>
-
-            <div class="admin-subtitle">
-                Manage your portfolio content, projects,
-                skills and professional information.
-            </div>
-
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
+    import streamlit as st
 
 
-    # ==========================================
-    # SIDEBAR
-    # ==========================================
-
-    st.sidebar.markdown("### ⚙️ Admin")
-
-    st.sidebar.success("🟢 Authenticated")
-
-    st.sidebar.button(
-        "🚪 Logout Admin",
-        on_click=logout_admin,
-        use_container_width=True
+def admin_dashboard():
+    # ---------------------------------------------------------
+    # Custom CSS Formatting
+    # ---------------------------------------------------------
+    st.markdown(
+        """
+    <style>
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes glow {
+        0% { box-shadow: 0 0 5px rgba(255,75,75,0.2); }
+        50% { box-shadow: 0 0 15px rgba(255,75,75,0.6); }
+        100% { box-shadow: 0 0 5px rgba(255,75,75,0.2); }
+    }
+    .admin-header {
+        background: linear-gradient(135deg, #1E1E2E 0%, #2D2D44 100%);
+        padding: 24px;
+        border-radius: 12px;
+        border-left: 5px solid #FF4B4B;
+        margin-bottom: 25px;
+        animation: fadeIn 0.5s ease-out;
+    }
+    .admin-card {
+        background-color: #1E1E2E;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #2D2D44;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    .admin-card:hover {
+        border-color: #FF4B4B;
+    }
+    .badge-counter {
+        background-color: #FF4B4B;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #1E1E2E;
+        border-radius: 15px;
+        border: 1px solid #2D2D44;
+        text-align: center;
+        animation: glow 3s infinite;
+    }
+    .admin-divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #2D2D44, transparent);
+        margin: 20px 0;
+    }
+    </style>
+    """,
+        unsafe_allow_html=True,
     )
 
-
-    # ==========================================
-    # TABS
-    # ==========================================
-
-    tabs = st.tabs([
-        "👤 Profile",
-        "🛠️ Skills",
-        "🚀 Projects",
-        "💼 Services",
-        "📈 Experience",
-        "📚 Learning",
-        "🔗 Socials"
-    ])
-
-
-    # ==========================================
-    # PROFILE
-    # ==========================================
-
-    with tabs[0]:
-
-        st.subheader("👤 Profile Information")
-
-        st.caption(
-            "Update your personal and professional information."
+    # ---------------------------------------------------------
+    # Authentication Check
+    # ---------------------------------------------------------
+    if not check_admin_auth():
+        st.markdown(
+            """
+        <div class="login-container">
+            <h2>🔒 Admin Access</h2>
+            <p style="color: #888;">Please enter your passcode to access the management portal.</p>
+        </div>
+        """,
+            unsafe_allow_html=True,
         )
 
-        profile = get_profile()
+        with st.form("admin_login"):
+            passcode = st.text_input(
+                "Passcode", type="password", placeholder="Enter passcode..."
+            )
+            submit = st.form_submit_button("Authenticate", use_container_width=True)
 
-        if profile:
+            if submit:
+                if login_admin(passcode):
+                    st.success("Access Granted!")
+                    st.rerun()
+                else:
+                    st.error("Invalid Passcode!")
+        return
 
-            with st.form("edit_profile_form"):
+    # ---------------------------------------------------------
+    # Sidebar Status & Logout
+    # ---------------------------------------------------------
+    with st.sidebar:
+        st.markdown("---")
+        st.markdown("### 🟢 Admin Session")
+        st.caption("You are logged in as Administrator.")
+        if st.button("🚪 Logout", use_container_width=True):
+            logout_admin()
+            st.rerun()
 
-                col1, col2 = st.columns(2)
+    # ---------------------------------------------------------
+    # Main Header
+    # ---------------------------------------------------------
+    st.markdown(
+        """
+    <div class="admin-header">
+        <h1 style="margin:0; padding:0; color: white;">⚙️ Portfolio Control Panel</h1>
+        <p style="margin:5px 0 0 0; color: #AAA;">Manage your site content, showcase projects, and update profile data dynamically.</p>
+    </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
-                with col1:
+    # ---------------------------------------------------------
+    # Management Tabs
+    # ---------------------------------------------------------
+    tabs = st.tabs(
+        [
+            "👤 Profile",
+            "🛠️ Skills",
+            "🚀 Projects",
+            "💼 Services",
+            "📜 Experience",
+            "🎓 Learning",
+            "🔗 Socials",
+        ]
+    )
 
-                    name = st.text_input(
-                        "Full Name",
-                        profile.get("name", "")
-                    )
+    # ==========================================
+    # 1. PROFILE TAB
+    # ==========================================
+    with tabs[0]:
+        st.subheader("👤 Manage Profile")
+        st.caption("Update your primary personal information.")
 
-                    title = st.text_input(
-                        "Professional Title",
-                        profile.get("title", "")
-                    )
+        profile_data = get_profile() if "get_profile" in globals() else {}
 
-                    location = st.text_input(
-                        "Location",
-                        profile.get("location", "")
-                    )
+        with st.form("profile_form"):
+            name = st.text_input("Name", value=profile_data.get("name", ""))
+            title = st.text_input("Title / Role", value=profile_data.get("title", ""))
+            email = st.text_input("Email", value=profile_data.get("email", ""))
+            bio = st.text_area("Bio", value=profile_data.get("bio", ""))
+            image_url = st.text_input(
+                "Profile Image URL", value=profile_data.get("image_url", "")
+            )
 
-                    email = st.text_input(
-                        "Email",
-                        profile.get("email", "")
-                    )
-
-                with col2:
-
-                    image_url = st.text_input(
-                        "Profile Image URL",
-                        profile.get("profile_image", "")
-                    )
-
-                    exp_years = st.number_input(
-                        "Years of Experience",
-                        min_value=0,
-                        value=int(
-                            profile.get(
-                                "experience_years",
-                                1
-                            )
-                        )
-                    )
-
-                    bio = st.text_area(
-                        "Professional Bio",
-                        profile.get("bio", ""),
-                        height=150
-                    )
-
-                st.markdown(
-                    '<div class="admin-divider"></div>',
-                    unsafe_allow_html=True
+            cols = st.columns(2)
+            with cols[0]:
+                years_exp = st.number_input(
+                    "Years of Experience",
+                    value=int(profile_data.get("years_exp", 0)),
+                    min_value=0,
+                )
+            with cols[1]:
+                projects_done = st.number_input(
+                    "Projects Completed",
+                    value=int(profile_data.get("projects_done", 0)),
+                    min_value=0,
                 )
 
-                if st.form_submit_button(
-                    "💾 Save Profile",
-                    use_container_width=True
-                ):
-
-                    if not is_valid_email(email):
-
-                        st.error(
-                            "Invalid email address format."
-                        )
-
-                    elif not is_valid_url(image_url):
-
-                        st.error(
-                            "Invalid image URL format."
-                        )
-
-                    else:
-
-                        update_profile(
-                            profile["id"],
-                            {
-                                "name": name,
-                                "title": title,
-                                "location": location,
-                                "email": email,
-                                "profile_image": image_url,
-                                "experience_years": exp_years,
-                                "bio": bio
-                            }
-                        )
-
-                        st.success(
-                            "✅ Profile updated successfully!"
-                        )
-
-                        st.rerun()
-
+            if st.form_submit_button("💾 Save Profile", use_container_width=True):
+                if email and not is_valid_email(email):
+                    st.error("Invalid email address.")
+                else:
+                    update_profile(
+                        {
+                            "name": name,
+                            "title": title,
+                            "email": email,
+                            "bio": bio,
+                            "image_url": image_url,
+                            "years_exp": years_exp,
+                            "projects_done": projects_done,
+                        }
+                    )
+                    st.success("✅ Profile updated successfully!")
+                    st.rerun()
 
     # ==========================================
-    # SKILLS
+    # 2. SKILLS TAB
     # ==========================================
-
     with tabs[1]:
-
         st.subheader("🛠️ Manage Skills")
+        st.caption("Add, categorize, and delete skills.")
 
-        st.caption(
-            "Add and manage your technical skills."
-        )
-
-        skills = get_skills()
+        skills = get_skills() if "get_skills" in globals() else []
 
         if skills:
-
-            st.markdown("### Current Skills")
-
-            for s in skills:
-
-                with st.container():
-
-                    cols = st.columns(
-                        [3, 2, 2, 1]
+            for skill in skills:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{skill.get('name', '')}</strong> ({skill.get('category', 'General')}) - Level: {skill.get('level', 'N/A')}%
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_sk_{skill['id']}"):
+                        delete_skill(skill["id"])
+                        st.rerun()
 
-                    with cols[0]:
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
 
-                        st.markdown(
-                            f"""
-                            <div class="skill-card">
-                                <strong>
-                                    {s.get('name')}
-                                </strong>
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
+        with st.form("add_skill_form"):
+            sk_name = st.text_input("Skill Name")
+            sk_category = st.text_input("Category", placeholder="e.g. Frontend, Backend, Tools")
+            sk_level = st.slider("Proficiency (%)", 0, 100, 80)
 
-                    with cols[1]:
-
-                        cat = s.get(
-                            "category",
-                            "N/A"
-                        )
-
-                        st.markdown(
-                            f"""
-                            <span class="cat-badge">
-                                📂 {cat}
-                            </span>
-                            """,
-                            unsafe_allow_html=True
-                        )
-
-                    with cols[2]:
-
-                        lvl = s.get(
-                            "level",
-                            "N/A"
-                        )
-
-                        st.markdown(
-                            f"""
-                            <span class="level-badge">
-                                ⭐ {lvl}
-                            </span>
-                            """,
-                            unsafe_allow_html=True
-                        )
-
-                    with cols[3]:
-
-                        if st.button(
-                            "🗑️",
-                            key=f"del_sk_{s['id']}",
-                            help="Delete Skill"
-                        ):
-
-                            delete_skill(
-                                s["id"]
-                            )
-
-                            st.toast(
-                                f"Skill '{s.get('name')}' deleted!",
-                                icon="🗑️"
-                            )
-
-                            st.rerun()
-
-        else:
-
-            st.info(
-                "No skills added yet."
-            )
-
-
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
-        )
-
-
-        # Add Skill
-
-        st.markdown("### ➕ Add New Skill")
-
-        existing_skill_cats = list(
-            set(
-                [
-                    s.get("category")
-                    for s in skills
-                    if s.get("category")
-                ]
-            )
-        )
-
-        default_skill_cats = [
-            "Programming",
-            "Data Analysis",
-            "Machine Learning",
-            "Databases",
-            "Tools & Frameworks"
-        ]
-
-        all_skill_cats = sorted(
-            list(
-                set(
-                    default_skill_cats
-                    + existing_skill_cats
-                )
-            )
-        )
-
-        cat_options = (
-            ["-- Select Category --"]
-            + all_skill_cats
-            + ["+ Add New Category"]
-        )
-
-
-        with st.form(
-            "add_skill_form",
-            clear_on_submit=True
-        ):
-
-            col_a, col_b = st.columns(2)
-
-            with col_a:
-
-                sk_name = st.text_input(
-                    "Skill Name",
-                    placeholder="e.g. Python, SQL, Power BI"
-                )
-
-                sk_level = st.selectbox(
-                    "Proficiency Level",
-                    [
-                        "Beginner",
-                        "Intermediate",
-                        "Advanced"
-                    ],
-                    index=1
-                )
-
-            with col_b:
-
-                selected_sk_cat = st.selectbox(
-                    "Category",
-                    cat_options
-                )
-
-                new_sk_cat = st.text_input(
-                    "New Category Name",
-                    placeholder="Enter new category..."
-                )
-
-            sk_order = st.number_input(
-                "Display Order",
-                value=1,
-                min_value=1
-            )
-
-            submit_btn = st.form_submit_button(
-                "🚀 Add Skill",
-                use_container_width=True
-            )
-
-            if submit_btn:
-
-                final_sk_cat = ""
-
-                if selected_sk_cat == "+ Add New Category":
-
-                    final_sk_cat = new_sk_cat.strip()
-
-                elif selected_sk_cat != "-- Select Category --":
-
-                    final_sk_cat = selected_sk_cat
-
-
-                if sk_name and final_sk_cat:
-
+            if st.form_submit_button("➕ Add Skill", use_container_width=True):
+                if sk_name:
                     add_skill(
                         {
                             "name": sk_name.strip(),
-                            "category": final_sk_cat,
+                            "category": sk_category.strip(),
                             "level": sk_level,
-                            "display_order": sk_order
                         }
                     )
-
-                    st.success(
-                        f"✅ Skill '{sk_name}' added!"
-                    )
-
+                    st.success(f"✅ Skill '{sk_name}' added!")
                     st.rerun()
-
                 else:
-
-                    st.error(
-                        "⚠️ Please provide Skill Name "
-                        "and Category."
-                    )
-
+                    st.error("Skill name cannot be empty.")
 
     # ==========================================
-    # PROJECTS
+    # 3. PROJECTS TAB
     # ==========================================
-
     with tabs[2]:
-
         st.subheader("🚀 Manage Projects")
+        st.caption("Showcase your recent projects and achievements.")
 
-        st.caption(
-            "Showcase and organize your portfolio projects."
-        )
-
-        projects = get_projects()
+        projects = get_projects() if "get_projects" in globals() else []
 
         if projects:
-
-            for p in projects:
-
-                with st.container():
-
-                    cols = st.columns(
-                        [4, 2, 1]
+            for proj in projects:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{proj.get('title', '')}</strong><br>
+                            <small>{proj.get('description', '')[:100]}...</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_proj_{proj['id']}"):
+                        delete_project(proj["id"])
+                        st.rerun()
 
-                    with cols[0]:
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
 
-                        st.markdown(
-                            f"""
-                            <div class="admin-card">
-                                <strong>
-                                    {p['title']}
-                                </strong>
-                                <br>
-                                <small>
-                                    📂 {p.get('category', 'N/A')}
-                                </small>
-                            </div>
-                            """,
-                            unsafe_allow_html=True
-                        )
+        with st.form("add_project_form"):
+            p_title = st.text_input("Project Title")
+            p_desc = st.text_area("Description")
+            p_tech = st.text_input("Technologies (comma separated)", placeholder="Python, Streamlit, PostgreSQL")
+            p_image = st.text_input("Image URL")
+            p_github = st.text_input("GitHub Repo URL")
+            p_live = st.text_input("Live Demo URL")
 
-                    with cols[1]:
-
-                        st.caption(
-                            f"Display Order: "
-                            f"{p.get('display_order', 1)}"
-                        )
-
-                    with cols[2]:
-
-                        if st.button(
-                            "🗑️",
-                            key=f"del_proj_{p['id']}"
-                        ):
-
-                            delete_project(
-                                p["id"]
-                            )
-
-                            st.rerun()
-
-        else:
-
-            st.info(
-                "No projects added yet."
-            )
-
-
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
-        )
-
-        st.markdown(
-            "### ➕ Add New Project"
-        )
-
-
-        existing_proj_cats = list(
-            set(
-                [
-                    p.get("category")
-                    for p in projects
-                    if p.get("category")
-                ]
-            )
-        )
-
-        default_cats = [
-            "Data Analysis",
-            "Machine Learning",
-            "Deep Learning",
-            "Data collection"
-        ]
-
-        all_cats = list(
-            set(
-                default_cats
-                + existing_proj_cats
-            )
-        )
-
-        cat_options = (
-            ["-- Select Category --"]
-            + all_cats
-            + ["+ Add New Category"]
-        )
-
-
-        with st.form("add_proj_form"):
-
-            p_title = st.text_input(
-                "Project Title"
-            )
-
-            selected_p_cat = st.selectbox(
-                "Category",
-                cat_options
-            )
-
-            new_p_cat = st.text_input(
-                "New Category Name"
-            )
-
-            p_desc = st.text_area(
-                "Short Description"
-            )
-
-            p_tech = st.text_input(
-                "Technologies",
-                placeholder="Python, Pandas, Streamlit..."
-            )
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                p_gh = st.text_input(
-                    "GitHub URL"
-                )
-
-            with col2:
-
-                p_demo = st.text_input(
-                    "Demo URL"
-                )
-
-            p_feat = st.checkbox(
-                "⭐ Featured Project"
-            )
-
-            p_order = st.number_input(
-                "Display Order",
-                value=1
-            )
-
-            st.markdown(
-                "#### Project Details"
-            )
-
-            p_overview = st.text_area(
-                "Overview"
-            )
-
-            p_problem = st.text_area(
-                "Problem Statement"
-            )
-
-            p_dataset = st.text_area(
-                "Dataset Details"
-            )
-
-            p_approach = st.text_area(
-                "Approach"
-            )
-
-            p_results = st.text_area(
-                "Results"
-            )
-
-
-            if st.form_submit_button(
-                "🚀 Add Project",
-                use_container_width=True
-            ):
-
-                final_p_cat = ""
-
-                if selected_p_cat == "+ Add New Category":
-
-                    final_p_cat = new_p_cat.strip()
-
-                elif selected_p_cat != "-- Select Category --":
-
-                    final_p_cat = selected_p_cat
-
-
-                if p_gh and not is_valid_url(p_gh):
-
-                    st.error(
-                        "Invalid GitHub URL."
-                    )
-
-                elif p_demo and not is_valid_url(p_demo):
-
-                    st.error(
-                        "Invalid Demo URL."
-                    )
-
-                elif (
-                    p_title
-                    and p_desc
-                    and final_p_cat
-                ):
-
+            if st.form_submit_button("➕ Add Project", use_container_width=True):
+                if p_title and p_desc:
                     add_project(
                         {
-                            "title": p_title,
-                            "category": final_p_cat,
-                            "description": p_desc,
-                            "technologies": p_tech,
-                            "github_url": p_gh,
-                            "demo_url": p_demo,
-                            "featured": p_feat,
-                            "display_order": p_order,
-                            "overview": p_overview,
-                            "problem": p_problem,
-                            "dataset": p_dataset,
-                            "approach": p_approach,
-                            "results": p_results
+                            "title": p_title.strip(),
+                            "description": p_desc.strip(),
+                            "technologies": [t.strip() for t in p_tech.split(",") if t.strip()],
+                            "image_url": p_image.strip(),
+                            "github_url": p_github.strip(),
+                            "live_url": p_live.strip(),
                         }
                     )
-
-                    st.success(
-                        "✅ Project added successfully!"
-                    )
-
+                    st.success(f"✅ Project '{p_title}' added!")
                     st.rerun()
-
                 else:
-
-                    st.error(
-                        "Please fill in Project Title, "
-                        "Description and Category."
-                    )
-
+                    st.error("Title and Description are required.")
 
     # ==========================================
-    # SERVICES
+    # 4. SERVICES TAB
     # ==========================================
-
     with tabs[3]:
-
         st.subheader("💼 Manage Services")
+        st.caption("Outline the services you offer to clients or teams.")
 
-        st.caption(
-            "Manage the professional services displayed "
-            "on your portfolio."
-        )
+        services = get_services() if "get_services" in globals() else []
 
-        services = get_services()
-
-        for srv in services:
-
-            cols = st.columns([4, 1])
-
-            with cols[0]:
-
-                st.markdown(
-                    f"""
-                    <div class="admin-card">
-                        <strong>
-                            {srv['title']}
-                        </strong>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-            with cols[1]:
-
-                if st.button(
-                    "🗑️",
-                    key=f"del_srv_{srv['id']}"
-                ):
-
-                    delete_service(
-                        srv["id"]
+        if services:
+            for srv in services:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{srv.get('title', '')}</strong><br>
+                            <small>{srv.get('description', '')}</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_srv_{srv['id']}"):
+                        delete_service(srv["id"])
+                        st.rerun()
 
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
+
+        with st.form("add_service_form"):
+            s_title = st.text_input("Service Title")
+            s_desc = st.text_area("Service Description")
+            s_icon = st.text_input("Icon (Emoji or CSS Class)", placeholder="💻")
+
+            if st.form_submit_button("➕ Add Service", use_container_width=True):
+                if s_title and s_desc:
+                    add_service(
+                        {
+                            "title": s_title.strip(),
+                            "description": s_desc.strip(),
+                            "icon": s_icon.strip(),
+                        }
+                    )
+                    st.success(f"✅ Service '{s_title}' added!")
                     st.rerun()
-
-
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
-        )
-
-
-        with st.form("add_srv_form"):
-
-            s_title = st.text_input(
-                "Service Title"
-            )
-
-            s_desc = st.text_area(
-                "Service Description"
-            )
-
-            s_items = st.text_area(
-                "Service Items",
-                placeholder="One item per line..."
-            )
-
-            s_order = st.number_input(
-                "Display Order",
-                value=1
-            )
-
-            if st.form_submit_button(
-                "➕ Add Service",
-                use_container_width=True
-            ):
-
-                items_list = [
-                    i.strip()
-                    for i in s_items.split("\n")
-                    if i.strip()
-                ]
-
-                add_service(
-                    {
-                        "title": s_title,
-                        "description": s_desc,
-                        "items": items_list,
-                        "display_order": s_order,
-                        "active": True
-                    }
-                )
-
-                st.success(
-                    "✅ Service added."
-                )
-
-                st.rerun()
-
+                else:
+                    st.error("Title and Description are required.")
 
     # ==========================================
-    # EXPERIENCE
+    # 5. EXPERIENCE TAB
     # ==========================================
-
     with tabs[4]:
+        st.subheader("📜 Manage Work Experience")
+        st.caption("Detail your professional background and job roles.")
 
-        st.subheader("📈 Manage Experience")
+        experiences = get_experience() if "get_experience" in globals() else []
 
-        exps = get_experience()
-
-        for e in exps:
-
-            cols = st.columns([4, 1])
-
-            with cols[0]:
-
-                st.markdown(
-                    f"""
-                    <div class="admin-card">
-                        <strong>
-                            {e['position']}
-                        </strong>
-                        <br>
-                        <small>
-                            🏢 {e['organization']}
-                        </small>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-            with cols[1]:
-
-                if st.button(
-                    "🗑️",
-                    key=f"del_exp_{e['id']}"
-                ):
-
-                    delete_experience(
-                        e["id"]
+        if experiences:
+            for exp in experiences:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{exp.get('role', '')}</strong> at <em>{exp.get('company', '')}</em> ({exp.get('period', '')})<br>
+                            <small>{exp.get('description', '')}</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_exp_{exp['id']}"):
+                        delete_experience(exp["id"])
+                        st.rerun()
 
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
+
+        with st.form("add_experience_form"):
+            e_role = st.text_input("Role / Position")
+            e_company = st.text_input("Company / Organization")
+            e_period = st.text_input("Period", placeholder="e.g. Jan 2022 - Present")
+            e_desc = st.text_area("Responsibilities & Achievements")
+
+            if st.form_submit_button("➕ Add Experience", use_container_width=True):
+                if e_role and e_company:
+                    add_experience(
+                        {
+                            "role": e_role.strip(),
+                            "company": e_company.strip(),
+                            "period": e_period.strip(),
+                            "description": e_desc.strip(),
+                        }
+                    )
+                    st.success(f"✅ Experience at '{e_company}' added!")
                     st.rerun()
-
-
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
-        )
-
-
-        with st.form("add_exp_form"):
-
-            e_pos = st.text_input(
-                "Position"
-            )
-
-            e_org = st.text_input(
-                "Organization"
-            )
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                e_start = st.text_input(
-                    "Start Date"
-                )
-
-            with col2:
-
-                e_end = st.text_input(
-                    "End Date"
-                )
-
-            e_desc = st.text_area(
-                "Description"
-            )
-
-            e_order = st.number_input(
-                "Display Order",
-                value=1
-            )
-
-            if st.form_submit_button(
-                "➕ Add Experience",
-                use_container_width=True
-            ):
-
-                add_experience(
-                    {
-                        "position": e_pos,
-                        "organization": e_org,
-                        "start_date": e_start,
-                        "end_date": e_end,
-                        "description": e_desc,
-                        "display_order": e_order
-                    }
-                )
-
-                st.success(
-                    "✅ Experience added."
-                )
-
-                st.rerun()
-
+                else:
+                    st.error("Role and Company are required.")
 
     # ==========================================
-    # LEARNING JOURNEY
+    # 6. LEARNING TAB
     # ==========================================
-
     with tabs[5]:
+        st.subheader("🎓 Manage Learning & Certifications")
+        st.caption("Track courses, certifications, and learning goals.")
 
-        st.subheader("📚 Manage Learning Journey")
-
-        items = get_learning_journey()
-
-        for item in items:
-
-            cols = st.columns([4, 1])
-
-            with cols[0]:
-
-                st.markdown(
-                    f"""
-                    <div class="admin-card">
-                        <strong>
-                            {item['title']}
-                        </strong>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-
-            with cols[1]:
-
-                if st.button(
-                    "🗑️",
-                    key=f"del_learn_{item['id']}"
-                ):
-
-                    delete_learning_item(
-                        item["id"]
-                    )
-
-                    st.rerun()
-
-
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
+        learning = (
+            get_learning_journey() if "get_learning_journey" in globals() else []
         )
 
+        if learning:
+            for item in learning:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{item.get('title', '')}</strong> - {item.get('issuer', '')}<br>
+                            <small>Date: {item.get('date', 'N/A')}</small>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_learn_{item['id']}"):
+                        delete_learning(item["id"])
+                        st.rerun()
 
-        with st.form("add_learn_form"):
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
 
-            l_title = st.text_input(
-                "Title"
-            )
+        with st.form("add_learning_form"):
+            l_title = st.text_input("Course / Certification Title")
+            l_issuer = st.text_input("Platform / Organization", placeholder="e.g. Coursera, Udemy, AWS")
+            l_date = st.text_input("Completion Date / Status", placeholder="e.g. 2023, In Progress")
+            l_order = st.number_input("Display Order", value=1, min_value=1)
 
-            l_desc = st.text_area(
-                "Description"
-            )
-
-            l_order = st.number_input(
-                "Display Order",
-                value=1
-            )
-
-            if st.form_submit_button(
-                "➕ Add Learning Item",
-                use_container_width=True
-            ):
-
-                add_learning_item(
-                    {
-                        "title": l_title,
-                        "description": l_desc,
-                        "display_order": l_order
-                    }
-                )
-
-                st.success(
-                    "✅ Learning item added."
-                )
-
-                st.rerun()
-
+            if st.form_submit_button("➕ Add Learning Item", use_container_width=True):
+                if l_title:
+                    add_learning(
+                        {
+                            "title": l_title.strip(),
+                            "issuer": l_issuer.strip(),
+                            "date": l_date.strip(),
+                            "display_order": l_order,
+                        }
+                    )
+                    st.success("✅ Learning item added.")
+                    st.rerun()
+                else:
+                    st.error("Title is required.")
 
     # ==========================================
-    # SOCIAL LINKS
+    # 7. SOCIALS TAB
     # ==========================================
-
     with tabs[6]:
-
         st.subheader("🔗 Manage Social Links")
+        st.caption("Update links to your external profiles and social platforms.")
 
-        socials = get_social_links()
+        socials = get_socials() if "get_socials" in globals() else []
 
-        for soc in socials:
-
-            cols = st.columns([3, 3, 1])
-
-            with cols[0]:
-
-                st.markdown(
-                    f"**{soc['platform']}**"
-                )
-
-                st.caption(
-                    soc.get("label", "")
-                )
-
-            with cols[1]:
-
-                st.code(
-                    soc["url"],
-                    language="text"
-                )
-
-            with cols[2]:
-
-                if st.button(
-                    "🗑️",
-                    key=f"del_soc_{soc['id']}"
-                ):
-
-                    delete_social_link(
-                        soc["id"]
+        if socials:
+            for soc in socials:
+                cols = st.columns([4, 1])
+                with cols[0]:
+                    st.markdown(
+                        f"""
+                        <div class="admin-card">
+                            <strong>{soc.get('platform', 'Link')}</strong>: 
+                            <a href="{soc.get('url', '#')}" target="_blank">{soc.get('url', '')}</a>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
                     )
+                with cols[1]:
+                    if st.button("🗑️", key=f"del_soc_{soc['id']}"):
+                        delete_social(soc["id"])
+                        st.rerun()
 
-                    st.rerun()
+        st.markdown('<div class="admin-divider"></div>', unsafe_allow_html=True)
 
+        with st.form("add_social_form"):
+            platform = st.text_input("Platform Name", placeholder="e.g. GitHub, LinkedIn, Twitter")
+            url = st.text_input("Profile URL", placeholder="https://...")
+            s_order = st.number_input("Display Order", value=1, min_value=1)
 
-        st.markdown(
-            '<div class="admin-divider"></div>',
-            unsafe_allow_html=True
-        )
-
-
-        with st.form("add_soc_form"):
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                sc_plat = st.text_input(
-                    "Platform"
-                )
-
-            with col2:
-
-                sc_lbl = st.text_input(
-                    "Label"
-                )
-
-            sc_url = st.text_input(
-                "URL"
-            )
-
-            sc_order = st.number_input(
-                "Display Order",
-                value=1
-            )
-
-            if st.form_submit_button(
-                "➕ Add Social Link",
-                use_container_width=True
-            ):
-
-                add_social_link(
-                    {
-                        "platform": sc_plat,
-                        "label": sc_lbl,
-                        "url": sc_url,
-                        "display_order": sc_order,
-                        "active": True
-                    }
-                )
-
-                st.success(
-                    "✅ Social link added."
-                )
-
-                st.rerun()
+            if st.form_submit_button("➕ Add Social Link", use_container_width=True):
+                if platform and url:
+                    if is_valid_url(url):
+                        add_social(
+                            {
+                                "platform": platform.strip(),
+                                "url": url.strip(),
+                                "display_order": s_order,
+                            }
+                        )
+                        st.success(f"✅ {platform} link added!")
+                        st.rerun()
+                    else:
+                        st.error("Invalid URL format.")
+                else:
+                    st.error("Please provide both Platform Name and URL.")
+                    
 # ==========================================
 # MAIN APP
 # ==========================================
