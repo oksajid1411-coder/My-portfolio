@@ -449,7 +449,7 @@ def render_home():
         st.markdown("""
         <div class="metric-card">
             <div class="metric-label">Primary Stack</div>
-            <div class="metric-value">Python Ecosystem</div>
+            <div class="metric-value">Data Analysis</div>
         </div>
         """, unsafe_allow_html=True)
 
