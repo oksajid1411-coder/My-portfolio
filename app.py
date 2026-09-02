@@ -416,91 +416,143 @@ def render_home():
 # ==========================================
 def render_about():
     profile = get_profile()
-    st.title("About Me")
     
-    col1, col2 = st.columns([1, 2], gap="large")
+    # Custom CSS for About Page Styling & Flowchart
+    st.markdown("""
+        <style>
+        .about-glass-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 25px;
+        }
+        .animated-hero-title {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(-45deg, #FF4B4B, #FF8F8F, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: gradientBG 6s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding-top: 15px;
+        }
+        .flow-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 8px 14px;
+            color: #F8FAFC;
+            font-weight: 600;
+            font-size: 0.82rem;
+            transition: all 0.3s ease;
+        }
+        .flow-card:hover {
+            transform: translateY(-3px);
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.15);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        .flow-arrow {
+            color: #3B82F6;
+            font-size: 1.1rem;
+            font-weight: bold;
+            animation: pulse 1.8s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(3px); opacity: 1; }
+            100% { transform: translateX(0); opacity: 0.5; }
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    if not profile:
+        st.warning("No profile data found.")
+        return
+
+    # MAIN ABOUT CARD CONTAINER
+    st.markdown('<div class="about-glass-card">', unsafe_allow_html=True)
+    
+    # 1. Profile Info & Image Grid
+    col1, col2 = st.columns([1.2, 2], gap="large")
+    
     with col1:
-        if profile.get("profile_image"):
-            st.image(profile["profile_image"], use_container_width=True)
+        img_url = profile.get("profile_image", "")
+        if img_url:
+            st.image(img_url, use_container_width=True)
+        else:
+            st.image("https://via.placeholder.com/300", caption="No Image Available", use_container_width=True)
+            
     with col2:
-        st.subheader(profile.get("name", ""))
-        st.write(f"**Title:** {profile.get('title', '')}")
-        st.write(f"**Location:** {profile.get('location', '')}")
-        st.write(f"**Experience:** {profile.get('experience_years', 1)} Year")
-        st.write(f"**Email:** {profile.get('email', '')}")
-        st.write("---")
-        st.write(profile.get("bio", ""))
+        name = profile.get("name", "MD. Omar Kamran Chy")
+        title = profile.get("title", "Data Scientist & Developer")
         
-    st.markdown("---")
-st.subheader("My Analytical & Modeling Approach")
+        st.markdown(f'<h1 class="animated-hero-title">{name}</h1>', unsafe_allow_html=True)
+        st.subheader(title)
+        
+        location = profile.get("location", "")
+        if location:
+            st.markdown(f"📍 **{location}**")
+            
+        bio = profile.get("bio", "")
+        if bio:
+            st.write(bio)
+            
+        st.write("") 
 
-# Animated Flowchart CSS & HTML
-st.markdown("""
-    <style>
-    /* Container Styling */
-    .flow-container {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 20px 10px;
-        margin-top: 10px;
-    }
+        # Action Buttons
+        btn_col1, btn_col2, btn_col3 = st.columns(3)
+        with btn_col1:
+            if st.button("🚀 View Projects", use_container_width=True):
+                st.session_state["nav_selection"] = "Projects"
+                st.rerun()
+        with btn_col2:
+            if st.button("📩 Contact Me", use_container_width=True):
+                st.session_state["nav_selection"] = "Contact"
+                st.rerun()
+        with btn_col3:
+            resume_url = profile.get("resume_url", "")
+            if resume_url:
+                st.link_button("📄 Resume", resume_url, use_container_width=True)
 
-    /* Process Card Styling */
-    .flow-card {
-        background: rgba(30, 41, 59, 0.7);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 12px 18px;
-        color: #F8FAFC;
-        font-weight: 600;
-        font-size: 0.9rem;
-        backdrop-filter: blur(8px);
-        transition: all 0.35s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
+    # 2. Analytical & Modeling Approach (About-এর নিচের অংশ)
+    st.write("---")
+    st.markdown("#### 🧠 My Analytical & Modeling Approach")
 
-    /* Hover Glow Animation */
-    .flow-card:hover {
-        transform: translateY(-5px) scale(1.03);
-        border-color: #3B82F6;
-        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
-        background: rgba(59, 130, 246, 0.15);
-    }
+    st.markdown("""
+        <div class="flow-container">
+            <div class="flow-card">📊 Data Collection</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card">🧹 Data Cleaning</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card">🔍 Exploratory EDA</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card">⚙️ Feature Engineering</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card">🤖 ML/DL Modeling</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card">📈 Model Evaluation</div>
+            <div class="flow-arrow">➔</div>
+            <div class="flow-card" style="border-color: #2ECC71;">💡 Insights & Solution</div>
+        </div>
+    """, unsafe_allow_html=True)
 
-    /* Animated Arrow Styling */
-    .flow-arrow {
-        color: #3B82F6;
-        font-size: 1.3rem;
-        font-weight: bold;
-        animation: pulse 1.8s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-        0% { transform: translateX(0); opacity: 0.6; }
-        50% { transform: translateX(4px); opacity: 1; }
-        100% { transform: translateX(0); opacity: 0.6; }
-    }
-    </style>
-
-    <div class="flow-container">
-        <div class="flow-card">📊 Data Collection</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card">🧹 Data Cleaning</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card">🔍 Exploratory EDA</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card">⚙️ Feature Engineering</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card">🤖 ML/DL Modeling</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card">📈 Model Evaluation</div>
-        <div class="flow-arrow">➔</div>
-        <div class="flow-card" style="border-color: #2ECC71;">💡 Insights & Solution</div>
-    </div>
-""", unsafe_allow_html=True)# ==========================================
+    st.markdown('</div>', unsafe_allow_html=True)
+    # ==========================================
 # SKILLS PAGE
 # ==========================================
 def render_skills():
