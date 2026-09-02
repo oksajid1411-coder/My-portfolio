@@ -381,11 +381,95 @@ def render_home():
     # --------------------------------------
     # STATS COUNTER METRICS
     # --------------------------------------
+    st.markdown("""
+    <style>
+        .metric-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 14px;
+            padding: 18px 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease-in-out;
+            margin-bottom: 10px;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            background: rgba(30, 41, 59, 0.85);
+        }
+        .metric-label {
+            font-size: 0.85em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .metric-value {
+            font-size: 1.25em;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+        .status-badge {
+            color: #4ade80;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #22c55e;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # ANIMATED METRIC CARDS LAYOUT
+    # --------------------------------------
     sc1, sc2, sc3, sc4 = st.columns(4)
-    sc1.metric("Experience", f"{profile.get('experience_years', 1)}+ Year")
-    sc2.metric("Primary Stack", "Python Ecosystem")
-    sc3.metric("Core Focus", "Data + ML + DL")
-    sc4.metric("Status", "Open to Opportunities")
+
+    exp_years = profile.get('experience_years', 1)
+
+    with sc1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <div class="metric-label">Experience</div>
+            <div class="metric-value">{exp_years}+ Year</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with sc2:
+        st.markdown("""
+        <div class="metric-card">
+            <div class="metric-label">Primary Stack</div>
+            <div class="metric-value">Python Ecosystem</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with sc3:
+        st.markdown("""
+        <div class="metric-card">
+            <div class="metric-label">Core Focus</div>
+            <div class="metric-value">Data + ML + DL</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with sc4:
+        st.markdown("""
+        <div class="metric-card">
+            <div class="metric-label">Status</div>
+            <div class="metric-value status-badge">
+                <span class="status-dot"></span> Open to Work
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("<br><hr>", unsafe_allow_html=True)
 
