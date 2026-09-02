@@ -1191,16 +1191,52 @@ def render_contact():
                     </a>
                     """, unsafe_allow_html=True)
                     
-        st.markdown('</div>', unsafe_allow_html=True)# ==========================================
-# ADMIN PAGE
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+# ==========================================
+# ADMIN PAGE (ENHANCED & DYNAMIC CATEGORIES)
 # ==========================================
 def render_admin():
     st.title("🔒 Admin Control Panel")
     
+    # --------------------------------------
+    # CUSTOM CSS FOR GLASSMORPHISM ADMIN UI
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        .admin-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+        .admin-section-title {
+            color: #60a5fa;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .cat-badge {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
     if not check_admin_auth():
         with st.form("admin_login"):
             code = st.text_input("Enter Admin Passcode", type="password")
-            submit = st.form_submit_button("Unlock")
+            submit = st.form_submit_button("🔑 Unlock Panel", use_container_width=True)
             if submit:
                 login_admin(code)
                 if check_admin_auth():
@@ -1212,23 +1248,27 @@ def render_admin():
 
     st.sidebar.button("🚪 Logout Admin", on_click=logout_admin)
     
-    tabs = st.tabs(["Profile", "Skills", "Projects", "Services", "Experience", "Learning", "Socials"])
+    tabs = st.tabs(["👤 Profile", "🛠️ Skills & Categories", "🚀 Projects", "💼 Services", "🏢 Experience", "🎓 Learning", "🔗 Socials"])
     
     # --- Profile Tab ---
     with tabs[0]:
-        st.subheader("Edit Profile")
+        st.subheader("Edit Profile Information")
         profile = get_profile()
         if profile:
             with st.form("edit_profile_form"):
-                name = st.text_input("Name", profile.get("name", ""))
-                title = st.text_input("Title", profile.get("title", ""))
-                location = st.text_input("Location", profile.get("location", ""))
-                email = st.text_input("Email", profile.get("email", ""))
-                image_url = st.text_input("Profile Image URL", profile.get("profile_image", ""))
-                exp_years = st.number_input("Years of Experience", value=int(profile.get("experience_years", 1)))
-                bio = st.text_area("Bio", profile.get("bio", ""), height=150)
+                col1, col2 = st.columns(2)
+                with col1:
+                    name = st.text_input("Name", profile.get("name", ""))
+                    title = st.text_input("Title", profile.get("title", ""))
+                    location = st.text_input("Location", profile.get("location", ""))
+                with col2:
+                    email = st.text_input("Email", profile.get("email", ""))
+                    image_url = st.text_input("Profile Image URL", profile.get("profile_image", ""))
+                    exp_years = st.number_input("Years of Experience", value=int(profile.get("experience_years", 1)))
                 
-                if st.form_submit_button("Save Profile"):
+                bio = st.text_area("Bio Description", profile.get("bio", ""), height=120)
+                
+                if st.form_submit_button("💾 Save Profile Changes", use_container_width=True):
                     if not is_valid_email(email):
                         st.error("Invalid email address format.")
                     elif not is_valid_url(image_url):
@@ -1242,63 +1282,132 @@ def render_admin():
                         st.success("Profile updated successfully!")
                         st.rerun()
 
-    # --- Skills Tab ---
+    # --- Skills Tab (Dynamic Category System) ---
     with tabs[1]:
-        st.subheader("Manage Skills")
         skills = get_skills()
-        for s in skills:
-            cols = st.columns([3, 2, 2, 1])
-            cols[0].write(s["name"])
-            cols[1].write(s["category"])
-            cols[2].write(s["level"])
-            if cols[3].button("🗑️", key=f"del_sk_{s['id']}"):
-                delete_skill(s["id"])
-                st.rerun()
+        
+        # 1. Dynamically extract current existing categories from skills database
+        existing_categories = sorted(list(set([s["category"] for s in skills if s.get("category")])))
+        if "General" not in existing_categories:
+            existing_categories.insert(0, "General")
+
+        col_left, col_right = st.columns([3, 2], gap="large")
+        
+        # Left Side: Existing Skills List
+        with col_left:
+            st.markdown('<div class="admin-card">', unsafe_allow_html=True)
+            st.markdown('<div class="admin-section-title">📊 Existing Skills</div>', unsafe_allow_html=True)
+            if skills:
+                for s in skills:
+                    cols = st.columns([3, 2, 2, 1])
+                    cols[0].write(f"**{s['name']}**")
+                    cols[1].write(f"<span class='cat-badge'>{s['category']}</span>", unsafe_allow_html=True)
+                    cols[2].write(f"_{s['level']}_")
+                    if cols[3].button("🗑️", key=f"del_sk_{s['id']}"):
+                        delete_skill(s["id"])
+                        st.rerun()
+            else:
+                st.info("No skills added yet.")
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # Right Side: Category Manager & Add Skill Form
+        with col_right:
+            # Manage Categories Box
+            st.markdown('<div class="admin-card">', unsafe_allow_html=True)
+            st.markdown('<div class="admin-section-title">🏷️ Manage Categories</div>', unsafe_allow_html=True)
+            
+            # Show existing categories with delete option
+            st.write("**Current Categories:**")
+            for cat in existing_categories:
+                c_col1, c_col2 = st.columns([4, 1])
+                c_col1.write(f"• {cat}")
+                # Prevent deleting 'General' or categories currently assigned to active skills
+                if cat != "General":
+                    skills_in_cat = [s for s in skills if s.get("category") == cat]
+                    if c_col2.button("❌", key=f"del_cat_{cat}"):
+                        if skills_in_cat:
+                            st.warning(f"Cannot delete '{cat}'. First delete or reassign skills under this category.")
+                        else:
+                            st.success(f"Category '{cat}' removed.")
+                            st.rerun()
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Quick Add New Category Form
+            with st.form("add_category_quick_form"):
+                new_cat_input = st.text_input("➕ Add New Category Name", placeholder="e.g. Cloud & DevOps")
+                if st.form_submit_button("Create Category"):
+                    if new_cat_input.strip():
+                        formatted_cat = new_cat_input.strip()
+                        if formatted_cat not in existing_categories:
+                            # Add a placeholder skill or simply refresh dropdown
+                            add_skill({"name": "Sample Skill", "category": formatted_cat, "level": "Intermediate", "display_order": 99})
+                            st.success(f"Category '{formatted_cat}' added successfully!")
+                            st.rerun()
+                        else:
+                            st.error("Category already exists.")
+                    else:
+                        st.error("Category name cannot be empty.")
+            st.markdown('</div>', unsafe_allow_html=True)
+
+            # Add New Skill Form with Dynamic Category Dropdown
+            st.markdown('<div class="admin-card">', unsafe_allow_html=True)
+            st.markdown('<div class="admin-section-title">✨ Add New Skill</div>', unsafe_allow_html=True)
+            with st.form("add_skill_form"):
+                sk_name = st.text_input("Skill Name", placeholder="e.g. Python, Docker")
                 
-        st.write("---")
-        st.write("**Add New Skill**")
-        with st.form("add_skill_form"):
-            sk_name = st.text_input("Skill Name")
-            sk_cat = st.text_input("Category")
-            sk_level = st.selectbox("Level", ["Beginner", "Intermediate", "Advanced"], index=1)
-            sk_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Skill"):
-                if sk_name and sk_cat:
-                    add_skill({"name": sk_name, "category": sk_cat, "level": sk_level, "display_order": sk_order})
-                    st.success("Skill added.")
-                    st.rerun()
+                # Dynamic Category Selectbox
+                sk_cat = st.selectbox("Choose Category", existing_categories)
+                
+                sk_level = st.selectbox("Proficiency Level", ["Beginner", "Intermediate", "Advanced"], index=1)
+                sk_order = st.number_input("Display Order", value=1, min_value=1)
+                
+                if st.form_submit_button("⚡ Add Skill Now", use_container_width=True):
+                    if sk_name.strip():
+                        add_skill({"name": sk_name.strip(), "category": sk_cat, "level": sk_level, "display_order": sk_order})
+                        st.success(f"Skill '{sk_name}' added to category '{sk_cat}'.")
+                        st.rerun()
+                    else:
+                        st.error("Please enter a skill name.")
+            st.markdown('</div>', unsafe_allow_html=True)
 
     # --- Projects Tab ---
     with tabs[2]:
         st.subheader("Manage Projects")
         projects = get_projects()
-        for p in projects:
-            cols = st.columns([4, 2, 1])
-            cols[0].write(f"**{p['title']}** ({p['category']})")
-            cols[1].write(f"Order: {p.get('display_order', 1)}")
-            if cols[2].button("🗑️", key=f"del_proj_{p['id']}"):
-                delete_project(p["id"])
-                st.rerun()
+        if projects:
+            for p in projects:
+                cols = st.columns([4, 2, 1])
+                cols[0].write(f"**{p['title']}** ({p['category']})")
+                cols[1].write(f"Order: {p.get('display_order', 1)}")
+                if cols[2].button("🗑️", key=f"del_proj_{p['id']}"):
+                    delete_project(p["id"])
+                    st.rerun()
+        else:
+            st.info("No projects added yet.")
                 
-        st.write("---")
-        st.write("**Add New Project**")
+        st.markdown("---")
+        st.markdown("### ➕ Add New Project")
         with st.form("add_proj_form"):
-            p_title = st.text_input("Project Title")
-            p_cat = st.selectbox("Category", ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping"])
-            p_desc = st.text_area("Short Description")
-            p_tech = st.text_input("Technologies (comma separated)")
-            p_gh = st.text_input("GitHub URL")
-            p_demo = st.text_input("Demo URL")
-            p_feat = st.checkbox("Featured Project", value=False)
-            p_order = st.number_input("Display Order", value=1)
+            col_p1, col_p2 = st.columns(2)
+            with col_p1:
+                p_title = st.text_input("Project Title")
+                p_cat = st.selectbox("Category", ["Data Analysis", "Machine Learning", "Deep Learning", "Web Scraping", "Full-Stack"])
+                p_desc = st.text_area("Short Description")
+                p_tech = st.text_input("Technologies (comma separated)")
+                p_gh = st.text_input("GitHub URL")
+                p_demo = st.text_input("Demo URL")
             
-            p_overview = st.text_area("Overview")
-            p_problem = st.text_area("Problem Statement")
-            p_dataset = st.text_area("Dataset Details")
-            p_approach = st.text_area("Approach")
-            p_results = st.text_area("Results")
+            with col_p2:
+                p_feat = st.checkbox("Featured Project", value=False)
+                p_order = st.number_input("Display Order", value=1)
+                p_overview = st.text_area("Overview")
+                p_problem = st.text_area("Problem Statement")
+                p_dataset = st.text_area("Dataset Details")
+                p_approach = st.text_area("Approach & Methodology")
+                p_results = st.text_area("Results")
             
-            if st.form_submit_button("Add Project"):
+            if st.form_submit_button("🚀 Add Project", use_container_width=True):
                 if p_gh and not is_valid_url(p_gh):
                     st.error("Invalid GitHub URL.")
                 elif p_demo and not is_valid_url(p_demo):
@@ -1311,7 +1420,7 @@ def render_admin():
                         "problem": p_problem, "dataset": p_dataset, "approach": p_approach,
                         "results": p_results
                     })
-                    st.success("Project added.")
+                    st.success("Project added successfully.")
                     st.rerun()
 
     # --- Services Tab ---
@@ -1325,13 +1434,13 @@ def render_admin():
                 delete_service(srv["id"])
                 st.rerun()
                 
-        st.write("---")
+        st.markdown("---")
         with st.form("add_srv_form"):
             s_title = st.text_input("Service Title")
             s_desc = st.text_area("Service Description")
             s_items = st.text_area("Service Items (one per line)")
             s_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Service"):
+            if st.form_submit_button("➕ Add Service"):
                 items_list = [i.strip() for i in s_items.split("\n") if i.strip()]
                 add_service({"title": s_title, "description": s_desc, "items": items_list, "display_order": s_order, "active": True})
                 st.success("Service added.")
@@ -1348,7 +1457,7 @@ def render_admin():
                 delete_experience(e["id"])
                 st.rerun()
                 
-        st.write("---")
+        st.markdown("---")
         with st.form("add_exp_form"):
             e_pos = st.text_input("Position")
             e_org = st.text_input("Organization")
@@ -1356,7 +1465,7 @@ def render_admin():
             e_end = st.text_input("End Date")
             e_desc = st.text_area("Description")
             e_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Experience"):
+            if st.form_submit_button("➕ Add Experience"):
                 add_experience({"position": e_pos, "organization": e_org, "start_date": e_start, "end_date": e_end, "description": e_desc, "display_order": e_order})
                 st.success("Experience added.")
                 st.rerun()
@@ -1372,12 +1481,12 @@ def render_admin():
                 delete_learning_item(item["id"])
                 st.rerun()
                 
-        st.write("---")
+        st.markdown("---")
         with st.form("add_learn_form"):
             l_title = st.text_input("Title")
             l_desc = st.text_area("Description")
             l_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Learning Item"):
+            if st.form_submit_button("➕ Add Learning Item"):
                 add_learning_item({"title": l_title, "description": l_desc, "display_order": l_order})
                 st.success("Learning item added.")
                 st.rerun()
@@ -1394,18 +1503,16 @@ def render_admin():
                 delete_social_link(soc["id"])
                 st.rerun()
                 
-        st.write("---")
+        st.markdown("---")
         with st.form("add_soc_form"):
             sc_plat = st.text_input("Platform")
             sc_lbl = st.text_input("Label")
             sc_url = st.text_input("URL")
             sc_order = st.number_input("Display Order", value=1)
-            if st.form_submit_button("Add Social Link"):
+            if st.form_submit_button("➕ Add Social Link"):
                 add_social_link({"platform": sc_plat, "label": sc_lbl, "url": sc_url, "display_order": sc_order, "active": True})
                 st.success("Social link added.")
-                st.rerun()
-
-# ==========================================
+                st.rerun()# ==========================================
 # MAIN APP (UPDATED & SAFE NAVIGATION)
 # ==========================================
 def main():
