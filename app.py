@@ -1107,7 +1107,6 @@ def main():
 
     pages = {
         "Home": render_home,
-        "About": render_about,
         "Skills": render_skills,
         "Projects": render_projects,
         "Services": render_services,
