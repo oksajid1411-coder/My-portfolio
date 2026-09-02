@@ -832,12 +832,10 @@ def render_admin():
                 st.rerun()
 
 # ==========================================
-# MAIN APP
+# MAIN APP (UPDATED & SAFE NAVIGATION)
 # ==========================================
 def main():
-    if "nav" not in st.session_state:
-        st.session_state["nav"] = "Home"
-
+    # 1. Page Dictionary Definition (About সরানো হয়েছে কারণ তা Home-এ সংযুক্ত)
     pages = {
         "Home": render_home,
         "Skills": render_skills,
@@ -848,10 +846,24 @@ def main():
         "Admin": render_admin
     }
 
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.radio("Go to", list(pages.keys()), index=list(pages.keys()).index(st.session_state["nav"]))
-    st.session_state["nav"] = selection
+    # 2. Navigation State Initialization & Validation
+    if "nav" not in st.session_state or st.session_state["nav"] not in pages:
+        st.session_state["nav"] = "Home"
 
+    # 3. Safe Index Calculation
+    page_keys = list(pages.keys())
+    current_index = page_keys.index(st.session_state["nav"])
+
+    # 4. Sidebar Radio
+    st.sidebar.title("Navigation")
+    selection = st.sidebar.radio(
+        "Go to", 
+        page_keys, 
+        index=current_index
+    )
+    
+    # 5. Update State & Render Page
+    st.session_state["nav"] = selection
     pages[selection]()
 
 if __name__ == "__main__":
