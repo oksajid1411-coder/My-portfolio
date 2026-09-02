@@ -15,6 +15,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+st.markdown(
+    '<meta name="google-site-verification" content="pGuh741_Y7EMkFFGYXcLStLdjI02nsOlbVrxw6eWcYU" />',
+    unsafe_allow_html=True
+)
 # ==========================================
 # SUPABASE CONNECTION
 # ==========================================
