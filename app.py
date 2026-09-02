@@ -663,57 +663,170 @@ def render_skills():
                     <span class="level-badge {badge_class}">{skill['level']}</span>
                 </div>
                 """, unsafe_allow_html=True)
+
+
 # ==========================================
-# PROJECTS PAGE
+# PROJECTS PAGE (ENHANCED & ANIMATED)
 # ==========================================
 def render_projects():
-    st.title("Projects")
+    st.title("🚀 Featured Projects")
     projects = get_projects()
     
     if not projects:
         st.info("No projects available.")
         return
 
-    search = st.text_input("🔍 Search Projects", "")
-    categories = ["All"] + list(set([p["category"] for p in projects]))
-    selected_cat = st.selectbox("Category Filter", categories)
+    # --------------------------------------
+    # CUSTOM CSS FOR ANIMATED PROJECT CARDS
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        .project-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 35px 0 rgba(59, 130, 246, 0.2);
+        }
+        .project-title {
+            color: #f8fafc;
+            font-size: 1.4em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .star-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+        }
+        .tech-tag {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white !important;
+            text-decoration: none !important;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background 0.2s ease;
+        }
+        .action-link:hover {
+            background: #1d4ed8;
+        }
+        .action-link-secondary {
+            background: #334155;
+            color: #f8fafc !important;
+        }
+        .action-link-secondary:hover {
+            background: #475569;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # SEARCH & CATEGORY FILTER
+    # --------------------------------------
+    col_search, col_cat = st.columns([2, 1])
+    
+    with col_search:
+        search = st.text_input("🔍 Search Projects", "", placeholder="Search by title or description...")
+        
+    with col_cat:
+        categories = ["All Categories"] + sorted(list(set([p["category"] for p in projects])))
+        selected_cat = st.selectbox("🎯 Category Filter", categories)
     
     filtered = projects
-    if selected_cat != "All":
+    if selected_cat != "All Categories":
         filtered = [p for p in filtered if p["category"] == selected_cat]
     if search:
         filtered = [p for p in filtered if search.lower() in p["title"].lower() or search.lower() in p["description"].lower()]
 
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if not filtered:
+        st.warning("No projects match your search criteria.")
+        return
+
+    # --------------------------------------
+    # RENDER PROJECT CARDS
+    # --------------------------------------
     for proj in filtered:
-        with st.container():
-            st.markdown(f"""
-            <div class="custom-card">
-                <h3>{proj['title']} {'⭐' if proj.get('featured') else ''}</h3>
-                <span class="badge">{proj['category']}</span>
-                <p>{proj['description']}</p>
-                <p><strong>Technologies:</strong> {proj.get('technologies', 'N/A')}</p>
+        featured_html = '<span class="star-badge">⭐ Featured</span>' if proj.get('featured') else ''
+        
+        # Format Technologies into visual badges
+        tech_list = proj.get('technologies', '').split(',')
+        tech_badges = "".join([f'<span class="tech-tag">{t.strip()}</span>' for t in tech_list if t.strip()])
+        
+        st.markdown(f"""
+        <div class="project-card">
+            <div class="project-title">
+                <span>{proj['title']}</span>
+                {featured_html}
             </div>
-            """, unsafe_allow_html=True)
+            <div style="margin-bottom: 12px;">
+                <span class="glow-badge">{proj['category']}</span>
+            </div>
+            <p style="color:#cbd5e1; font-size:0.98em; line-height:1.5;">{proj['description']}</p>
+            <div style="margin-top: 15px;">
+                <strong style="color:#94a3b8; font-size:0.88em; display:block; margin-bottom:6px;">TECHNOLOGIES:</strong>
+                {tech_badges if tech_badges else '<span style="color:#64748b;">N/A</span>'}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Details & Links inside Expander
+        with st.expander("📄 View Full Project Breakdown & Links"):
+            if proj.get("overview"):
+                st.markdown(f"**📌 Overview:** {proj['overview']}")
+            if proj.get("problem"):
+                st.markdown(f"**🎯 Problem Statement:** {proj['problem']}")
+            if proj.get("dataset"):
+                st.markdown(f"**📊 Dataset:** {proj['dataset']}")
+            if proj.get("approach"):
+                st.markdown(f"**⚙️ Methodology & Approach:** {proj['approach']}")
+            if proj.get("results"):
+                st.markdown(f"**📈 Key Results:** {proj['results']}")
+                
+            st.markdown("<br>", unsafe_allow_html=True)
             
-            with st.expander("📄 View Details"):
-                if proj.get("overview"):
-                    st.write(f"**Overview:** {proj['overview']}")
-                if proj.get("problem"):
-                    st.write(f"**Problem:** {proj['problem']}")
-                if proj.get("dataset"):
-                    st.write(f"**Dataset:** {proj['dataset']}")
-                if proj.get("approach"):
-                    st.write(f"**Approach:** {proj['approach']}")
-                if proj.get("results"):
-                    st.write(f"**Results:** {proj['results']}")
-                    
-                c1, c2 = st.columns(2)
-                with c1:
-                    if proj.get("github_url"):
-                        st.markdown(f"[🔗 GitHub Repository]({proj['github_url']})")
-                with c2:
-                    if proj.get("demo_url"):
-                        st.markdown(f"[🚀 Live Demo]({proj['demo_url']})")
+            # Action Button Links
+            btn_col1, btn_col2, _ = st.columns([1, 1, 2])
+            with btn_col1:
+                if proj.get("github_url"):
+                    st.markdown(f'<a href="{proj["github_url"]}" target="_blank" class="action-link action-link-secondary">🔗 GitHub Repository</a>', unsafe_allow_html=True)
+            with btn_col2:
+                if proj.get("demo_url"):
+                    st.markdown(f'<a href="{proj["demo_url"]}" target="_blank" class="action-link">🚀 Live Demo</a>', unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        
 
 # ==========================================
 # SERVICES PAGE
