@@ -240,6 +240,27 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
+st.markdown("""
+    <style>
+    /* Main App Background & Text */
+    .stApp, [data-testid="stHeader"], [data-testid="stSidebar"] {
+        background-color: #0F172A !important;
+        color: #F8FAFC !important;
+    }
+    
+    /* Force inputs, containers and cards to remain dark */
+    div[data-baseweb="input"], div[data-baseweb="select"], .stTextArea textarea {
+        background-color: #1E293B !important;
+        color: #F8FAFC !important;
+    }
+    
+    /* Hide Streamlit Theme Toggle / Menu options if needed */
+    div[data-testid="stToolbar"] {
+        visibility: hidden;
+    }
+    </style>
+""", unsafe_allow_html=True)
 # ==========================================
 # HOME PAGE
 # ==========================================
