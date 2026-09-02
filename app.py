@@ -230,115 +230,235 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 # ==========================================
-# HOME PAGE
+# HOME PAGE 
 # ==========================================
 def render_home():
     profile = get_profile()
     
-    col1, col2 = st.columns([1, 2], gap="large")
+    # --------------------------------------
+    # CUSTOM ADVANCED CSS FOR ANIMATIONS & UI
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        /* Modern Glassmorphism Card Style */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #93C5FD 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* Glowing Badges */
+        .glow-badge {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: #93c5fd;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82em;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.2s ease;
+        }
+        .glow-badge:hover {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Animated Pipeline Flowchart */
+        .pipeline-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+        }
+        .pipeline-node {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-align: center;
+            flex: 1;
+            min-width: 130px;
+            transition: all 0.3s ease;
+        }
+        .pipeline-node:hover {
+            border-color: #3b82f6;
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+        .pipeline-arrow {
+            color: #3b82f6;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Profile Image Hover Zoom */
+        .profile-img-container img {
+            border-radius: 20px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+        .profile-img-container img:hover {
+            transform: scale(1.02);
+            border-color: #3b82f6;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # HERO & ABOUT INTEGRATED SECTION
+    # --------------------------------------
+    hero_col1, hero_col2 = st.columns([1, 2], gap="large")
     
-    with col1:
+    with hero_col1:
+        st.markdown('<div class="profile-img-container">', unsafe_allow_html=True)
         img_url = profile.get("profile_image", "")
         if img_url:
             st.image(img_url, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
             
-    with col2:
-        st.title(profile.get("name", "MD. Omar Kamran Chy"))
-        st.subheader(profile.get("title", ""))
-        st.write("📍 " + profile.get("location", "Chattogram, Bangladesh"))
-        st.markdown(f"*{profile.get('bio', '')}*")
+    with hero_col2:
+        name = profile.get("name", "MD. Omar Kamran Chy")
+        title = profile.get("title", "Data Scientist & ML Engineer")
+        location = profile.get("location", "Chattogram, Bangladesh")
+        email = profile.get("email", "")
+        bio = profile.get("bio", "")
+
+        st.markdown(f"<h1 style='margin-bottom:0px;'><span class='gradient-text'>{name}</span></h1>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='color: #94a3b8; margin-top:5px; font-weight:500;'>{title}</h3>", unsafe_allow_html=True)
+        st.markdown(f"📍 **Location:** {location} &nbsp;|&nbsp; ✉️ **Email:** [{email}](mailto:{email})")
         
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            if st.button("📁 View Projects"):
+        st.markdown("---")
+        st.markdown(f"<p style='font-size:1.05em; line-height:1.6; color:#cbd5e1;'>{bio}</p>", unsafe_allow_html=True)
+        
+        # Action Buttons
+        btn_c1, btn_c2, btn_c3 = st.columns([1, 1, 1])
+        with btn_c1:
+            if st.button("📁 Explore Projects", use_container_width=True):
                 st.session_state["nav"] = "Projects"
                 st.rerun()
-        with c2:
-            if st.button("✉️ Contact Me"):
+        with btn_c2:
+            if st.button("✉️ Get In Touch", use_container_width=True):
                 st.session_state["nav"] = "Contact"
                 st.rerun()
-        with c3:
-            st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue)]({profile.get('email', '')})")
+        with btn_c3:
+            st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue?style=for-the-badge&logo=github)]({email})")
 
-    st.markdown("---")
-    st.header("Core Expertise")
-    
-    col_a, col_b, col_c = st.columns(3)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # STATS COUNTER METRICS
+    # --------------------------------------
+    sc1, sc2, sc3, sc4 = st.columns(4)
+    sc1.metric("Experience", f"{profile.get('experience_years', 1)}+ Year")
+    sc2.metric("Primary Stack", "Python Ecosystem")
+    sc3.metric("Core Focus", "Data + ML + DL")
+    sc4.metric("Status", "Open to Opportunities")
+
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # CORE EXPERTISE SECTION
+    # --------------------------------------
+    st.markdown("## ⚡ Core Expertise")
+    col_a, col_b, col_c = st.columns(3, gap="medium")
     
     with col_a:
         st.markdown("""
-        <div class="custom-card">
-            <h3>📊 Data Analysis</h3>
-            <p>Cleaning, processing, and evaluating dataset structures for business context.</p>
-            <span class="badge">Data Cleaning</span>
-            <span class="badge">EDA</span>
-            <span class="badge">Visualization</span>
-            <span class="badge">Statistical Analysis</span>
+        <div class="glass-card">
+            <h3 style="margin-top:0;">📊 Data Analysis</h3>
+            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Transforming raw datasets into actionable insights with robust cleaning and statistical modeling.</p>
+            <div>
+                <span class="glow-badge">Data Cleaning</span>
+                <span class="glow-badge">EDA</span>
+                <span class="glow-badge">Visualization</span>
+                <span class="glow-badge">Statistics</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col_b:
         st.markdown("""
-        <div class="custom-card">
-            <h3>🤖 Machine Learning</h3>
-            <p>Designing predictive, classification, and clustering workflow pipelines.</p>
-            <span class="badge">Regression</span>
-            <span class="badge">Classification</span>
-            <span class="badge">Feature Eng.</span>
-            <span class="badge">Evaluation</span>
+        <div class="glass-card">
+            <h3 style="margin-top:0;">🤖 Machine Learning</h3>
+            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Building predictive models, classification pipelines, and advanced feature engineering solutions.</p>
+            <div>
+                <span class="glow-badge">Regression</span>
+                <span class="glow-badge">Classification</span>
+                <span class="glow-badge">Feature Eng.</span>
+                <span class="glow-badge">Evaluation</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_c:
         st.markdown("""
-        <div class="custom-card">
-            <h3>🧠 Deep Learning</h3>
-            <p>Building neural networks and computer vision solutions.</p>
-            <span class="badge">Neural Networks</span>
-            <span class="badge">CNN</span>
-            <span class="badge">Image Class.</span>
-            <span class="badge">TensorFlow/PyTorch</span>
+        <div class="glass-card">
+            <h3 style="margin-top:0;">🧠 Deep Learning</h3>
+            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Designing neural network architectures, computer vision pipelines, and deep models.</p>
+            <div>
+                <span class="glow-badge">Neural Networks</span>
+                <span class="glow-badge">CNN</span>
+                <span class="glow-badge">Computer Vision</span>
+                <span class="glow-badge">PyTorch/TF</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
-        
-    st.markdown("---")
-    st.header("Quick Stats")
-    sc1, sc2, sc3 = st.columns(3)
-    sc1.metric("Experience", f"{profile.get('experience_years', 1)}+ Year")
-    sc2.metric("Primary Stack", "Python Ecosystem")
-    sc3.metric("Domains", "Data + ML + DL")
 
-# ==========================================
-# ABOUT PAGE
-# ==========================================
-def render_about():
-    profile = get_profile()
-    st.title("About Me")
-    
-    col1, col2 = st.columns([1, 2], gap="large")
-    with col1:
-        if profile.get("profile_image"):
-            st.image(profile["profile_image"], use_container_width=True)
-    with col2:
-        st.subheader(profile.get("name", ""))
-        st.write(f"**Title:** {profile.get('title', '')}")
-        st.write(f"**Location:** {profile.get('location', '')}")
-        st.write(f"**Experience:** {profile.get('experience_years', 1)} Year")
-        st.write(f"**Email:** {profile.get('email', '')}")
-        st.write("---")
-        st.write(profile.get("bio", ""))
-        
-    st.markdown("---")
-    st.header("My Analytical & Modeling Approach")
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # INTERACTIVE WORKFLOW PIPELINE
+    # --------------------------------------
+    st.markdown("## 🔄 Analytical & Modeling Workflow")
     st.markdown("""
-    ```
-    Data Collection  ➔  Data Cleaning  ➔  Exploratory Data Analysis
-                                                      │
-    Insights & Solution  ⬅  Model Evaluation  ⬅  ML/DL Modeling  ⬅  Feature Engineering
-    ```
-    """)
-
+    <div class="pipeline-container">
+        <div class="pipeline-node">📥 1. Collection</div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-node">🧹 2. Cleaning</div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-node">🔍 3. EDA</div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-node">⚙️ 4. Feature Eng.</div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-node">🤖 5. ML/DL Model</div>
+        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-node">🎯 6. Insights</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
 # ==========================================
 # SKILLS PAGE
 # ==========================================
@@ -720,7 +840,6 @@ def main():
 
     pages = {
         "Home": render_home,
-        "About": render_about,
         "Skills": render_skills,
         "Projects": render_projects,
         "Services": render_services,
