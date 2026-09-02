@@ -1192,12 +1192,51 @@ def render_contact():
                     """, unsafe_allow_html=True)
                     
         st.markdown('</div>', unsafe_allow_html=True)
-        
+
+# ==========================================
+# REVIEWS / TESTIMONIALS SYSTEM
+# ==========================================
+import streamlit as st
+from supabase import create_client, Client
+
+@st.cache_resource
+def get_supabase_client() -> Client:
+    """
+    Streamlit secrets (st.secrets) থেকে Supabase Credentials পড়ে
+    এবং কানেকশন তৈরি করে ক্লায়েন্ট রিটার্ন করে।
+    """
+    try:
+        # Streamlit Cloud Advanced Settings / secrets.toml থেকে ডাটা নেওয়া হচ্ছে
+        url = st.secrets["SUPABASE_URL"]
+        key = st.secrets["SUPABASE_KEY"]
+        return create_client(url, key)
+    except KeyError as e:
+        st.error(f"⚠️ Secrets missing: {e}. Please add SUPABASE_URL and SUPABASE_KEY in Secrets.")
+        return None
+    except Exception as e:
+        st.error(f"❌ Failed to connect to Supabase: {e}")
+        return None
+
+def render_reviews():
+    # ১. হেলপার ফাংশন দিয়ে ক্লায়েন্ট কল করা
+    supabase = get_supabase_client()
+    if not supabase:
+        return  # সিক্রেটস না থাকলে বা এরর হলে কোড আর এগোবে না
+
+    st.title("💬 Client Reviews & Testimonials")
+    
+    # ২. এরপর আপনার ডাটা কোয়েরি করবেন
+    try:
+        response = supabase.table("reviews").select("*").eq("is_approved", True).order("created_at", desc=True).execute()
+        approved_reviews = response.data
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
+
 # ==========================================
 # ADMIN PAGE (ENHANCED & DYNAMIC CATEGORIES)
 # ==========================================
 def render_admin():
-    st.title("🔒 Admin Control Panel")
+    st.title('🔒 Admin Control Panel')
     
     # --------------------------------------
     # CUSTOM CSS FOR GLASSMORPHISM ADMIN UI
@@ -1512,7 +1551,9 @@ def render_admin():
             if st.form_submit_button("➕ Add Social Link"):
                 add_social_link({"platform": sc_plat, "label": sc_lbl, "url": sc_url, "display_order": sc_order, "active": True})
                 st.success("Social link added.")
-                st.rerun()# ==========================================
+                st.rerun()
+                
+# ==========================================
 # MAIN APP (UPDATED & SAFE NAVIGATION)
 # ==========================================
 def main():
@@ -1524,6 +1565,7 @@ def main():
         "Services": render_services,
         "Experience": render_experience,
         "Contact": render_contact,
+        "Reviews":render_reviews,
         "Admin": render_admin
     }
 
