@@ -530,48 +530,139 @@ def render_home():
     st.markdown("""
     <div class="pipeline-container">
         <div class="pipeline-node">📥 1. Collection</div>
-        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-arrow">+</div>
         <div class="pipeline-node">🧹 2. Cleaning</div>
-        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-arrow">+</div>
         <div class="pipeline-node">🔍 3. EDA</div>
-        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-arrow">+</div>
         <div class="pipeline-node">⚙️ 4. Feature Eng.</div>
-        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-arrow">+</div>
         <div class="pipeline-node">🤖 5. ML/DL Model</div>
-        <div class="pipeline-arrow">➔</div>
+        <div class="pipeline-arrow">+</div>
         <div class="pipeline-node">🎯 6. Insights</div>
     </div>
     """, unsafe_allow_html=True)
     
 # ==========================================
-# SKILLS PAGE
+# SKILLS PAGE (ENHANCED & ANIMATED)
 # ==========================================
 def render_skills():
-    st.title("Technical Skills")
+    st.title("⚡ Technical Skills & Expertise")
     skills = get_skills()
     
     if not skills:
         st.info("No skills currently listed.")
         return
 
-    categories = list(set([s["category"] for s in skills]))
-    selected_cat = st.selectbox("Filter Category", ["All"] + categories)
-    
-    filtered_skills = skills if selected_cat == "All" else [s for s in skills if s["category"] == selected_cat]
+    # --------------------------------------
+    # ANIMATED SKILLS CSS
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        /* Modern Skill Glass Card */
+        .skill-card {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 20px;
+            height: 100%;
+        }
+        .skill-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        .skill-title {
+            color: #f8fafc;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        /* Dynamic Skill Level Badges */
+        .level-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.78em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .level-advanced {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .level-intermediate {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .level-beginner {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Category Header Line */
+        .category-header {
+            color: #60a5fa;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+            margin: 25px 0 15px 0;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+    </style>
+    """, unsafe_allow_html=True)
 
-    for cat in set([s["category"] for s in filtered_skills]):
-        st.subheader(cat)
+    # --------------------------------------
+    # CATEGORY FILTER
+    # --------------------------------------
+    categories = sorted(list(set([s["category"] for s in skills])))
+    
+    col_filter, _ = st.columns([1, 2])
+    with col_filter:
+        selected_cat = st.selectbox("🎯 Filter by Category", ["All Categories"] + categories)
+    
+    filtered_skills = skills if selected_cat == "All Categories" else [s for s in skills if s["category"] == selected_cat]
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # RENDER SKILLS BY CATEGORY
+    # --------------------------------------
+    display_cats = sorted(list(set([s["category"] for s in filtered_skills])))
+
+    for cat in display_cats:
+        st.markdown(f'<div class="category-header">{cat}</div>', unsafe_allow_html=True)
         cat_skills = [s for s in filtered_skills if s["category"] == cat]
+        
+        # Grid display (4 Columns)
         cols = st.columns(4)
         for idx, skill in enumerate(cat_skills):
+            # Dynamic badge class assignment based on skill level
+            level = skill.get('level', 'Intermediate').lower()
+            if 'adv' in level:
+                badge_class = "level-advanced"
+            elif 'beg' in level:
+                badge_class = "level-beginner"
+            else:
+                badge_class = "level-intermediate"
+
             with cols[idx % 4]:
                 st.markdown(f"""
-                <div class="custom-card" style="padding:15px; text-align:center;">
-                    <h4>{skill['name']}</h4>
-                    <span class="badge badge-secondary">{skill['level']}</span>
+                <div class="skill-card">
+                    <div class="skill-title">{skill['name']}</div>
+                    <span class="level-badge {badge_class}">{skill['level']}</span>
                 </div>
                 """, unsafe_allow_html=True)
-
 # ==========================================
 # PROJECTS PAGE
 # ==========================================
