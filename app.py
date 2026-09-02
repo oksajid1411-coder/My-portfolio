@@ -247,32 +247,114 @@ st.markdown("""
 def render_home():
     profile = get_profile()
     
-    # CSS Custom Styling for Animations & Cards
+    # Custom Modern CSS for Glassmorphism & Animations
     st.markdown("""
         <style>
-        .hero-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0px;
-            background: -webkit-linear-gradient(45deg, #FF4B4B, #FF8F8F);
+        .glass-hero-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            margin-bottom: 25px;
+        }
+        .animated-hero-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(-45deg, #FF4B4B, #FF8F8F, #6C5CE7, #00CEC9);
+            background-size: 300% 300%;
+            animation: gradientBG 6s ease infinite;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
         }
-        .profile-card {
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Workflow Container & Card Styles */
+        .workflow-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
             padding: 20px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            backdrop-filter: blur(5px);
-            transition: transform 0.3s ease;
+            margin: 20px 0;
         }
-        .profile-card:hover {
-            transform: translateY(-5px);
+        .flow-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding-top: 10px;
         }
-        .stButton>button {
-            border-radius: 20px;
+        .flow-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 10px 16px;
+            color: #F8FAFC;
             font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .flow-card:hover {
+            transform: translateY(-4px) scale(1.03);
+            border-color: #FF4B4B;
+            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.25);
+            background: rgba(255, 75, 75, 0.1);
+        }
+        .flow-arrow {
+            color: #FF4B4B;
+            font-size: 1.2rem;
+            font-weight: bold;
+            animation: pulse 1.8s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: translateX(0); opacity: 0.5; }
+            50% { transform: translateX(4px); opacity: 1; }
+            100% { transform: translateX(0); opacity: 0.5; }
+        }
+
+        /* Stats Cards */
+        .custom-stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+        .custom-stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #FF4B4B;
+            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.2);
+        }
+        .stat-title {
+            font-size: 0.85rem;
+            color: #B2BEC3;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 6px 0;
+        }
+        .stat-badge-tag {
+            display: inline-block;
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ECC71;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -281,8 +363,8 @@ def render_home():
         st.warning("No profile data found. Please add profile info from the Admin panel.")
         return
 
-    # --- HERO SECTION ---
-    st.markdown('<div class="profile-card">', unsafe_allow_html=True)
+    # 1. HERO SECTION
+    st.markdown('<div class="glass-hero-container">', unsafe_allow_html=True)
     col1, col2 = st.columns([1.2, 2], gap="large")
     
     with col1:
@@ -296,7 +378,7 @@ def render_home():
         name = profile.get("name", "MD. Omar Kamran Chy")
         title = profile.get("title", "Data Scientist & Developer")
         
-        st.markdown(f'<h1 class="hero-title">{name}</h1>', unsafe_allow_html=True)
+        st.markdown(f'<h1 class="animated-hero-title">{name}</h1>', unsafe_allow_html=True)
         st.subheader(title)
         
         location = profile.get("location", "")
@@ -307,13 +389,13 @@ def render_home():
         if bio:
             st.write(bio)
             
-        st.write("") # Spacer
+        st.write("") 
 
-        # CTA Buttons
+        # Call To Action Buttons
         btn_col1, btn_col2, btn_col3 = st.columns(3)
         with btn_col1:
             if st.button("🚀 View Projects", use_container_width=True):
-                st.session_state["nav_selection"] = "Projects" # আপনার নেভিগেশন স্টেটের নাম অনুযায়ী
+                st.session_state["nav_selection"] = "Projects"
                 st.rerun()
         with btn_col2:
             if st.button("📩 Contact Me", use_container_width=True):
@@ -326,91 +408,73 @@ def render_home():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.write("---")
-
-    # --- QUICK STATS SECTION ---
+    # 2. WORKFLOW SECTION (HOME PAGE WORKFLOW)
     st.markdown("""
-        <style>
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-3px);
-            border-color: #FF4B4B;
-            box-shadow: 0 4px 12px rgba(255, 75, 75, 0.2);
-        }
-        .stat-label {
-            font-size: 0.9rem;
-            color: #A0AAB0;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 8px;
-        }
-        .stat-badge {
-            display: inline-block;
-            background: rgba(46, 204, 113, 0.15);
-            color: #2ECC71;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-        </style>
+        <div class="workflow-box">
+            <h4 style="text-align: center; margin-bottom: 15px; color: #F8FAFC;">⚡ Analytical & Modeling Workflow</h4>
+            <div class="flow-container">
+                <div class="flow-card">📊 Data Collection</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card">🧹 Data Cleaning</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card">🔍 Exploratory EDA</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card">⚙️ Feature Engineering</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card">🤖 ML/DL Modeling</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card">📈 Model Evaluation</div>
+                <div class="flow-arrow">➔</div>
+                <div class="flow-card" style="border-color: #2ECC71;">💡 Insights & Solution</div>
+            </div>
+        </div>
     """, unsafe_allow_html=True)
 
-    # ১ম সারি: ৩টি কার্ড
+    st.write("---")
+
+    # 3. QUICK STATS SECTION
     col1, col2, col3 = st.columns(3)
 
     with col1:
         st.markdown("""
-            <div class="stat-card">
-                <div class="stat-label">Experience</div>
-                <div class="stat-value">1+ Years</div>
-                <div class="stat-badge">↑ Active Learner</div>
+            <div class="custom-stat-card">
+                <div class="stat-title">Experience</div>
+                <div class="stat-number">1+ Years</div>
+                <div class="stat-badge-tag">↑ Active Learner</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-            <div class="stat-card">
-                <div class="stat-label">Completed Projects</div>
-                <div class="stat-value">5+</div>
-                <div class="stat-badge">↑ Data & ML</div>
+            <div class="custom-stat-card">
+                <div class="stat-title">Completed Projects</div>
+                <div class="stat-number">10+</div>
+                <div class="stat-badge-tag">↑ Data & ML</div>
             </div>
         """, unsafe_allow_html=True)
 
     with col3:
         st.markdown("""
-            <div class="stat-card">
-                <div class="stat-label">Core Expertise</div>
-                <div class="stat-value">Data Analysis</div>
-                <div class="stat-badge">↑ Python | Pandas | Power BI</div>
+            <div class="custom-stat-card">
+                <div class="stat-title">Core Expertise</div>
+                <div class="stat-number">Data Analysis</div>
+                <div class="stat-badge-tag">↑ Python | Pandas | Power BI</div>
             </div>
         """, unsafe_allow_html=True)
 
-    # ২য় সারি: মাঝখানে ৪র্থ কার্ড
+    st.write("")
+
+    # 4th Center Card
     _, center_col, _ = st.columns([1, 2, 1])
 
     with center_col:
         st.markdown("""
-            <div class="stat-card">
-                <div class="stat-label">Other Expertise</div>
-                <div class="stat-value">ML & DL</div>
-                <div class="stat-badge">↑ Tensorflow | PyTorch | SKLearn</div>
+            <div class="custom-stat-card">
+                <div class="stat-title">Other Expertise</div>
+                <div class="stat-number">ML & DL</div>
+                <div class="stat-badge-tag">↑ Tensorflow | PyTorch | SKLearn</div>
             </div>
         """, unsafe_allow_html=True)
-
 #===========================================
 # ABOUT PAGE
 # ==========================================
