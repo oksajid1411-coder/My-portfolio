@@ -409,7 +409,10 @@ def render_home():
                 <div class="stat-value">ML & DL</div>
                 <div class="stat-badge">↑ Tensorflow | PyTorch | SKLearn</div>
             </div>
-        """, unsafe_allow_html=True)# ABOUT PAGE
+        """, unsafe_allow_html=True)
+
+#===========================================
+# ABOUT PAGE
 # ==========================================
 def render_about():
     profile = get_profile()
@@ -429,16 +432,75 @@ def render_about():
         st.write(profile.get("bio", ""))
         
     st.markdown("---")
-    st.header("My Analytical & Modeling Approach")
-    st.markdown("""
-    ```
-    Data Collection  ➔  Data Cleaning  ➔  Exploratory Data Analysis
-                                                      │
-    Insights & Solution  ⬅  Model Evaluation  ⬅  ML/DL Modeling  ⬅  Feature Engineering
-    ```
-    """)
+st.subheader("My Analytical & Modeling Approach")
 
-# ==========================================
+# Animated Flowchart CSS & HTML
+st.markdown("""
+    <style>
+    /* Container Styling */
+    .flow-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 20px 10px;
+        margin-top: 10px;
+    }
+
+    /* Process Card Styling */
+    .flow-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px 18px;
+        color: #F8FAFC;
+        font-weight: 600;
+        font-size: 0.9rem;
+        backdrop-filter: blur(8px);
+        transition: all 0.35s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hover Glow Animation */
+    .flow-card:hover {
+        transform: translateY(-5px) scale(1.03);
+        border-color: #3B82F6;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+        background: rgba(59, 130, 246, 0.15);
+    }
+
+    /* Animated Arrow Styling */
+    .flow-arrow {
+        color: #3B82F6;
+        font-size: 1.3rem;
+        font-weight: bold;
+        animation: pulse 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% { transform: translateX(0); opacity: 0.6; }
+        50% { transform: translateX(4px); opacity: 1; }
+        100% { transform: translateX(0); opacity: 0.6; }
+    }
+    </style>
+
+    <div class="flow-container">
+        <div class="flow-card">📊 Data Collection</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card">🧹 Data Cleaning</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card">🔍 Exploratory EDA</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card">⚙️ Feature Engineering</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card">🤖 ML/DL Modeling</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card">📈 Model Evaluation</div>
+        <div class="flow-arrow">➔</div>
+        <div class="flow-card" style="border-color: #2ECC71;">💡 Insights & Solution</div>
+    </div>
+""", unsafe_allow_html=True)# ==========================================
 # SKILLS PAGE
 # ==========================================
 def render_skills():
