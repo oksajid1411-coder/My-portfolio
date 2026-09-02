@@ -827,26 +827,98 @@ def render_projects():
 
         st.markdown("<br>", unsafe_allow_html=True)
         
-
 # ==========================================
-# SERVICES PAGE
+# SERVICES PAGE (ENHANCED & ANIMATED)
 # ==========================================
 def render_services():
-    st.title("Services")
+    st.title("💼 Services & Solutions")
     services = get_services()
     
     active_services = [s for s in services if s.get("active", True)]
     
-    for srv in active_services:
-        st.markdown(f"""
-        <div class="custom-card">
-            <h3>{srv['title']}</h3>
-            <p>{srv['description']}</p>
-            <ul>
-                {''.join([f'<li>{item}</li>' for item in srv.get('items', [])])}
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
+    if not active_services:
+        st.info("No active services available at the moment.")
+        return
+
+    # --------------------------------------
+    # CUSTOM CSS FOR ANIMATED SERVICE CARDS
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        .service-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+        }
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 35px 0 rgba(59, 130, 246, 0.25);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        .service-title {
+            color: #f8fafc;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .service-desc {
+            color: #94a3b8;
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .service-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .service-list li {
+            color: #cbd5e1;
+            font-size: 0.9em;
+            padding: 6px 0;
+            position: relative;
+            padding-left: 22px;
+        }
+        .service-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #60a5fa;
+            font-weight: bold;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # RENDER SERVICES IN 2-COLUMN GRID
+    # --------------------------------------
+    cols = st.columns(2)
+    
+    for idx, srv in enumerate(active_services):
+        items_html = "".join([f'<li>{item}</li>' for item in srv.get('items', [])])
+        
+        with cols[idx % 2]:
+            st.markdown(f"""
+            <div class="service-card">
+                <div class="service-title">⚡ {srv['title']}</div>
+                <div class="service-desc">{srv['description']}</div>
+                <ul class="service-list">
+                    {items_html}
+                </ul>
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
+
 
 # ==========================================
 # EXPERIENCE PAGE
