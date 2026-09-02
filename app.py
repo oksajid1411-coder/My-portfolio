@@ -921,32 +921,143 @@ def render_services():
 
 
 # ==========================================
-# EXPERIENCE PAGE
+# EXPERIENCE PAGE (ENHANCED & ANIMATED)
 # ==========================================
 def render_experience():
-    st.title("Experience & Learning Journey")
+    st.title("💼 Experience & Learning Journey")
     
-    st.subheader("Professional Experience")
-    exps = get_experience()
-    for exp in exps:
-        st.markdown(f"""
-        <div class="timeline-item">
-            <h4>{exp['position']} - {exp['organization']}</h4>
-            <p><em>{exp['start_date']} - {exp['end_date']}</em></p>
-            <p>{exp['description']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    # --------------------------------------
+    # CUSTOM TIMELINE CSS FOR ANIMATIONS
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        /* Timeline Container */
+        .timeline-wrapper {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 30px;
+        }
+        
+        /* Vertical Glowing Line */
+        .timeline-wrapper::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #3b82f6 0%, rgba(59, 130, 246, 0.2) 100%);
+            border-radius: 2px;
+        }
 
-    st.markdown("---")
-    st.subheader("Learning Journey Timeline")
+        /* Glassmorphism Timeline Card */
+        .timeline-card {
+            position: relative;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .timeline-card:hover {
+            transform: translateX(6px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        /* Animated Timeline Node Dot */
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 24px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #2563eb;
+            border: 3px solid #0f172a;
+            box-shadow: 0 0 10px #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .timeline-card:hover::before {
+            background: #60a5fa;
+            box-shadow: 0 0 15px #60a5fa;
+            transform: scale(1.2);
+        }
+
+        .exp-role {
+            color: #f8fafc;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .exp-org {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .exp-date {
+            color: #94a3b8;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(148, 163, 184, 0.1);
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .exp-desc {
+            color: #cbd5e1;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin: 0;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # PROFESSIONAL EXPERIENCE SECTION
+    # --------------------------------------
+    st.markdown("### 🏢 Professional Experience")
+    exps = get_experience()
+    
+    if exps:
+        st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
+        for exp in exps:
+            st.markdown(f"""
+            <div class="timeline-card">
+                <div class="exp-role">{exp['position']} &nbsp;•&nbsp; <span class="exp-org">{exp['organization']}</span></div>
+                <div class="exp-date">🗓️ {exp['start_date']} - {exp['end_date']}</div>
+                <p class="exp-desc">{exp['description']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.info("No professional experience listed.")
+
+    st.markdown("<br><hr><br>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # LEARNING JOURNEY TIMELINE
+    # --------------------------------------
+    st.markdown("### 🎓 Learning Journey Timeline")
     journey = get_learning_journey()
-    for item in journey:
-        st.markdown(f"""
-        <div class="timeline-item">
-            <h4>{item['title']}</h4>
-            <p>{item['description']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    
+    if journey:
+        st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
+        for item in journey:
+            st.markdown(f"""
+            <div class="timeline-card">
+                <div class="exp-role">{item['title']}</div>
+                <p class="exp-desc">{item['description']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.info("No learning journey timeline listed.")
 
 # ==========================================
 # CONTACT PAGE
