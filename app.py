@@ -362,7 +362,7 @@ def render_home():
     
     with hero_col1:
         st.markdown('<div class="profile-img-container">', unsafe_allow_html=True)
-        img_url = "https://github.com/oksajid1411-coder/My-portfolio/blob/master/sajid_imag.jpg"
+        img_url = "https://raw.githubusercontent.com/oksajid1411-coder/My-portfolio/master/sajid_imag.jpg"
         if img_url:
             st.image(img_url, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
