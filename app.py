@@ -466,7 +466,7 @@ def render_home():
     with sc2:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-label">Primary Stack</div>
+            <div class="metric-label">Core Focus</div>
             <div class="metric-value">Data Analysis</div>
         </div>
         """, unsafe_allow_html=True)
@@ -474,8 +474,8 @@ def render_home():
     with sc3:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-label">Core Focus</div>
-            <div class="metric-value">Data + ML + DL</div>
+            <div class="metric-label">Primary Stack</div>
+            <div class="metric-value">ML & DL</div>
         </div>
         """, unsafe_allow_html=True)
 
