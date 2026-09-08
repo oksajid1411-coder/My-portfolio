@@ -253,104 +253,205 @@ st.markdown("""
 # HOME PAGE 
 # ==========================================
 def render_home():
-    profile = get_profile()
-    
+    profile = get_profile() or {}
+
     # --------------------------------------
-    # CUSTOM ADVANCED CSS FOR ANIMATIONS & UI
+    # MODERN ULTRA-PREMIUM CSS
     # --------------------------------------
     st.markdown("""
     <style>
-        /* Modern Glassmorphism Card Style */
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.2);
+        /* ---------------- Global Animations ---------------- */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
         
-        /* Animated Gradient Text */
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ---------------- Glassmorphism Card Style ---------------- */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* ---------------- Animated Gradient Text ---------------- */
         .gradient-text {
-            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #93C5FD 100%);
+            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 40%, #a855f7 80%, #3b82f6 100%);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
+            animation: gradient-shift 6s ease infinite;
         }
 
-        /* Glowing Badges */
+        /* ---------------- Modern Badges ---------------- */
         .glow-badge {
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            background: rgba(30, 58, 138, 0.3);
             color: #93c5fd;
             padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.82em;
+            border-radius: 30px;
+            font-size: 0.8em;
             font-weight: 600;
             display: inline-block;
-            margin-right: 8px;
+            margin-right: 6px;
             margin-bottom: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            transition: all 0.2s ease;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.3px;
         }
+        
         .glow-badge:hover {
             background: #2563eb;
             color: #ffffff;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+            border-color: #60a5fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
         }
 
-        /* Animated Pipeline Flowchart */
+        /* ---------------- Metric Cards ---------------- */
+        .metric-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.15);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .metric-label {
+            font-size: 0.78em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.3em;
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        /* Real Pulsing Dot */
+        .status-badge {
+            color: #4ade80;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            height: 9px;
+            width: 9px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-glow 2s infinite;
+        }
+
+        /* ---------------- Animated Workflow Pipeline ---------------- */
         .pipeline-container {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 12px;
-            border: 1px dashed rgba(59, 130, 246, 0.3);
+            gap: 12px;
+            margin: 24px 0;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
         }
+
         .pipeline-node {
-            background: #1e293b;
-            border: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: #f8fafc;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.88em;
             text-align: center;
             flex: 1;
             min-width: 130px;
-            transition: all 0.3s ease;
-        }
-        .pipeline-node:hover {
-            border-color: #3b82f6;
-            background: #2563eb;
-            transform: scale(1.05);
-        }
-        .pipeline-arrow {
-            color: #3b82f6;
-            font-size: 1.2em;
-            font-weight: bold;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* Profile Image Hover Zoom */
-        .profile-img-container img {
-            border-radius: 20px;
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            transition: transform 0.4s ease, border-color 0.4s ease;
+        .pipeline-node:hover {
+            border-color: #60a5fa;
+            background: #2563eb;
+            color: #ffffff;
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
         }
+
+        .pipeline-arrow {
+            color: #60a5fa;
+            font-size: 1.1em;
+            font-weight: bold;
+            opacity: 0.7;
+            transition: transform 0.3s ease;
+        }
+
+        /* ---------------- Profile Image Styling ---------------- */
+        .profile-img-container img {
+            border-radius: 24px;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+        }
+
         .profile-img-container img:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
             border-color: #3b82f6;
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25);
         }
     </style>
     """, unsafe_allow_html=True)
@@ -359,14 +460,14 @@ def render_home():
     # HERO & ABOUT INTEGRATED SECTION
     # --------------------------------------
     hero_col1, hero_col2 = st.columns([1, 2], gap="large")
-    
+
     with hero_col1:
         st.markdown('<div class="profile-img-container">', unsafe_allow_html=True)
         img_url = "https://raw.githubusercontent.com/oksajid1411-coder/My-portfolio/master/sajid_imag.jpg"
         if img_url:
             st.image(img_url, use_container_width=True)
         st.markdown('</div>', unsafe_allow_html=True)
-            
+
     with hero_col2:
         name = profile.get("name", "MD. Omar Kamran Chy")
         title = profile.get("title", "Data Scientist & ML Engineer")
@@ -377,10 +478,10 @@ def render_home():
         st.markdown(f"<h1 style='margin-bottom:0px;'><span class='gradient-text'>{name}</span></h1>", unsafe_allow_html=True)
         st.markdown(f"<h3 style='color: #94a3b8; margin-top:5px; font-weight:500;'>{title}</h3>", unsafe_allow_html=True)
         st.markdown(f"📍 **Location:** {location} &nbsp;|&nbsp; ✉️ **Email:** [{email}](mailto:{email})")
-        
+
         st.markdown("---")
         st.markdown(f"<p style='font-size:1.05em; line-height:1.6; color:#cbd5e1;'>{bio}</p>", unsafe_allow_html=True)
-        
+
         # Action Buttons
         btn_c1, btn_c2, btn_c3 = st.columns([1, 1, 1])
         with btn_c1:
@@ -395,58 +496,6 @@ def render_home():
             st.markdown(f"[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue?style=for-the-badge&logo=github)]({email})")
 
     st.markdown("<br>", unsafe_allow_html=True)
-
-    # --------------------------------------
-    # STATS COUNTER METRICS
-    # --------------------------------------
-    st.markdown("""
-    <style>
-        .metric-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 14px;
-            padding: 18px 15px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease-in-out;
-            margin-bottom: 10px;
-        }
-        .metric-card:hover {
-            transform: translateY(-5px);
-            border-color: #3b82f6;
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-            background: rgba(30, 41, 59, 0.85);
-        }
-        .metric-label {
-            font-size: 0.85em;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-        .metric-value {
-            font-size: 1.25em;
-            color: #f8fafc;
-            font-weight: 700;
-        }
-        .status-badge {
-            color: #4ade80;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .status-dot {
-            height: 8px;
-            width: 8px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #22c55e;
-        }
-    </style>
-    """, unsafe_allow_html=True)
 
     # --------------------------------------
     # ANIMATED METRIC CARDS LAYOUT
@@ -496,11 +545,11 @@ def render_home():
     # --------------------------------------
     st.markdown("## ⚡ Core Expertise")
     col_a, col_b, col_c = st.columns(3, gap="medium")
-    
+
     with col_a:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="margin-top:0;">📊 Data Analysis</h3>
+            <h3 style="margin-top:0; color:#f8fafc;">📊 Data Analysis</h3>
             <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Transforming raw datasets into actionable insights with robust cleaning and statistical modeling.</p>
             <div>
                 <span class="glow-badge">Data Cleaning</span>
@@ -510,11 +559,11 @@ def render_home():
             </div>
         </div>
         """, unsafe_allow_html=True)
-        
+
     with col_b:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="margin-top:0;">🤖 Machine Learning</h3>
+            <h3 style="margin-top:0; color:#f8fafc;">🤖 Machine Learning</h3>
             <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Building predictive models, classification pipelines, and advanced feature engineering solutions.</p>
             <div>
                 <span class="glow-badge">Regression</span>
@@ -528,7 +577,7 @@ def render_home():
     with col_c:
         st.markdown("""
         <div class="glass-card">
-            <h3 style="margin-top:0;">🧠 Deep Learning</h3>
+            <h3 style="margin-top:0; color:#f8fafc;">🧠 Deep Learning</h3>
             <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Designing neural network architectures, computer vision pipelines, and deep models.</p>
             <div>
                 <span class="glow-badge">Neural Networks</span>
@@ -548,19 +597,18 @@ def render_home():
     st.markdown("""
     <div class="pipeline-container">
         <div class="pipeline-node">📥 1. Collection</div>
-        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-arrow">➔</div>
         <div class="pipeline-node">🧹 2. Cleaning</div>
-        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-arrow">➔</div>
         <div class="pipeline-node">🔍 3. EDA</div>
-        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-arrow">➔</div>
         <div class="pipeline-node">⚙️ 4. Feature Eng.</div>
-        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-arrow">➔</div>
         <div class="pipeline-node">🤖 5. ML/DL Model</div>
-        <div class="pipeline-arrow">+</div>
+        <div class="pipeline-arrow">➔</div>
         <div class="pipeline-node">🎯 6. Insights</div>
     </div>
-    """, unsafe_allow_html=True)
-    
+    """, unsafe_allow_html=True)   
 # ==========================================
 # SKILLS PAGE (ENHANCED & ANIMATED)
 # ==========================================
