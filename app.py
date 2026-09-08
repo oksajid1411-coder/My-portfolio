@@ -594,7 +594,6 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-import streamlit as st
 import html
 
 # ==========================================
@@ -1185,7 +1184,9 @@ def render_services():
 
             st.markdown("<br>", unsafe_allow_html=True)
 
-
+#=====================================
+#Experience
+#====================================
 import streamlit as st
 import html
 
@@ -1349,7 +1350,7 @@ def render_experience():
 
             skills_div = f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''
 
-            cards_html += f'''<div class="timeline-card"><div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div><div class="exp-badge-date">🗓️ {start_date} — {end_date}</div><p class="exp-description">{description}</p>{skills_div}</div>'''
+            cards_html += f'''<div class="timeline-card"><div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div><div class="exp-badge-date">🗓️ {2025} — {end_date}</div><p class="exp-description">{description}</p>{skills_div}</div>'''
         
         st.markdown(f'<div class="timeline-wrapper">{cards_html}</div>', unsafe_allow_html=True)
     else:
