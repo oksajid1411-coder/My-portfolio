@@ -595,10 +595,13 @@ def render_home():
     """, unsafe_allow_html=True)
 
 # ==========================================
-# SKILLS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
+# SKILLS PAGE (NO PERCENTAGE - CLEAN & FIXED)
 # ==========================================
+import streamlit as st
+
 def render_skills():
-    skills = get_skills()
+    # Safely fetch skills
+    skills = get_skills() if callable(get_skills) else []
     
     if not skills:
         st.info("No skills currently listed.")
@@ -609,13 +612,6 @@ def render_skills():
     # --------------------------------------
     st.markdown("""
     <style>
-        /* Modern Keyframe Pulse Animation */
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
-            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
-        }
-
         /* Glassmorphic Skill Card */
         .pro-skill-card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
@@ -623,7 +619,7 @@ def render_skills():
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 22px 18px;
+            padding: 20px 18px;
             text-align: left;
             position: relative;
             overflow: hidden;
@@ -642,7 +638,7 @@ def render_skills():
         }
 
         .pro-skill-card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-6px) scale(1.02);
             border-color: rgba(59, 130, 246, 0.5);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.25);
         }
@@ -655,7 +651,6 @@ def render_skills():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
         }
 
         .skill-name {
@@ -692,26 +687,6 @@ def render_skills():
             color: #fbbf24;
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
-
-        /* Animated Progress Bar Structure */
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 1s ease-in-out;
-        }
-
-        .fill-advanced { background: linear-gradient(90deg, #22c55e, #4ade80); }
-        .fill-intermediate { background: linear-gradient(90deg, #2563eb, #60a5fa); }
-        .fill-beginner { background: linear-gradient(90deg, #d97706, #fbbf24); }
 
         /* Category Header Section */
         .category-container {
@@ -751,23 +726,23 @@ def render_skills():
     # --------------------------------------
     # CATEGORY FILTER
     # --------------------------------------
-    categories = sorted(list(set([s["category"] for s in skills])))
+    categories = sorted(list(set([s.get("category", "Uncategorized") for s in skills])))
     
     col_filter, _ = st.columns([1.2, 2])
     with col_filter:
         selected_cat = st.selectbox("🎯 Filter Expertise", ["All Categories"] + categories)
     
-    filtered_skills = skills if selected_cat == "All Categories" else [s for s in skills if s["category"] == selected_cat]
+    filtered_skills = skills if selected_cat == "All Categories" else [s for s in skills if s.get("category", "Uncategorized") == selected_cat]
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --------------------------------------
     # RENDER SKILLS BY CATEGORY
     # --------------------------------------
-    display_cats = sorted(list(set([s["category"] for s in filtered_skills])))
+    display_cats = sorted(list(set([s.get("category", "Uncategorized") for s in filtered_skills])))
 
     for cat in display_cats:
-        cat_skills = [s for s in filtered_skills if s["category"] == cat]
+        cat_skills = [s for s in filtered_skills if s.get("category", "Uncategorized") == cat]
         
         # Category Section Header
         st.markdown(f"""
@@ -780,38 +755,30 @@ def render_skills():
         # Grid Display (4 Columns)
         cols = st.columns(4)
         for idx, skill in enumerate(cat_skills):
-            level = skill.get('level', 'Intermediate').capitalize()
+            skill_name = skill.get('name', 'Unnamed Skill')
+            raw_level = str(skill.get('level', 'Intermediate')).strip()
+            level_lower = raw_level.lower()
             
-            # Dynamic configurations based on skill level
-            if 'Adv' in level:
+            # Dynamic badge class based on skill level
+            if 'adv' in level_lower or 'expert' in level_lower:
                 badge_class = "level-advanced"
-                fill_class = "fill-advanced"
-                progress_val = "90%"
-            elif 'Beg' in level:
+                display_level = "Advanced"
+            elif 'beg' in level_lower or 'basic' in level_lower:
                 badge_class = "level-beginner"
-                fill_class = "fill-beginner"
-                progress_val = "45%"
+                display_level = "Beginner"
             else:
                 badge_class = "level-intermediate"
-                fill_class = "fill-intermediate"
-                progress_val = "70%"
+                display_level = "Intermediate"
 
             with cols[idx % 4]:
                 st.markdown(f"""
                 <div class="pro-skill-card">
                     <div class="skill-header-flex">
-                        <span class="skill-name">{skill['name']}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                        <span class="level-badge {badge_class}">{level}</span>
-                        <span style="color: #64748b; font-size: 0.75rem; font-weight: 600;">{progress_val}</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar-fill {fill_class}" style="width: {progress_val};"></div>
+                        <span class="skill-name">{skill_name}</span>
+                        <span class="level-badge {badge_class}">{display_level}</span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
@@ -1193,8 +1160,10 @@ def render_services():
 
 
 # ==========================================
-# EXPERIENCE PAGE (ULTRA-PROFESSIONAL & TIMELINE)
+# EXPERIENCE PAGE (BUG-FIXED & OPTIMIZED)
 # ==========================================
+import streamlit as st
+
 def render_experience():
     # --------------------------------------
     # HIGH-END STYLES & ANIMATIONS
@@ -1319,26 +1288,35 @@ def render_experience():
     # PROFESSIONAL EXPERIENCE SECTION
     # --------------------------------------
     st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🏢 Professional Experience</h3>", unsafe_allow_html=True)
-    exps = get_experience()
+    
+    exps = get_experience() if callable(get_experience) else []
     
     if exps:
-        st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
+        timeline_html = '<div class="timeline-wrapper">'
         for exp in exps:
-            # Generate Skills Badges if present
+            # Generate Skills Badges safely
             skills_html = ""
-            if exp.get('skills'):
-                skills_list = exp['skills'].split(',') if isinstance(exp['skills'], str) else exp['skills']
-                skills_html = "".join([f'<span class="skill-chip">{s.strip()}</span>' for s in skills_list])
+            raw_skills = exp.get('skills', '')
+            if raw_skills:
+                skills_list = raw_skills.split(',') if isinstance(raw_skills, str) else raw_skills
+                skills_html = "".join([f'<span class="skill-chip">{str(s).strip()}</span>' for s in skills_list])
             
-            st.markdown(f"""
+            position = exp.get('position', 'N/A')
+            organization = exp.get('organization', 'N/A')
+            start_date = exp.get('start_date', 'N/A')
+            end_date = exp.get('end_date', 'Present')
+            description = exp.get('description', '')
+
+            timeline_html += f"""
             <div class="timeline-card">
-                <div class="exp-role-title">{exp['position']} &nbsp;•&nbsp; <span class="exp-org-name">{exp['organization']}</span></div>
-                <div class="exp-badge-date">🗓️ {exp['start_date']} — {exp['end_date']}</div>
-                <p class="exp-description">{exp['description']}</p>
+                <div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div>
+                <div class="exp-badge-date">🗓️ {start_date} — {end_date}</div>
+                <p class="exp-description">{description}</p>
                 {f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''}
             </div>
-            """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            """
+        timeline_html += '</div>'
+        st.markdown(timeline_html, unsafe_allow_html=True)
     else:
         st.info("No professional experience listed.")
 
@@ -1348,23 +1326,28 @@ def render_experience():
     # LEARNING JOURNEY TIMELINE
     # --------------------------------------
     st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🎓 Learning Journey & Milestones</h3>", unsafe_allow_html=True)
-    journey = get_learning_journey()
+    
+    journey = get_learning_journey() if callable(get_learning_journey) else []
     
     if journey:
-        st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
+        journey_html = '<div class="timeline-wrapper">'
         for item in journey:
-            date_info = f"<div class='exp-badge-date'>📅 {item['date']}</div>" if item.get('date') else ""
-            st.markdown(f"""
+            title = item.get('title', 'Milestone')
+            date_val = item.get('date', '')
+            date_info = f"<div class='exp-badge-date'>📅 {date_val}</div>" if date_val else ""
+            description = item.get('description', '')
+
+            journey_html += f"""
             <div class="timeline-card">
-                <div class="exp-role-title">{item['title']}</div>
+                <div class="exp-role-title">{title}</div>
                 {date_info}
-                <p class="exp-description">{item['description']}</p>
+                <p class="exp-description">{description}</p>
             </div>
-            """, unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+            """
+        journey_html += '</div>'
+        st.markdown(journey_html, unsafe_allow_html=True)
     else:
         st.info("No learning journey timeline listed.")
-
 # ==========================================
 # CONTACT PAGE (ULTRA-PROFESSIONAL & INTERACTIVE)
 # ==========================================
