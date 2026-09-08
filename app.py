@@ -594,13 +594,15 @@ def render_home():
     </div>
     """, unsafe_allow_html=True)
 
-# ==========================================
-# SKILLS PAGE (NO PERCENTAGE - CLEAN & FIXED)
-# ==========================================
+import streamlit as st
+import html
 
+# ==========================================
+# SKILLS PAGE (ANIMATED & GORGEOUS)
+# ==========================================
 def render_skills():
     # Safely fetch skills
-    skills = get_skills() if callable(get_skills) else []
+    skills = get_skills() if 'get_skills' in globals() and callable(get_skills) else []
     
     if not skills:
         st.info("No skills currently listed.")
@@ -611,14 +613,20 @@ def render_skills():
     # --------------------------------------
     st.markdown("""
     <style>
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.25); }
+            100% { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        }
+
         /* Glassmorphic Skill Card */
         .pro-skill-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 20px 18px;
+            padding: 18px 16px;
             text-align: left;
             position: relative;
             overflow: hidden;
@@ -627,34 +635,35 @@ def render_skills():
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
+        /* Top Glowing Edge */
         .pro-skill-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
-            opacity: 0.3;
-            transition: opacity 0.4s ease;
+            top: 0; left: -100%; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+            transition: all 0.6s ease;
         }
 
         .pro-skill-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.25);
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(96, 165, 250, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
         }
 
         .pro-skill-card:hover::before {
-            opacity: 1;
+            left: 100%;
         }
 
         .skill-header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
 
         .skill-name {
             color: #f8fafc;
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             font-weight: 700;
             letter-spacing: 0.3px;
         }
@@ -663,28 +672,36 @@ def render_skills():
         .level-badge {
             padding: 4px 10px;
             border-radius: 20px;
-            font-size: 0.72rem;
+            font-size: 0.70rem;
             font-weight: 700;
             letter-spacing: 0.6px;
             text-transform: uppercase;
+            transition: transform 0.3s ease;
+        }
+
+        .pro-skill-card:hover .level-badge {
+            transform: scale(1.08);
         }
 
         .level-advanced {
-            background: rgba(34, 197, 94, 0.12);
+            background: rgba(34, 197, 94, 0.15);
             color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.15);
         }
 
         .level-intermediate {
-            background: rgba(59, 130, 246, 0.12);
+            background: rgba(59, 130, 246, 0.15);
             color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
         }
 
         .level-beginner {
-            background: rgba(245, 158, 11, 0.12);
+            background: rgba(245, 158, 11, 0.15);
             color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
         }
 
         /* Category Header Section */
@@ -692,7 +709,7 @@ def render_skills():
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 35px 0 20px 0;
+            margin: 30px 0 20px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             padding-bottom: 10px;
         }
@@ -743,22 +760,19 @@ def render_skills():
     for cat in display_cats:
         cat_skills = [s for s in filtered_skills if s.get("category", "Uncategorized") == cat]
         
-        # Category Section Header
-        st.markdown(f"""
+        st.markdown(f'''
         <div class="category-container">
-            <h3 class="category-title">🔹 {cat}</h3>
+            <h3 class="category-title">🔹 {html.escape(str(cat))}</h3>
             <span class="category-count">{len(cat_skills)} Skills</span>
         </div>
-        """, unsafe_allow_html=True)
+        ''', unsafe_allow_html=True)
         
-        # Grid Display (4 Columns)
         cols = st.columns(4)
         for idx, skill in enumerate(cat_skills):
-            skill_name = skill.get('name', 'Unnamed Skill')
+            skill_name = html.escape(str(skill.get('name', 'Unnamed Skill')))
             raw_level = str(skill.get('level', 'Intermediate')).strip()
             level_lower = raw_level.lower()
             
-            # Dynamic badge class based on skill level
             if 'adv' in level_lower or 'expert' in level_lower:
                 badge_class = "level-advanced"
                 display_level = "Advanced"
@@ -770,21 +784,21 @@ def render_skills():
                 display_level = "Intermediate"
 
             with cols[idx % 4]:
-                st.markdown(f"""
+                st.markdown(f'''
                 <div class="pro-skill-card">
                     <div class="skill-header-flex">
                         <span class="skill-name">{skill_name}</span>
                         <span class="level-badge {badge_class}">{display_level}</span>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                ''', unsafe_allow_html=True)
 
 
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
 def render_projects():
-    projects = get_projects()
+    projects = get_projects() if 'get_projects' in globals() and callable(get_projects) else []
     
     if not projects:
         st.info("No projects available.")
@@ -797,36 +811,37 @@ def render_projects():
     <style>
         /* Glassmorphic Project Card */
         .pro-project-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.88) 100%);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 28px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
 
+        /* Shimmer Animation Effect */
         .pro-project-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, transparent);
-            opacity: 0.4;
-            transition: opacity 0.4s ease;
+            top: 0; left: -150%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: skewX(-25deg);
+            transition: all 0.75s ease;
         }
 
         .pro-project-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(59, 130, 246, 0.45);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(59, 130, 246, 0.25);
         }
 
         .pro-project-card:hover::before {
-            opacity: 1;
+            left: 150%;
         }
 
         /* Typography & Badges */
@@ -856,26 +871,34 @@ def render_projects():
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+            animation: pulseStar 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseStar {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .tech-pill {
-            background: rgba(30, 58, 138, 0.3);
+            background: rgba(30, 58, 138, 0.35);
             color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.25);
             padding: 4px 10px;
             border-radius: 8px;
             font-size: 0.78rem;
             font-weight: 600;
             display: inline-block;
             margin: 4px 4px 4px 0;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
         }
 
         .tech-pill:hover {
             background: #2563eb;
             color: #ffffff;
             border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
         }
 
         /* Custom Action Buttons */
@@ -898,8 +921,9 @@ def render_projects():
         }
 
         .btn-action-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.5);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
         }
 
         .btn-action-secondary {
@@ -910,7 +934,7 @@ def render_projects():
             padding: 10px 20px;
             border-radius: 10px;
             background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #f8fafc !important;
             text-decoration: none !important;
             font-weight: 600;
@@ -921,9 +945,10 @@ def render_projects():
         }
 
         .btn-action-secondary:hover {
-            background: rgba(51, 65, 85, 0.9);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
+            background: rgba(51, 65, 85, 0.95);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
         }
     </style>
     """, unsafe_allow_html=True)
@@ -943,14 +968,14 @@ def render_projects():
         search = st.text_input("🔍 Search Projects", "", placeholder="Type keywords, techniques, or title...")
         
     with col_cat:
-        categories = ["All Categories"] + sorted(list(set([p["category"] for p in projects])))
+        categories = ["All Categories"] + sorted(list(set([p.get("category", "General") for p in projects])))
         selected_cat = st.selectbox("🎯 Category Filter", categories)
     
     filtered = projects
     if selected_cat != "All Categories":
-        filtered = [p for p in filtered if p["category"] == selected_cat]
+        filtered = [p for p in filtered if p.get("category") == selected_cat]
     if search:
-        filtered = [p for p in filtered if search.lower() in p["title"].lower() or search.lower() in p["description"].lower()]
+        filtered = [p for p in filtered if search.lower() in p.get("title", "").lower() or search.lower() in p.get("description", "").lower()]
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -962,28 +987,30 @@ def render_projects():
     # RENDER PROJECT CARDS
     # --------------------------------------
     for proj in filtered:
+        title = html.escape(str(proj.get('title', 'Project Title')))
+        category = html.escape(str(proj.get('category', 'General')))
+        description = html.escape(str(proj.get('description', '')))
         featured_html = '<span class="star-featured-badge">⭐ Featured</span>' if proj.get('featured') else ''
         
-        # Format Technologies into visual badges
-        tech_list = proj.get('technologies', '').split(',')
-        tech_badges = "".join([f'<span class="tech-pill">{t.strip()}</span>' for t in tech_list if t.strip()])
+        tech_list = proj.get('technologies', '').split(',') if isinstance(proj.get('technologies'), str) else []
+        tech_badges = "".join([f'<span class="tech-pill">{html.escape(t.strip())}</span>' for t in tech_list if t.strip()])
         
-        st.markdown(f"""
+        st.markdown(f'''
         <div class="pro-project-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                <div class="project-header-title">{proj['title']}</div>
+                <div class="project-header-title">{title}</div>
                 <div>{featured_html}</div>
             </div>
             <div style="margin-bottom: 14px;">
-                <span class="category-badge">{proj['category']}</span>
+                <span class="category-badge">{category}</span>
             </div>
-            <p style="color: #cbd5e1; font-size: 0.96rem; line-height: 1.6; margin-bottom: 18px;">{proj['description']}</p>
+            <p style="color: #cbd5e1; font-size: 0.96rem; line-height: 1.6; margin-bottom: 18px;">{description}</p>
             <div>
                 <span style="color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 6px;">Technologies Used:</span>
                 {tech_badges if tech_badges else '<span style="color:#64748b;">N/A</span>'}
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        ''', unsafe_allow_html=True)
         
         # Details Breakdown & Action Buttons
         with st.expander("📄 Detailed Breakdown & Repository Links"):
@@ -1001,7 +1028,6 @@ def render_projects():
                 
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # Action Button Links
             btn_col1, btn_col2, _ = st.columns([1, 1, 1.5])
             with btn_col1:
                 if proj.get("github_url"):
@@ -1160,9 +1186,7 @@ def render_services():
             st.markdown("<br>", unsafe_allow_html=True)
 
 
-# ==========================================
-# EXPERIENCE PAGE (BUG-FIXED & SECURE)
-# ==========================================
+import streamlit as st
 import html
 
 def render_experience():
@@ -1280,11 +1304,11 @@ def render_experience():
     </style>
     """, unsafe_allow_html=True)
 
-    # Helper function to sanitize input strings
-    def safe_str(val, default='N/A'):
+    # Clean text helper without breaking standard text
+    def clean_text(val, default=''):
         if not val:
             return default
-        return html.escape(str(val))
+        return str(val).strip()
 
     # --------------------------------------
     # PAGE HEADER
@@ -1297,16 +1321,14 @@ def render_experience():
     # --------------------------------------
     st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🏢 Professional Experience</h3>", unsafe_allow_html=True)
     
-    # Safely call function and check list
     exps = get_experience() if 'get_experience' in globals() and callable(get_experience) else []
     
     if isinstance(exps, list) and len(exps) > 0:
-        timeline_html = '<div class="timeline-wrapper">'
+        cards_html = ""
         for exp in exps:
             if not isinstance(exp, dict):
                 continue
 
-            # Process skills safely
             raw_skills = exp.get('skills', '')
             skills_html = ""
             if raw_skills:
@@ -1319,24 +1341,17 @@ def render_experience():
                 
                 skills_html = "".join([f'<span class="skill-chip">{html.escape(s)}</span>' for s in skills_list])
             
-            position = safe_str(exp.get('position'), 'N/A')
-            organization = safe_str(exp.get('organization'), 'N/A')
-            start_date = safe_str(exp.get('start_date'), 'N/A')
-            end_date = safe_str(exp.get('end_date'), 'Present')
-            description = safe_str(exp.get('description'), '')
+            position = html.escape(clean_text(exp.get('position'), 'N/A'))
+            organization = html.escape(clean_text(exp.get('organization'), 'N/A'))
+            start_date = html.escape(clean_text(exp.get('start_date'), 'N/A'))
+            end_date = html.escape(clean_text(exp.get('end_date'), 'Present'))
+            description = html.escape(clean_text(exp.get('description'), ''))
 
             skills_div = f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''
 
-            timeline_html += f"""
-            <div class="timeline-card">
-                <div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div>
-                <div class="exp-badge-date">🗓️ {start_date} — {end_date}</div>
-                <p class="exp-description">{description}</p>
-                {skills_div}
-            </div>
-            """
-        timeline_html += '</div>'
-        st.markdown(timeline_html, unsafe_allow_html=True)
+            cards_html += f'''<div class="timeline-card"><div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div><div class="exp-badge-date">🗓️ {start_date} — {end_date}</div><p class="exp-description">{description}</p>{skills_div}</div>'''
+        
+        st.markdown(f'<div class="timeline-wrapper">{cards_html}</div>', unsafe_allow_html=True)
     else:
         st.info("No professional experience listed.")
 
@@ -1350,27 +1365,24 @@ def render_experience():
     journey = get_learning_journey() if 'get_learning_journey' in globals() and callable(get_learning_journey) else []
     
     if isinstance(journey, list) and len(journey) > 0:
-        journey_html = '<div class="timeline-wrapper">'
+        journey_cards_html = ""
         for item in journey:
             if not isinstance(item, dict):
                 continue
 
-            title = safe_str(item.get('title'), 'Milestone')
-            date_val = safe_str(item.get('date'), '')
+            title = html.escape(clean_text(item.get('title'), 'Milestone'))
+            date_val = html.escape(clean_text(item.get('date'), ''))
+            description = html.escape(clean_text(item.get('description'), ''))
+            
             date_info = f"<div class='exp-badge-date'>📅 {date_val}</div>" if date_val else ""
-            description = safe_str(item.get('description'), '')
 
-            journey_html += f"""
-            <div class="timeline-card">
-                <div class="exp-role-title">{title}</div>
-                {date_info}
-                <p class="exp-description">{description}</p>
-            </div>
-            """
-        journey_html += '</div>'
-        st.markdown(journey_html, unsafe_allow_html=True)
+            journey_cards_html += f'''<div class="timeline-card"><div class="exp-role-title">{title}</div>{date_info}<p class="exp-description">{description}</p></div>'''
+        
+        st.markdown(f'<div class="timeline-wrapper">{journey_cards_html}</div>', unsafe_allow_html=True)
     else:
-        st.info("No learning journey timeline listed.")# ==========================================
+        st.info("No learning journey timeline listed.")
+        
+# ==========================================
 # CONTACT PAGE (ULTRA-PROFESSIONAL & INTERACTIVE)
 # ==========================================
 import urllib.parse
