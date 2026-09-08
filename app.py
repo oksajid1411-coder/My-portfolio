@@ -592,12 +592,12 @@ def render_home():
         <div class="workflow-arrow">➔</div>
         <div class="workflow-node">🎯 6. Insights</div>
     </div>
-    """, unsafe_allow_html=True)  
+    """, unsafe_allow_html=True)
+
 # ==========================================
-# SKILLS PAGE (ENHANCED & ANIMATED)
+# SKILLS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
 def render_skills():
-    st.title("⚡ Technical Skills & Expertise")
     skills = get_skills()
     
     if not skills:
@@ -605,81 +605,157 @@ def render_skills():
         return
 
     # --------------------------------------
-    # ANIMATED SKILLS CSS
+    # HIGH-END STYLES & ANIMATIONS
     # --------------------------------------
     st.markdown("""
     <style>
-        /* Modern Skill Glass Card */
-        .skill-card {
-            background: rgba(30, 41, 59, 0.65);
-            backdrop-filter: blur(10px);
+        /* Modern Keyframe Pulse Animation */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); }
+        }
+
+        /* Glassmorphic Skill Card */
+        .pro-skill-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            padding: 22px 18px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             margin-bottom: 20px;
-            height: 100%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
-        .skill-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
-            background: rgba(30, 41, 59, 0.9);
+
+        .pro-skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            opacity: 0.3;
+            transition: opacity 0.4s ease;
         }
-        .skill-title {
-            color: #f8fafc;
-            font-size: 1.1em;
-            font-weight: 700;
+
+        .pro-skill-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.25);
+        }
+
+        .pro-skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 12px;
         }
+
+        .skill-name {
+            color: #f8fafc;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
         /* Dynamic Skill Level Badges */
         .level-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.78em;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
             text-transform: uppercase;
         }
+
         .level-advanced {
-            background: rgba(34, 197, 94, 0.15);
+            background: rgba(34, 197, 94, 0.12);
             color: #4ade80;
             border: 1px solid rgba(34, 197, 94, 0.3);
         }
+
         .level-intermediate {
-            background: rgba(59, 130, 246, 0.15);
+            background: rgba(59, 130, 246, 0.12);
             color: #60a5fa;
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
+
         .level-beginner {
-            background: rgba(245, 158, 11, 0.15);
+            background: rgba(245, 158, 11, 0.12);
             color: #fbbf24;
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
-        
-        /* Category Header Line */
-        .category-header {
-            color: #60a5fa;
-            border-left: 4px solid #3b82f6;
-            padding-left: 12px;
-            margin: 25px 0 15px 0;
-            font-size: 1.3em;
+
+        /* Animated Progress Bar Structure */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .fill-advanced { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .fill-intermediate { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+        .fill-beginner { background: linear-gradient(90deg, #d97706, #fbbf24); }
+
+        /* Category Header Section */
+        .category-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 35px 0 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        .category-title {
+            color: #f8fafc;
+            font-size: 1.35rem;
             font-weight: 700;
+            margin: 0;
+        }
+
+        .category-count {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
     </style>
     """, unsafe_allow_html=True)
+
+    # --------------------------------------
+    # PAGE HEADER
+    # --------------------------------------
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>⚡ Technical Expertise</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 25px;'>Comprehensive breakdown of my technical stack and proficiency levels.</p>", unsafe_allow_html=True)
 
     # --------------------------------------
     # CATEGORY FILTER
     # --------------------------------------
     categories = sorted(list(set([s["category"] for s in skills])))
     
-    col_filter, _ = st.columns([1, 2])
+    col_filter, _ = st.columns([1.2, 2])
     with col_filter:
-        selected_cat = st.selectbox("🎯 Filter by Category", ["All Categories"] + categories)
+        selected_cat = st.selectbox("🎯 Filter Expertise", ["All Categories"] + categories)
     
     filtered_skills = skills if selected_cat == "All Categories" else [s for s in skills if s["category"] == selected_cat]
 
@@ -691,35 +767,55 @@ def render_skills():
     display_cats = sorted(list(set([s["category"] for s in filtered_skills])))
 
     for cat in display_cats:
-        st.markdown(f'<div class="category-header">{cat}</div>', unsafe_allow_html=True)
         cat_skills = [s for s in filtered_skills if s["category"] == cat]
         
-        # Grid display (4 Columns)
+        # Category Section Header
+        st.markdown(f"""
+        <div class="category-container">
+            <h3 class="category-title">🔹 {cat}</h3>
+            <span class="category-count">{len(cat_skills)} Skills</span>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Grid Display (4 Columns)
         cols = st.columns(4)
         for idx, skill in enumerate(cat_skills):
-            # Dynamic badge class assignment based on skill level
-            level = skill.get('level', 'Intermediate').lower()
-            if 'adv' in level:
+            level = skill.get('level', 'Intermediate').capitalize()
+            
+            # Dynamic configurations based on skill level
+            if 'Adv' in level:
                 badge_class = "level-advanced"
-            elif 'beg' in level:
+                fill_class = "fill-advanced"
+                progress_val = "90%"
+            elif 'Beg' in level:
                 badge_class = "level-beginner"
+                fill_class = "fill-beginner"
+                progress_val = "45%"
             else:
                 badge_class = "level-intermediate"
+                fill_class = "fill-intermediate"
+                progress_val = "70%"
 
             with cols[idx % 4]:
                 st.markdown(f"""
-                <div class="skill-card">
-                    <div class="skill-title">{skill['name']}</div>
-                    <span class="level-badge {badge_class}">{skill['level']}</span>
+                <div class="pro-skill-card">
+                    <div class="skill-header-flex">
+                        <span class="skill-name">{skill['name']}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <span class="level-badge {badge_class}">{level}</span>
+                        <span style="color: #64748b; font-size: 0.75rem; font-weight: 600;">{progress_val}</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar-fill {fill_class}" style="width: {progress_val};"></div>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-
 # ==========================================
-# PROJECTS PAGE (ENHANCED & ANIMATED)
+# PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
 def render_projects():
-    st.title("🚀 Featured Projects")
     projects = get_projects()
     
     if not projects:
@@ -727,86 +823,156 @@ def render_projects():
         return
 
     # --------------------------------------
-    # CUSTOM CSS FOR ANIMATED PROJECT CARDS
+    # HIGH-END STYLES & ANIMATIONS
     # --------------------------------------
     st.markdown("""
     <style>
-        .project-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+        /* Glassmorphic Project Card */
+        .pro-project-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 12px 35px 0 rgba(59, 130, 246, 0.2);
+
+        .pro-project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, transparent);
+            opacity: 0.4;
+            transition: opacity 0.4s ease;
         }
-        .project-title {
+
+        .pro-project-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .pro-project-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography & Badges */
+        .project-header-title {
             color: #f8fafc;
-            font-size: 1.4em;
+            font-size: 1.45rem;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            letter-spacing: -0.3px;
         }
-        .star-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #ffffff;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.7em;
-            font-weight: 600;
-        }
-        .tech-tag {
+
+        .category-badge {
             background: rgba(59, 130, 246, 0.12);
             color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-size: 0.8em;
-            margin-right: 6px;
-            margin-bottom: 6px;
-            display: inline-block;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .action-link {
+
+        .star-featured-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .tech-pill {
+            background: rgba(30, 58, 138, 0.3);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 4px 4px 4px 0;
+            transition: all 0.25s ease;
+        }
+
+        .tech-pill:hover {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #3b82f6;
+        }
+
+        /* Custom Action Buttons */
+        .btn-action-primary {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white !important;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff !important;
             text-decoration: none !important;
             font-weight: 600;
-            font-size: 0.9em;
-            transition: background 0.2s ease;
+            font-size: 0.88rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            width: 100%;
+            text-align: center;
         }
-        .action-link:hover {
-            background: #1d4ed8;
+
+        .btn-action-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
         }
-        .action-link-secondary {
-            background: #334155;
+
+        .btn-action-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             color: #f8fafc !important;
+            text-decoration: none !important;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
         }
-        .action-link-secondary:hover {
-            background: #475569;
+
+        .btn-action-secondary:hover {
+            background: rgba(51, 65, 85, 0.9);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --------------------------------------
-    # SEARCH & CATEGORY FILTER
+    # PAGE HEADER
+    # --------------------------------------
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>🚀 Featured Projects</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 25px;'>A showcase of data analytics, machine learning, and software engineering solutions.</p>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # SEARCH & CATEGORY FILTER CONTROL PANEL
     # --------------------------------------
     col_search, col_cat = st.columns([2, 1])
     
     with col_search:
-        search = st.text_input("🔍 Search Projects", "", placeholder="Search by title or description...")
+        search = st.text_input("🔍 Search Projects", "", placeholder="Type keywords, techniques, or title...")
         
     with col_cat:
         categories = ["All Categories"] + sorted(list(set([p["category"] for p in projects])))
@@ -828,60 +994,60 @@ def render_projects():
     # RENDER PROJECT CARDS
     # --------------------------------------
     for proj in filtered:
-        featured_html = '<span class="star-badge">⭐ Featured</span>' if proj.get('featured') else ''
+        featured_html = '<span class="star-featured-badge">⭐ Featured</span>' if proj.get('featured') else ''
         
         # Format Technologies into visual badges
         tech_list = proj.get('technologies', '').split(',')
-        tech_badges = "".join([f'<span class="tech-tag">{t.strip()}</span>' for t in tech_list if t.strip()])
+        tech_badges = "".join([f'<span class="tech-pill">{t.strip()}</span>' for t in tech_list if t.strip()])
         
         st.markdown(f"""
-        <div class="project-card">
-            <div class="project-title">
-                <span>{proj['title']}</span>
-                {featured_html}
+        <div class="pro-project-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div class="project-header-title">{proj['title']}</div>
+                <div>{featured_html}</div>
             </div>
-            <div style="margin-bottom: 12px;">
-                <span class="glow-badge">{proj['category']}</span>
+            <div style="margin-bottom: 14px;">
+                <span class="category-badge">{proj['category']}</span>
             </div>
-            <p style="color:#cbd5e1; font-size:0.98em; line-height:1.5;">{proj['description']}</p>
-            <div style="margin-top: 15px;">
-                <strong style="color:#94a3b8; font-size:0.88em; display:block; margin-bottom:6px;">TECHNOLOGIES:</strong>
+            <p style="color: #cbd5e1; font-size: 0.96rem; line-height: 1.6; margin-bottom: 18px;">{proj['description']}</p>
+            <div>
+                <span style="color: #64748b; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 6px;">Technologies Used:</span>
                 {tech_badges if tech_badges else '<span style="color:#64748b;">N/A</span>'}
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        # Details & Links inside Expander
-        with st.expander("📄 View Full Project Breakdown & Links"):
+        # Details Breakdown & Action Buttons
+        with st.expander("📄 Detailed Breakdown & Repository Links"):
+            st.markdown("<br>", unsafe_allow_html=True)
             if proj.get("overview"):
-                st.markdown(f"**📌 Overview:** {proj['overview']}")
+                st.markdown(f"**📌 Overview:**\n{proj['overview']}")
             if proj.get("problem"):
-                st.markdown(f"**🎯 Problem Statement:** {proj['problem']}")
+                st.markdown(f"**🎯 Problem Statement:**\n{proj['problem']}")
             if proj.get("dataset"):
-                st.markdown(f"**📊 Dataset:** {proj['dataset']}")
+                st.markdown(f"**📊 Dataset:**\n{proj['dataset']}")
             if proj.get("approach"):
-                st.markdown(f"**⚙️ Methodology & Approach:** {proj['approach']}")
+                st.markdown(f"**⚙️ Methodology & Approach:**\n{proj['approach']}")
             if proj.get("results"):
-                st.markdown(f"**📈 Key Results:** {proj['results']}")
+                st.markdown(f"**📈 Key Results:**\n{proj['results']}")
                 
             st.markdown("<br>", unsafe_allow_html=True)
             
             # Action Button Links
-            btn_col1, btn_col2, _ = st.columns([1, 1, 2])
+            btn_col1, btn_col2, _ = st.columns([1, 1, 1.5])
             with btn_col1:
                 if proj.get("github_url"):
-                    st.markdown(f'<a href="{proj["github_url"]}" target="_blank" class="action-link action-link-secondary">🔗 GitHub Repository</a>', unsafe_allow_html=True)
+                    st.markdown(f'<a href="{proj["github_url"]}" target="_blank" class="btn-action-secondary">💻 Source Code</a>', unsafe_allow_html=True)
             with btn_col2:
                 if proj.get("demo_url"):
-                    st.markdown(f'<a href="{proj["demo_url"]}" target="_blank" class="action-link">🚀 Live Demo</a>', unsafe_allow_html=True)
+                    st.markdown(f'<a href="{proj["demo_url"]}" target="_blank" class="btn-action-primary">🚀 Live Demo</a>', unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
-        
+
 # ==========================================
-# SERVICES PAGE (ENHANCED & ANIMATED)
+# SERVICES PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
 def render_services():
-    st.title("💼 Services & Solutions")
     services = get_services()
     
     active_services = [s for s in services if s.get("active", True)]
@@ -891,218 +1057,308 @@ def render_services():
         return
 
     # --------------------------------------
-    # CUSTOM CSS FOR ANIMATED SERVICE CARDS
+    # EXECUTIVE CSS STYLING & ANIMATIONS
     # --------------------------------------
     st.markdown("""
     <style>
-        .service-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+        /* Glassmorphic Service Card */
+        .pro-service-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             height: 100%;
         }
-        .service-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 12px 35px 0 rgba(59, 130, 246, 0.25);
-            background: rgba(30, 41, 59, 0.9);
+
+        .pro-service-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, transparent);
+            opacity: 0.3;
+            transition: opacity 0.4s ease;
         }
-        .service-title {
+
+        .pro-service-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .pro-service-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Typography */
+        .service-card-title {
             color: #f8fafc;
-            font-size: 1.3em;
+            font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            letter-spacing: -0.3px;
         }
-        .service-desc {
+
+        .service-card-desc {
             color: #94a3b8;
-            font-size: 0.95em;
-            line-height: 1.5;
-            margin-bottom: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
-        .service-list {
+
+        /* Custom Visual List Items */
+        .service-bullet-list {
             list-style: none;
             padding-left: 0;
-            margin: 0;
+            margin: 0 0 20px 0;
         }
-        .service-list li {
+
+        .service-bullet-list li {
             color: #cbd5e1;
-            font-size: 0.9em;
-            padding: 6px 0;
+            font-size: 0.9rem;
+            padding: 8px 0;
             position: relative;
-            padding-left: 22px;
+            padding-left: 26px;
+            line-height: 1.4;
         }
-        .service-list li::before {
-            content: "✓";
+
+        .service-bullet-list li::before {
+            content: "⚡";
             position: absolute;
             left: 0;
+            top: 7px;
             color: #60a5fa;
-            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        /* Divider Line */
+        .card-divider {
+            border: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 15px 0;
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --------------------------------------
-    # RENDER SERVICES IN 2-COLUMN GRID
+    # PAGE HEADER
     # --------------------------------------
-    cols = st.columns(2)
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>💼 Services & Solutions</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>Tailored technical services to transform raw data into intelligent, scalable business solutions.</p>", unsafe_allow_html=True)
+
+    # --------------------------------------
+    # RENDER SERVICES GRID (2-COLUMN)
+    # --------------------------------------
+    cols = st.columns(2, gap="large")
     
     for idx, srv in enumerate(active_services):
         items_html = "".join([f'<li>{item}</li>' for item in srv.get('items', [])])
         
         with cols[idx % 2]:
             st.markdown(f"""
-            <div class="service-card">
-                <div class="service-title">⚡ {srv['title']}</div>
-                <div class="service-desc">{srv['description']}</div>
-                <ul class="service-list">
-                    {items_html}
-                </ul>
+            <div class="pro-service-card">
+                <div>
+                    <div class="service-card-title">
+                        <span>🛠️</span> {srv['title']}
+                    </div>
+                    <div class="service-card-desc">{srv['description']}</div>
+                    <hr class="card-divider">
+                    <ul class="service-bullet-list">
+                        {items_html}
+                    </ul>
+                </div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Interactive Inquiry Button
+            if st.button(f"📩 Inquire About {srv['title']}", key=f"srv_btn_{idx}", use_container_width=True):
+                st.session_state["selected_service"] = srv['title']
+                st.session_state["nav"] = "Contact"
+                st.rerun()
+
             st.markdown("<br>", unsafe_allow_html=True)
 
 
 # ==========================================
-# EXPERIENCE PAGE (ENHANCED & ANIMATED)
+# EXPERIENCE PAGE (ULTRA-PROFESSIONAL & TIMELINE)
 # ==========================================
 def render_experience():
-    st.title("💼 Experience & Learning Journey")
-    
     # --------------------------------------
-    # CUSTOM TIMELINE CSS FOR ANIMATIONS
+    # HIGH-END STYLES & ANIMATIONS
     # --------------------------------------
     st.markdown("""
     <style>
         /* Timeline Container */
         .timeline-wrapper {
             position: relative;
-            padding-left: 28px;
-            margin-bottom: 30px;
+            padding-left: 32px;
+            margin-bottom: 35px;
         }
         
         /* Vertical Glowing Line */
         .timeline-wrapper::before {
             content: '';
             position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
+            left: 10px;
+            top: 5px;
+            bottom: 5px;
             width: 3px;
-            background: linear-gradient(180deg, #3b82f6 0%, rgba(59, 130, 246, 0.2) 100%);
-            border-radius: 2px;
+            background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 50%, rgba(59, 130, 246, 0.1) 100%);
+            border-radius: 4px;
         }
 
-        /* Glassmorphism Timeline Card */
+        /* Glassmorphic Timeline Card */
         .timeline-card {
             position: relative;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .timeline-card:hover {
-            transform: translateX(6px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-            background: rgba(30, 41, 59, 0.9);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Animated Timeline Node Dot */
+        .timeline-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Glowing Node Dot */
         .timeline-card::before {
             content: '';
             position: absolute;
-            left: -28px;
-            top: 24px;
-            width: 13px;
-            height: 13px;
+            left: -30px;
+            top: 28px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #2563eb;
             border: 3px solid #0f172a;
-            box-shadow: 0 0 10px #3b82f6;
+            box-shadow: 0 0 12px #3b82f6;
             transition: all 0.3s ease;
         }
+
         .timeline-card:hover::before {
             background: #60a5fa;
-            box-shadow: 0 0 15px #60a5fa;
-            transform: scale(1.2);
+            box-shadow: 0 0 18px #60a5fa;
+            transform: scale(1.25);
         }
 
-        .exp-role {
+        /* Typography & Badges */
+        .exp-role-title {
             color: #f8fafc;
-            font-size: 1.2em;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
-        .exp-org {
+
+        .exp-org-name {
             color: #60a5fa;
             font-weight: 600;
         }
-        .exp-date {
+
+        .exp-badge-date {
             color: #94a3b8;
-            font-size: 0.85em;
-            font-weight: 500;
-            margin-bottom: 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
             display: inline-block;
-            background: rgba(148, 163, 184, 0.1);
-            padding: 2px 10px;
-            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-top: 6px;
+            margin-bottom: 14px;
         }
-        .exp-desc {
+
+        .exp-description {
             color: #cbd5e1;
-            font-size: 0.95em;
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin: 0;
+            margin-bottom: 12px;
+        }
+
+        .skill-chip {
+            background: rgba(30, 58, 138, 0.3);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 6px;
+            margin-top: 6px;
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --------------------------------------
+    # PAGE HEADER
+    # --------------------------------------
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>💼 Experience & Career Path</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>A summary of my professional background, key roles, and continuous learning achievements.</p>", unsafe_allow_html=True)
+
+    # --------------------------------------
     # PROFESSIONAL EXPERIENCE SECTION
     # --------------------------------------
-    st.markdown("### 🏢 Professional Experience")
+    st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🏢 Professional Experience</h3>", unsafe_allow_html=True)
     exps = get_experience()
     
     if exps:
         st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
         for exp in exps:
+            # Generate Skills Badges if present
+            skills_html = ""
+            if exp.get('skills'):
+                skills_list = exp['skills'].split(',') if isinstance(exp['skills'], str) else exp['skills']
+                skills_html = "".join([f'<span class="skill-chip">{s.strip()}</span>' for s in skills_list])
+            
             st.markdown(f"""
             <div class="timeline-card">
-                <div class="exp-role">{exp['position']} &nbsp;•&nbsp; <span class="exp-org">{exp['organization']}</span></div>
-                <div class="exp-date">🗓️ {exp['start_date']} - {exp['end_date']}</div>
-                <p class="exp-desc">{exp['description']}</p>
+                <div class="exp-role-title">{exp['position']} &nbsp;•&nbsp; <span class="exp-org-name">{exp['organization']}</span></div>
+                <div class="exp-badge-date">🗓️ {exp['start_date']} — {exp['end_date']}</div>
+                <p class="exp-description">{exp['description']}</p>
+                {f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''}
             </div>
             """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.info("No professional experience listed.")
 
-    st.markdown("<br><hr><br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # --------------------------------------
     # LEARNING JOURNEY TIMELINE
     # --------------------------------------
-    st.markdown("### 🎓 Learning Journey Timeline")
+    st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🎓 Learning Journey & Milestones</h3>", unsafe_allow_html=True)
     journey = get_learning_journey()
     
     if journey:
         st.markdown('<div class="timeline-wrapper">', unsafe_allow_html=True)
         for item in journey:
+            date_info = f"<div class='exp-badge-date'>📅 {item['date']}</div>" if item.get('date') else ""
             st.markdown(f"""
             <div class="timeline-card">
-                <div class="exp-role">{item['title']}</div>
-                <p class="exp-desc">{item['description']}</p>
+                <div class="exp-role-title">{item['title']}</div>
+                {date_info}
+                <p class="exp-description">{item['description']}</p>
             </div>
             """, unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
@@ -1110,85 +1366,149 @@ def render_experience():
         st.info("No learning journey timeline listed.")
 
 # ==========================================
-# CONTACT PAGE (ENHANCED & WITH EMAIL FORM)
+# CONTACT PAGE (ULTRA-PROFESSIONAL & INTERACTIVE)
 # ==========================================
+import urllib.parse
+
 def render_contact():
     profile = get_profile()
-    st.title("📬 Contact & Get in Touch")
+    
+    # Check if user arrived via Service Inquiry
+    selected_service = st.session_state.get("selected_service", None)
     
     # --------------------------------------
-    # CUSTOM CSS FOR CONTACT CARDS & FORM
+    # EXECUTIVE CSS STYLING
     # --------------------------------------
     st.markdown("""
     <style>
-        .contact-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
+        /* Glassmorphic Contact Card */
+        .pro-contact-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
         }
-        .contact-card:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+
+        .pro-contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, transparent);
+            opacity: 0.3;
         }
-        .contact-title {
+
+        .pro-contact-card:hover {
+            border-color: rgba(59, 130, 246, 0.45);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .contact-card-title {
             color: #f8fafc;
-            font-size: 1.3em;
+            font-size: 1.35rem;
             font-weight: 700;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .social-link-btn {
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.3px;
+        }
+
+        /* Modern Action Buttons */
+        .social-link-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.25);
             color: #60a5fa !important;
-            padding: 10px 16px;
-            border-radius: 10px;
+            padding: 12px 18px;
+            border-radius: 12px;
             text-decoration: none !important;
             font-weight: 600;
-            margin-bottom: 10px;
-            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .social-link-btn:hover {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: #ffffff !important;
-            transform: translateX(5px);
+            border-color: #3b82f6;
+            transform: translateX(6px);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns([1, 1], gap="large")
+    # --------------------------------------
+    # PAGE HEADER
+    # --------------------------------------
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>📬 Let's Connect</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>Have a project in mind, a service inquiry, or just want to say hi? Feel free to reach out!</p>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1, 1.2], gap="large")
 
     # --------------------------------------
-    # LEFT COLUMN: CONTACT INFO & SOCIALS
+    # LEFT COLUMN: DIRECT INFO & SOCIALS
     # --------------------------------------
     with col1:
         user_email = profile.get('email', '')
         
         st.markdown(f"""
-        <div class="contact-card">
-            <div class="contact-title">📌 Direct Contact Info</div>
-            <p style="color:#cbd5e1;">📍 <strong>Location:</strong> {profile.get('location', 'Chattogram, Bangladesh')}</p>
-            <p style="color:#cbd5e1;">📧 <strong>Email:</strong> {user_email}</p>
-            <div style="margin-top: 15px;">
+        <div class="pro-contact-card">
+            <div class="contact-card-title">📍 Contact Information</div>
+            <div class="info-row">
+                <div class="info-icon">🏢</div>
+                <div>
+                    <div style="color:#64748b; font-size:0.75rem; font-weight:700; text-transform:uppercase;">Location</div>
+                    <div style="color:#f8fafc; font-weight:600;">{profile.get('location', 'Chattogram, Bangladesh')}</div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-icon">📧</div>
+                <div>
+                    <div style="color:#64748b; font-size:0.75rem; font-weight:700; text-transform:uppercase;">Email Address</div>
+                    <div style="color:#f8fafc; font-weight:600;">{user_email}</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
                 <a href="mailto:{user_email}" class="social-link-btn" style="justify-content: center;">
-                    ✉️ Open Default Mail App
+                    ✉️ Launch Default Mail Client
                 </a>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-        st.markdown('<div class="contact-card">', unsafe_allow_html=True)
-        st.markdown('<div class="contact-title">🔗 Social Profiles</div>', unsafe_allow_html=True)
+        st.markdown('<div class="pro-contact-card">', unsafe_allow_html=True)
+        st.markdown('<div class="contact-card-title">🌐 Digital Presence</div>', unsafe_allow_html=True)
         
         socials = get_social_links()
         active_socials = [soc for soc in socials if soc.get("active", True)]
@@ -1197,101 +1517,187 @@ def render_contact():
             for soc in active_socials:
                 st.markdown(f"""
                 <a href='{soc['url']}' target='_blank' class='social-link-btn'>
-                    🌐 {soc['label']}
+                    🔗 <span>{soc['label']}</span>
                 </a>
                 """, unsafe_allow_html=True)
         else:
-            st.info("No social profiles linked.")
+            st.info("No social profiles currently linked.")
             
         st.markdown('</div>', unsafe_allow_html=True)
 
     # --------------------------------------
-    # RIGHT COLUMN: DIRECT EMAIL FORM
+    # RIGHT COLUMN: INTERACTIVE MESSAGE FORM
     # --------------------------------------
     with col2:
-        st.markdown('<div class="contact-card">', unsafe_allow_html=True)
-        st.markdown('<div class="contact-title">💬 Send Me a Message</div>', unsafe_allow_html=True)
+        st.markdown('<div class="pro-contact-card">', unsafe_allow_html=True)
+        st.markdown('<div class="contact-card-title">💬 Send a Direct Message</div>', unsafe_allow_html=True)
         
+        # Service options for selection dropdown
+        services_list = ["General Inquiry"]
+        try:
+            available_services = [s['title'] for s in get_services() if s.get("active", True)]
+            services_list.extend(available_services)
+        except NameError:
+            pass
+            
         # Streamlit Contact Form
-        with st.form("contact_form", clear_on_submit=True):
-            sender_name = st.text_input("Name", placeholder="Enter your full name")
-            sender_email = st.text_input("Email", placeholder="Enter your email address")
-            message_body = st.text_area("Your Message", placeholder="Type your message here...", height=150)
+        with st.form("pro_contact_form", clear_on_submit=False):
+            sender_name = st.text_input("Full Name *", placeholder="John Doe")
+            sender_email = st.text_input("Email Address *", placeholder="john@example.com")
+            
+            # Auto-select service if coming from Services page
+            default_idx = services_list.index(selected_service) if selected_service in services_list else 0
+            subject_type = st.selectbox("Topic / Service Required", services_list, index=default_idx)
+            
+            message_body = st.text_area("Your Message *", placeholder="Describe your project, question, or proposal...", height=150)
             
             submit_btn = st.form_submit_button("📩 Send Message", use_container_width=True)
             
             if submit_btn:
                 if not sender_name or not sender_email or not message_body:
-                    st.error("⚠️ Please fill in all fields before sending.")
+                    st.error("⚠️ Please fill in all required fields before sending.")
                 elif "@" not in sender_email or "." not in sender_email:
                     st.error("⚠️ Please enter a valid email address.")
                 else:
-                    # Formspree / Email Redirection HTML Form Execution
-                    # আপনার ইমেইলে সরাসরি মেসেজ পাঠাতে Formspree সার্ভিস ব্যবহার করা হয়েছে
-                    import urllib.parse
+                    encoded_subject = urllib.parse.quote(f"Portfolio [{subject_type}]: Message from {sender_name}")
+                    encoded_body = urllib.parse.quote(f"Name: {sender_name}\nEmail: {sender_email}\nService Topic: {subject_type}\n\nMessage:\n{message_body}")
                     
-                    encoded_subject = urllib.parse.quote(f"Portfolio Message from {sender_name}")
-                    encoded_body = urllib.parse.quote(f"Name: {sender_name}\nEmail: {sender_email}\n\nMessage:\n{message_body}")
-                    
-                    # Direct mailto redirect or success trigger
-                    st.success("✅ Thank you! Your message has been generated.")
+                    st.success("✅ Your message draft is ready to send!")
                     st.markdown(f"""
-                    <a href="mailto:{user_email}?subject={encoded_subject}&body={encoded_body}" target="_blank" class="social-link-btn" style="text-align:center; justify-content:center; background:#22c55e; color:white !important;">
-                        🚀 Click Here to Confirm & Send Email
-                    </a>
+                    <div style="margin-top: 15px;">
+                        <a href="mailto:{user_email}?subject={encoded_subject}&body={encoded_body}" target="_blank" class="social-link-btn" style="text-align:center; justify-content:center; background:linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color:white !important; border:none;">
+                            🚀 Confirm & Send Email Now
+                        </a>
+                    </div>
                     """, unsafe_allow_html=True)
+                    
+                    # Clear selected service from state after use
+                    if "selected_service" in st.session_state:
+                        del st.session_state["selected_service"]
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ==========================================
-# REVIEWS / TESTIMONIALS SYSTEM
+# REVIEWS / TESTIMONIALS SYSTEM (ENHANCED)
 # ==========================================
 def render_reviews():
     # ১. Supabase Client কল করা
     supabase = get_supabase_client()
     if not supabase:
+        st.warning("⚠️ Database connection unavailable.")
         return
 
-    st.title("💬 Client Reviews & Testimonials")
+    # --------------------------------------
+    # HIGH-END STYLES & GLASSMORPHISM CSS
+    # --------------------------------------
+    st.markdown("""
+    <style>
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    # ২. animations এবং UI এর জন্য CSS
-    reviews_css = (
-        "<style>"
-        "@keyframes fadeIn {"
-        "    from { opacity: 0; transform: translateY(10px); }"
-        "    to { opacity: 1; transform: translateY(0); }"
-        "}"
-        ".review-card {"
-        "    background: rgba(30, 41, 59, 0.7);"
-        "    backdrop-filter: blur(10px);"
-        "    border: 1px solid rgba(255, 255, 255, 0.08);"
-        "    border-radius: 14px;"
-        "    padding: 20px;"
-        "    margin-bottom: 16px;"
-        "    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);"
-        "    animation: fadeIn 0.5s ease-in-out;"
-        "    transition: all 0.3s ease;"
-        "}"
-        ".review-card:hover {"
-        "    border-color: rgba(59, 130, 246, 0.5);"
-        "    transform: translateY(-5px);"
-        "    box-shadow: 0 12px 20px 0 rgba(59, 130, 246, 0.2);"
-        "}"
-        ".reviewer-name { color: #f8fafc; font-weight: 700; font-size: 1.1em; }"
-        ".reviewer-role { color: #60a5fa; font-size: 0.85em; margin-bottom: 10px; }"
-        ".review-stars { color: #f59e0b; font-size: 1em; margin-bottom: 8px; }"
-        ".review-comment { color: #cbd5e1; font-size: 0.95em; line-height: 1.5; }"
-        "</style>"
-    )
-    st.markdown(reviews_css, unsafe_allow_html=True)
+        .review-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 0.4s ease-out;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
 
-    col1, col2 = st.columns([3, 2], gap="large")
+        .review-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, #60a5fa, transparent);
+            opacity: 0.3;
+        }
+
+        .review-card:hover {
+            border-color: rgba(59, 130, 246, 0.45);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35), 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .reviewer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .reviewer-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .reviewer-name {
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 1.05rem;
+            line-height: 1.2;
+        }
+
+        .reviewer-role {
+            color: #60a5fa;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .review-stars {
+            color: #fbbf24;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .review-comment {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .review-summary-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # PAGE TITLE
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>💬 Client Reviews & Testimonials</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>Feedback and recommendations from people I have collaborated with.</p>", unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1.1, 0.9], gap="large")
 
     # --------------------------------------
     # LEFT COLUMN: DISPLAY REVIEWS
     # --------------------------------------
     with col1:
-        st.subheader("⭐ What People Say")
+        st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>⭐ What People Say</h3>", unsafe_allow_html=True)
         
         try:
             response = supabase.table("reviews").select("*").eq("is_approved", True).order("created_at", desc=True).execute()
@@ -1301,44 +1707,66 @@ def render_reviews():
             approved_reviews = []
 
         if approved_reviews:
+            # Summary Calculation
+            total_reviews = len(approved_reviews)
+            avg_rating = sum(r.get("rating", 5) for r in approved_reviews) / total_reviews
+            
+            st.markdown(f"""
+            <div class="review-summary-box">
+                <div>
+                    <span style="color: #cbd5e1; font-size: 0.9rem;">Overall Rating:</span>
+                    <span style="color: #fbbf24; font-weight: 700; font-size: 1.1rem; margin-left: 6px;">{avg_rating:.1f} / 5.0</span>
+                </div>
+                <div style="color: #94a3b8; font-size: 0.88rem;">
+                    Total Testimonials: <strong style="color: #f8fafc;">{total_reviews}</strong>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
             for rev in approved_reviews:
-                stars = "⭐" * rev.get("rating", 5)
-                card_html = (
-                    f'<div class="review-card">'
-                    f'    <div class="review-stars">{stars}</div>'
-                    f'    <div class="review-comment">"{rev.get("comment", "")}"</div>'
-                    f'    <hr style="border-color: rgba(255,255,255,0.05); margin: 12px 0;">'
-                    f'    <div class="reviewer-name">{rev.get("name", "Anonymous")}</div>'
-                    f'    <div class="reviewer-role">{rev.get("role", "")}</div>'
-                    f'</div>'
-                )
+                stars = "★" * rev.get("rating", 5) + "☆" * (5 - rev.get("rating", 5))
+                initial = rev.get("name", "A")[0].upper() if rev.get("name") else "A"
+                
+                card_html = f"""
+                <div class='review-card'>
+                    <div class='review-stars'>{stars}</div>
+                    <div class='review-comment'>'{rev.get('comment', '')}'</div>
+                    <div class="reviewer-header">
+                        <div class="reviewer-avatar">{initial}</div>
+                        <div>
+                            <div class="reviewer-name">{rev.get('name', 'Anonymous')}</div>
+                            <div class="reviewer-role">{rev.get('role', 'Client')}</div>
+                        </div>
+                    </div>
+                </div>
+                """
                 st.markdown(card_html, unsafe_allow_html=True)
         else:
-            st.info("No approved reviews yet.")
+            st.info("No approved reviews available yet. Be the first to share your feedback!")
 
     # --------------------------------------
-    # RIGHT COLUMN: INPUT FIELDS FORM
+    # RIGHT COLUMN: INPUT FORM
     # --------------------------------------
     with col2:
-        st.subheader("✍️ Leave a Review")
+        st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>✍️ Share Your Feedback</h3>", unsafe_allow_html=True)
         
-        # Streamlit Form ব্যবহার করে Input Fields তৈরি
+        st.markdown('<div class="review-card" style="animation: none;">', unsafe_allow_html=True)
         with st.form("submit_review_form", clear_on_submit=True):
             name = st.text_input("Your Name *", placeholder="e.g. Abdullah")
-            role = st.text_input("Designation / Company", placeholder="e.g. Software Engineer")
+            role = st.text_input("Designation / Company", placeholder="e.g. Software Engineer at TechCorp")
             rating = st.slider("Rating (Stars)", min_value=1, max_value=5, value=5)
-            comment = st.text_area("Your Review / Feedback *", placeholder="Write your experience working with me...", height=120)
+            comment = st.text_area("Your Review / Feedback *", placeholder="Share your experience working together...", height=130)
             
             submit_btn = st.form_submit_button("🚀 Submit Review", use_container_width=True)
             
             if submit_btn:
                 if not name.strip() or not comment.strip():
-                    st.error("⚠️ Please fill in your name and comment.")
+                    st.error("⚠️ Please fill in all required fields (Name and Review).")
                 else:
                     try:
                         new_review = {
                             "name": name.strip(),
-                            "role": role.strip(),
+                            "role": role.strip() if role.strip() else "Client",
                             "rating": rating,
                             "comment": comment.strip(),
                             "is_approved": False
@@ -1347,7 +1775,7 @@ def render_reviews():
                         st.success("✅ Thank you! Your review has been submitted for approval.")
                     except Exception as e:
                         st.error(f"Failed to submit review: {e}")
-
+        st.markdown('</div>', unsafe_allow_html=True)
 # ==========================================
 # ADMIN PAGE (ENHANCED & DYNAMIC CATEGORIES)
 # ==========================================
