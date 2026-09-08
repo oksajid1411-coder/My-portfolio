@@ -597,7 +597,6 @@ def render_home():
 # ==========================================
 # SKILLS PAGE (NO PERCENTAGE - CLEAN & FIXED)
 # ==========================================
-import streamlit as st
 
 def render_skills():
     # Safely fetch skills
@@ -779,6 +778,8 @@ def render_skills():
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
+
+
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
@@ -1160,9 +1161,9 @@ def render_services():
 
 
 # ==========================================
-# EXPERIENCE PAGE (BUG-FIXED & OPTIMIZED)
+# EXPERIENCE PAGE (BUG-FIXED & SECURE)
 # ==========================================
-import streamlit as st
+import html
 
 def render_experience():
     # --------------------------------------
@@ -1261,6 +1262,7 @@ def render_experience():
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 12px;
+            white-space: pre-line;
         }
 
         .skill-chip {
@@ -1278,6 +1280,12 @@ def render_experience():
     </style>
     """, unsafe_allow_html=True)
 
+    # Helper function to sanitize input strings
+    def safe_str(val, default='N/A'):
+        if not val:
+            return default
+        return html.escape(str(val))
+
     # --------------------------------------
     # PAGE HEADER
     # --------------------------------------
@@ -1289,30 +1297,42 @@ def render_experience():
     # --------------------------------------
     st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🏢 Professional Experience</h3>", unsafe_allow_html=True)
     
-    exps = get_experience() if callable(get_experience) else []
+    # Safely call function and check list
+    exps = get_experience() if 'get_experience' in globals() and callable(get_experience) else []
     
-    if exps:
+    if isinstance(exps, list) and len(exps) > 0:
         timeline_html = '<div class="timeline-wrapper">'
         for exp in exps:
-            # Generate Skills Badges safely
-            skills_html = ""
+            if not isinstance(exp, dict):
+                continue
+
+            # Process skills safely
             raw_skills = exp.get('skills', '')
+            skills_html = ""
             if raw_skills:
-                skills_list = raw_skills.split(',') if isinstance(raw_skills, str) else raw_skills
-                skills_html = "".join([f'<span class="skill-chip">{str(s).strip()}</span>' for s in skills_list])
+                if isinstance(raw_skills, str):
+                    skills_list = [s.strip() for s in raw_skills.split(',') if s.strip()]
+                elif isinstance(raw_skills, (list, tuple)):
+                    skills_list = [str(s).strip() for s in raw_skills if str(s).strip()]
+                else:
+                    skills_list = []
+                
+                skills_html = "".join([f'<span class="skill-chip">{html.escape(s)}</span>' for s in skills_list])
             
-            position = exp.get('position', 'N/A')
-            organization = exp.get('organization', 'N/A')
-            start_date = exp.get('start_date', 'N/A')
-            end_date = exp.get('end_date', 'Present')
-            description = exp.get('description', '')
+            position = safe_str(exp.get('position'), 'N/A')
+            organization = safe_str(exp.get('organization'), 'N/A')
+            start_date = safe_str(exp.get('start_date'), 'N/A')
+            end_date = safe_str(exp.get('end_date'), 'Present')
+            description = safe_str(exp.get('description'), '')
+
+            skills_div = f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''
 
             timeline_html += f"""
             <div class="timeline-card">
                 <div class="exp-role-title">{position} &nbsp;•&nbsp; <span class="exp-org-name">{organization}</span></div>
                 <div class="exp-badge-date">🗓️ {start_date} — {end_date}</div>
                 <p class="exp-description">{description}</p>
-                {f'<div style="margin-top: 10px;">{skills_html}</div>' if skills_html else ''}
+                {skills_div}
             </div>
             """
         timeline_html += '</div>'
@@ -1327,15 +1347,18 @@ def render_experience():
     # --------------------------------------
     st.markdown("<h3 style='color: #f8fafc; font-weight: 700; margin-bottom: 20px;'>🎓 Learning Journey & Milestones</h3>", unsafe_allow_html=True)
     
-    journey = get_learning_journey() if callable(get_learning_journey) else []
+    journey = get_learning_journey() if 'get_learning_journey' in globals() and callable(get_learning_journey) else []
     
-    if journey:
+    if isinstance(journey, list) and len(journey) > 0:
         journey_html = '<div class="timeline-wrapper">'
         for item in journey:
-            title = item.get('title', 'Milestone')
-            date_val = item.get('date', '')
+            if not isinstance(item, dict):
+                continue
+
+            title = safe_str(item.get('title'), 'Milestone')
+            date_val = safe_str(item.get('date'), '')
             date_info = f"<div class='exp-badge-date'>📅 {date_val}</div>" if date_val else ""
-            description = item.get('description', '')
+            description = safe_str(item.get('description'), '')
 
             journey_html += f"""
             <div class="timeline-card">
@@ -1347,8 +1370,7 @@ def render_experience():
         journey_html += '</div>'
         st.markdown(journey_html, unsafe_allow_html=True)
     else:
-        st.info("No learning journey timeline listed.")
-# ==========================================
+        st.info("No learning journey timeline listed.")# ==========================================
 # CONTACT PAGE (ULTRA-PROFESSIONAL & INTERACTIVE)
 # ==========================================
 import urllib.parse
