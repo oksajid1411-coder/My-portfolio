@@ -250,219 +250,205 @@ st.markdown("""
 
 
 # ==========================================
-# HOME PAGE 
+# HOME PAGE (ULTRA-PROFESSIONAL EDITION)
 # ==========================================
 def render_home():
     profile = get_profile() or {}
 
     # --------------------------------------
-    # MODERN ULTRA-PREMIUM CSS
+    # EXECUTIVE CSS STYLING
     # --------------------------------------
     st.markdown("""
     <style>
-        /* ---------------- Global Animations ---------------- */
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        /* Modern Keyframe Animations */
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
-        
-        @keyframes gradient-shift {
+
+        @keyframes text-gradient-flow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* ---------------- Glassmorphism Card Style ---------------- */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.75);
+        /* Glassmorphic Container Cards */
+        .pro-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 28px;
             margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
         }
-        
-        .glass-card::before {
+
+        .pro-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.15);
+        }
+
+        .pro-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.6), transparent);
         }
 
-        .glass-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(59, 130, 246, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(59, 130, 246, 0.2);
-        }
-
-        .glass-card:hover::before {
-            opacity: 1;
-        }
-
-        /* ---------------- Animated Gradient Text ---------------- */
-        .gradient-text {
-            background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 40%, #a855f7 80%, #3b82f6 100%);
+        /* Animated Typography */
+        .hero-title {
+            background: linear-gradient(135deg, #ffffff 0%, #93c5fd 50%, #3b82f6 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-size: 2.8rem;
             font-weight: 800;
-            animation: gradient-shift 6s ease infinite;
+            letter-spacing: -0.5px;
+            animation: text-gradient-flow 6s ease infinite;
         }
 
-        /* ---------------- Modern Badges ---------------- */
-        .glow-badge {
-            background: rgba(30, 58, 138, 0.3);
-            color: #93c5fd;
+        /* Status & Badges */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
             padding: 6px 14px;
             border-radius: 30px;
-            font-size: 0.8em;
+            font-size: 0.85rem;
             font-weight: 600;
-            display: inline-block;
-            margin-right: 6px;
-            margin-bottom: 8px;
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.3px;
-        }
-        
-        .glow-badge:hover {
-            background: #2563eb;
-            color: #ffffff;
-            border-color: #60a5fa;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5);
         }
 
-        /* ---------------- Metric Cards ---------------- */
-        .metric-card {
-            background: rgba(15, 23, 42, 0.65);
+        .status-dot-active {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        .skill-badge {
+            background: rgba(30, 58, 138, 0.35);
+            color: #93c5fd;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 4px 4px 4px 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            background: #2563eb;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Executive Metric Tiles */
+        .metric-tile {
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 20px 15px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
-            position: relative;
         }
-        
-        .metric-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 12px 28px rgba(59, 130, 246, 0.15);
+
+        .metric-tile:hover {
             background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-4px);
         }
 
         .metric-label {
-            font-size: 0.78em;
+            font-size: 0.75rem;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            font-weight: 600;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
 
-        .metric-value {
-            font-size: 1.3em;
+        .metric-val {
+            font-size: 1.35rem;
             color: #f8fafc;
             font-weight: 700;
         }
 
-        /* Real Pulsing Dot */
-        .status-badge {
-            color: #4ade80;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            height: 9px;
-            width: 9px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulse-glow 2s infinite;
-        }
-
-        /* ---------------- Animated Workflow Pipeline ---------------- */
-        .pipeline-container {
+        /* Workflow Step Flow */
+        .workflow-box {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            margin: 24px 0;
-            padding: 20px;
+            gap: 10px;
             background: rgba(15, 23, 42, 0.5);
             border-radius: 16px;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .pipeline-node {
-            background: rgba(30, 41, 59, 0.9);
+        .workflow-node {
+            background: rgba(30, 41, 59, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #f8fafc;
-            padding: 12px 18px;
+            color: #e2e8f0;
+            padding: 12px 16px;
             border-radius: 12px;
+            font-size: 0.88rem;
             font-weight: 600;
-            font-size: 0.88em;
             text-align: center;
             flex: 1;
-            min-width: 130px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            min-width: 120px;
+            transition: all 0.3s ease;
         }
 
-        .pipeline-node:hover {
-            border-color: #60a5fa;
-            background: #2563eb;
+        .workflow-node:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: #ffffff;
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
         }
 
-        .pipeline-arrow {
+        .workflow-arrow {
             color: #60a5fa;
-            font-size: 1.1em;
-            font-weight: bold;
-            opacity: 0.7;
-            transition: transform 0.3s ease;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        /* ---------------- Profile Image Styling ---------------- */
-        .profile-img-container img {
-            border-radius: 24px;
+        /* Image Masking */
+        .avatar-frame img {
+            border-radius: 20px;
             border: 2px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
             transition: all 0.4s ease;
         }
 
-        .profile-img-container img:hover {
-            transform: scale(1.03);
+        .avatar-frame img:hover {
+            transform: scale(1.02);
             border-color: #3b82f6;
-            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25);
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --------------------------------------
-    # HERO & ABOUT INTEGRATED SECTION
+    # HERO SECTION
     # --------------------------------------
-    hero_col1, hero_col2 = st.columns([1, 2], gap="large")
+    hero_col1, hero_col2 = st.columns([1, 2.2], gap="large")
 
     with hero_col1:
-        st.markdown('<div class="profile-img-container">', unsafe_allow_html=True)
+        st.markdown('<div class="avatar-frame">', unsafe_allow_html=True)
         img_url = "https://raw.githubusercontent.com/oksajid1411-coder/My-portfolio/master/sajid_imag.jpg"
         if img_url:
             st.image(img_url, use_container_width=True)
@@ -473,17 +459,16 @@ def render_home():
         title = profile.get("title", "Data Scientist & ML Engineer")
         location = profile.get("location", "Chattogram, Bangladesh")
         email = profile.get("email", "")
-        bio = profile.get("bio", "")
+        bio = profile.get("bio", "Passionate about transforming complex datasets into actionable business intelligence and high-performing machine learning architectures.")
 
-        st.markdown(f"<h1 style='margin-bottom:0px;'><span class='gradient-text'>{name}</span></h1>", unsafe_allow_html=True)
-        st.markdown(f"<h3 style='color: #94a3b8; margin-top:5px; font-weight:500;'>{title}</h3>", unsafe_allow_html=True)
-        st.markdown(f"📍 **Location:** {location} &nbsp;|&nbsp; ✉️ **Email:** [{email}](mailto:{email})")
+        st.markdown(f"<div class='hero-title'>{name}</div>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color: #60a5fa; font-size: 1.2rem; font-weight: 600; margin-top: -5px;'>{title}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color: #94a3b8; font-size: 0.95rem;'>📍 {location} &nbsp;•&nbsp; ✉️ <a href='mailto:{email}' style='color:#94a3b8; text-decoration:none;'>{email}</a></p>", unsafe_allow_html=True)
 
-        st.markdown("---")
-        st.markdown(f"<p style='font-size:1.05em; line-height:1.6; color:#cbd5e1;'>{bio}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='color:#cbd5e1; font-size: 1.02rem; line-height:1.6; margin-top:15px;'>{bio}</p>", unsafe_allow_html=True)
 
-        # Action Buttons
-        btn_c1, btn_c2, btn_c3 = st.columns([1, 1, 1])
+        # Action Buttons Layout
+        btn_c1, btn_c2, btn_c3 = st.columns([1.1, 1.1, 1])
         with btn_c1:
             if st.button("📁 Explore Projects", use_container_width=True):
                 st.session_state["nav"] = "Projects"
@@ -498,92 +483,91 @@ def render_home():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --------------------------------------
-    # ANIMATED METRIC CARDS LAYOUT
+    # METRICS & OVERVIEW
     # --------------------------------------
     sc1, sc2, sc3, sc4 = st.columns(4)
-
     exp_years = profile.get('experience_years', 1)
 
     with sc1:
         st.markdown(f"""
-        <div class="metric-card">
+        <div class="metric-tile">
             <div class="metric-label">Experience</div>
-            <div class="metric-value">{exp_years}+ Year</div>
+            <div class="metric-val">{exp_years}+ Year</div>
         </div>
         """, unsafe_allow_html=True)
 
     with sc2:
         st.markdown("""
-        <div class="metric-card">
+        <div class="metric-tile">
             <div class="metric-label">Core Focus</div>
-            <div class="metric-value">Data Analysis</div>
+            <div class="metric-val">Data Analysis</div>
         </div>
         """, unsafe_allow_html=True)
 
     with sc3:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Additional Expertise</div>
-            <div class="metric-value">ML & DL</div>
+        <div class="metric-tile">
+            <div class="metric-label">Expertise</div>
+            <div class="metric-val">ML & DL</div>
         </div>
         """, unsafe_allow_html=True)
 
     with sc4:
         st.markdown("""
-        <div class="metric-card">
-            <div class="metric-label">Status</div>
-            <div class="metric-value status-badge">
-                <span class="status-dot"></span> Open to Work
+        <div class="metric-tile">
+            <div class="metric-label">Availability</div>
+            <div class="status-pill" style="margin-top: 4px;">
+                <span class="status-dot-active"></span> Open to Work
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("<br><hr>", unsafe_allow_html=True)
+    st.markdown("<br><hr style='border-color: rgba(255,255,255,0.08);'><br>", unsafe_allow_html=True)
 
     # --------------------------------------
-    # CORE EXPERTISE SECTION
+    # CORE EXPERTISE CARDS
     # --------------------------------------
-    st.markdown("## ⚡ Core Expertise")
+    st.markdown("<h2 style='font-size: 1.6rem; font-weight: 700; margin-bottom: 20px;'>⚡ Technical Domains</h2>", unsafe_allow_html=True)
     col_a, col_b, col_c = st.columns(3, gap="medium")
 
     with col_a:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="margin-top:0; color:#f8fafc;">📊 Data Analysis</h3>
-            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Transforming raw datasets into actionable insights with robust cleaning and statistical modeling.</p>
+        <div class="pro-card">
+            <h3 style="margin-top:0; font-size:1.2rem; color:#f8fafc;">📊 Data Analysis</h3>
+            <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5; min-height:48px;">Transforming complex, unstructured datasets into intuitive and actionable visual intelligence.</p>
             <div>
-                <span class="glow-badge">Data Cleaning</span>
-                <span class="glow-badge">EDA</span>
-                <span class="glow-badge">Visualization</span>
-                <span class="glow-badge">Statistics</span>
+                <span class="skill-badge">Data Cleaning</span>
+                <span class="skill-badge">EDA</span>
+                <span class="skill-badge">Visualization</span>
+                <span class="skill-badge">Statistics</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_b:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="margin-top:0; color:#f8fafc;">🤖 Machine Learning</h3>
-            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Building predictive models, classification pipelines, and advanced feature engineering solutions.</p>
+        <div class="pro-card">
+            <h3 style="margin-top:0; font-size:1.2rem; color:#f8fafc;">🤖 Machine Learning</h3>
+            <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5; min-height:48px;">Engineering end-to-end predictive models, automated features, and robust algorithms.</p>
             <div>
-                <span class="glow-badge">Regression</span>
-                <span class="glow-badge">Classification</span>
-                <span class="glow-badge">Feature Eng.</span>
-                <span class="glow-badge">Evaluation</span>
+                <span class="skill-badge">Regression</span>
+                <span class="skill-badge">Classification</span>
+                <span class="skill-badge">Feature Eng.</span>
+                <span class="skill-badge">Evaluation</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_c:
         st.markdown("""
-        <div class="glass-card">
-            <h3 style="margin-top:0; color:#f8fafc;">🧠 Deep Learning</h3>
-            <p style="color:#94a3b8; font-size:0.95em; min-height:48px;">Designing neural network architectures, computer vision pipelines, and deep models.</p>
+        <div class="pro-card">
+            <h3 style="margin-top:0; font-size:1.2rem; color:#f8fafc;">🧠 Deep Learning</h3>
+            <p style="color:#94a3b8; font-size:0.9rem; line-height:1.5; min-height:48px;">Building neural networks, computer vision frameworks, and scalable deep architectures.</p>
             <div>
-                <span class="glow-badge">Neural Networks</span>
-                <span class="glow-badge">CNN</span>
-                <span class="glow-badge">Computer Vision</span>
-                <span class="glow-badge">PyTorch/TF</span>
+                <span class="skill-badge">Neural Networks</span>
+                <span class="skill-badge">CNN</span>
+                <span class="skill-badge">Computer Vision</span>
+                <span class="skill-badge">PyTorch/TF</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -591,24 +575,24 @@ def render_home():
     st.markdown("<br>", unsafe_allow_html=True)
 
     # --------------------------------------
-    # INTERACTIVE WORKFLOW PIPELINE
+    # WORKFLOW PIPELINE
     # --------------------------------------
-    st.markdown("## 🔄 Analytical & Modeling Workflow")
+    st.markdown("<h2 style='font-size: 1.6rem; font-weight: 700; margin-bottom: 20px;'>🔄 Analytical Workflow</h2>", unsafe_allow_html=True)
     st.markdown("""
-    <div class="pipeline-container">
-        <div class="pipeline-node">📥 1. Collection</div>
-        <div class="pipeline-arrow">➔</div>
-        <div class="pipeline-node">🧹 2. Cleaning</div>
-        <div class="pipeline-arrow">➔</div>
-        <div class="pipeline-node">🔍 3. EDA</div>
-        <div class="pipeline-arrow">➔</div>
-        <div class="pipeline-node">⚙️ 4. Feature Eng.</div>
-        <div class="pipeline-arrow">➔</div>
-        <div class="pipeline-node">🤖 5. ML/DL Model</div>
-        <div class="pipeline-arrow">➔</div>
-        <div class="pipeline-node">🎯 6. Insights</div>
+    <div class="workflow-box">
+        <div class="workflow-node">📥 1. Collection</div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-node">🧹 2. Cleaning</div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-node">🔍 3. EDA</div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-node">⚙️ 4. Feature Eng.</div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-node">🤖 5. ML/DL Model</div>
+        <div class="workflow-arrow">➔</div>
+        <div class="workflow-node">🎯 6. Insights</div>
     </div>
-    """, unsafe_allow_html=True)   
+    """, unsafe_allow_html=True)  
 # ==========================================
 # SKILLS PAGE (ENHANCED & ANIMATED)
 # ==========================================
