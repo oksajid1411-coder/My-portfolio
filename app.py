@@ -2117,7 +2117,6 @@ def render_admin():
 # ==========================================
 
 def main():
-    # 1. Page Dictionary Definition (About সরানো হয়েছে কারণ তা Home-এ সংযুক্ত)
     pages = {
         "Home": render_home,
         "Skills": render_skills,
