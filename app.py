@@ -602,9 +602,6 @@ import html
 import html
 import streamlit as st
 
-import html
-import streamlit as st
-
 def render_skills():
     # Safely fetch skills
     skills = get_skills() if 'get_skills' in globals() and callable(get_skills) else []
@@ -614,58 +611,53 @@ def render_skills():
         return
 
     # --------------------------------------
-    # MODERN HIGH-END STYLES & ANIMATIONS
+    # CLEAN PROFESSIONAL STYLES (NO PROGRESS BARS)
     # --------------------------------------
     st.markdown("""
     <style>
-        /* Glassmorphic Ultra-Modern Card */
+        /* Glassmorphic Minimalist Card */
         .modern-skill-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 14px;
-            padding: 16px 18px;
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .modern-skill-card:hover {
-            transform: translateY(-4px);
-            background: rgba(30, 41, 59, 0.7);
-            border-color: rgba(96, 165, 250, 0.35);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+            background: rgba(30, 41, 59, 0.75);
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.4);
         }
 
-        /* Top Accent Glow Line */
-        .card-top-line {
+        /* Left Accent Stripe */
+        .card-left-stripe {
             position: absolute;
-            top: 0;
             left: 0;
-            right: 0;
-            height: 2px;
-            opacity: 0.8;
+            top: 0;
+            bottom: 0;
+            width: 3px;
         }
 
-        /* Header Info */
-        .skill-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-
+        /* Title Styling */
         .skill-title {
             color: #f8fafc;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-weight: 600;
             letter-spacing: 0.2px;
             margin: 0;
         }
 
-        /* Status Indicator */
+        /* Status Indicator & Badges */
         .status-dot {
             width: 6px;
             height: 6px;
@@ -675,53 +667,27 @@ def render_skills():
         }
 
         .level-badge-container {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             font-size: 0.7rem;
             font-weight: 700;
-            padding: 3px 10px;
+            padding: 4px 10px;
             border-radius: 20px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* Professional Slim Progress Bar Styling */
-        .progress-bg {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 20px;
-            transition: width 0.8s ease-in-out;
-            position: relative;
-        }
-
-        /* Level Specific Colors & Soft Glows */
-        .advanced-theme { 
-            background: linear-gradient(90deg, #059669, #10b981); 
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-        }
-        .advanced-text { color: #34d399; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); }
+        /* Level Specific Color Systems */
+        .advanced-stripe { background: #10b981; }
+        .advanced-text { color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); }
         .advanced-dot { background: #34d399; box-shadow: 0 0 6px #34d399; }
 
-        .intermediate-theme { 
-            background: linear-gradient(90deg, #2563eb, #3b82f6); 
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-        }
-        .intermediate-text { color: #60a5fa; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .intermediate-stripe { background: #3b82f6; }
+        .intermediate-text { color: #60a5fa; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); }
         .intermediate-dot { background: #60a5fa; box-shadow: 0 0 6px #60a5fa; }
 
-        .beginner-theme { 
-            background: linear-gradient(90deg, #d97706, #f59e0b); 
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-        }
-        .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .beginner-stripe { background: #f59e0b; }
+        .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
         .beginner-dot { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
 
         /* Category Header */
@@ -736,14 +702,14 @@ def render_skills():
 
         .category-title-text {
             color: #f1f5f9;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 700;
         }
 
         .category-pill {
             background: rgba(59, 130, 246, 0.1);
             color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.25);
             font-size: 0.75rem;
             padding: 2px 10px;
             border-radius: 12px;
@@ -788,36 +754,28 @@ def render_skills():
             level_lower = raw_level.lower()
             
             if 'adv' in level_lower or 'expert' in level_lower:
-                theme_class = "advanced-theme"
+                stripe_class = "advanced-stripe"
                 text_class = "advanced-text"
                 dot_class = "advanced-dot"
                 display_level = "Advanced"
-                progress_width = "90%"
             elif 'beg' in level_lower or 'basic' in level_lower:
-                theme_class = "beginner-theme"
+                stripe_class = "beginner-stripe"
                 text_class = "beginner-text"
                 dot_class = "beginner-dot"
                 display_level = "Beginner"
-                progress_width = "40%"
             else:
-                theme_class = "intermediate-theme"
+                stripe_class = "intermediate-stripe"
                 text_class = "intermediate-text"
                 dot_class = "intermediate-dot"
                 display_level = "Intermediate"
-                progress_width = "70%"
 
             card_html = f'''
             <div class="modern-skill-card">
-                <div class="card-top-line {theme_class}"></div>
-                <div class="skill-info">
-                    <span class="skill-title">{skill_name}</span>
-                    <div class="level-badge-container {text_class}">
-                        <span class="status-dot {dot_class}"></span>
-                        {display_level}
-                    </div>
-                </div>
-                <div class="progress-bg">
-                    <div class="progress-fill {theme_class}" style="width: {progress_width};"></div>
+                <div class="card-left-stripe {stripe_class}"></div>
+                <span class="skill-title">{skill_name}</span>
+                <div class="level-badge-container {text_class}">
+                    <span class="status-dot {dot_class}"></span>
+                    {display_level}
                 </div>
             </div>
             '''
