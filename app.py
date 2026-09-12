@@ -602,6 +602,9 @@ import html
 import html
 import streamlit as st
 
+import html
+import streamlit as st
+
 def render_skills():
     # Safely fetch skills
     skills = get_skills() if 'get_skills' in globals() and callable(get_skills) else []
@@ -617,23 +620,23 @@ def render_skills():
     <style>
         /* Glassmorphic Ultra-Modern Card */
         .modern-skill-card {
-            background: rgba(30, 41, 59, 0.45);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 18px;
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 16px 18px;
             position: relative;
             overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 12px;
         }
 
         .modern-skill-card:hover {
-            transform: translateY(-5px);
-            background: rgba(30, 41, 59, 0.75);
-            border-color: rgba(96, 165, 250, 0.4);
-            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.15);
+            transform: translateY(-4px);
+            background: rgba(30, 41, 59, 0.7);
+            border-color: rgba(96, 165, 250, 0.35);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 130, 246, 0.1);
         }
 
         /* Top Accent Glow Line */
@@ -642,8 +645,8 @@ def render_skills():
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            opacity: 0.7;
+            height: 2px;
+            opacity: 0.8;
         }
 
         /* Header Info */
@@ -651,20 +654,21 @@ def render_skills():
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .skill-title {
             color: #f8fafc;
-            font-size: 1.05rem;
-            font-weight: 700;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
             margin: 0;
         }
 
         /* Status Indicator */
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             display: inline-block;
             margin-right: 6px;
@@ -673,63 +677,75 @@ def render_skills():
         .level-badge-container {
             display: flex;
             align-items: center;
-            font-size: 0.72rem;
-            font-weight: 600;
+            font-size: 0.7rem;
+            font-weight: 700;
             padding: 3px 10px;
             border-radius: 20px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Progress Bar Styling */
+        /* Professional Slim Progress Bar Styling */
         .progress-bg {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
             overflow: hidden;
-            margin-top: 10px;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            border-radius: 10px;
+            border-radius: 20px;
+            transition: width 0.8s ease-in-out;
+            position: relative;
         }
 
-        /* Level Specific Colors */
-        .advanced-theme { background: linear-gradient(90deg, #10b981, #34d399); }
-        .advanced-text { color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); }
-        .advanced-dot { background: #34d399; box-shadow: 0 0 8px #34d399; }
+        /* Level Specific Colors & Soft Glows */
+        .advanced-theme { 
+            background: linear-gradient(90deg, #059669, #10b981); 
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+        .advanced-text { color: #34d399; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .advanced-dot { background: #34d399; box-shadow: 0 0 6px #34d399; }
 
-        .intermediate-theme { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-        .intermediate-text { color: #60a5fa; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); }
-        .intermediate-dot { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
+        .intermediate-theme { 
+            background: linear-gradient(90deg, #2563eb, #3b82f6); 
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+        .intermediate-text { color: #60a5fa; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .intermediate-dot { background: #60a5fa; box-shadow: 0 0 6px #60a5fa; }
 
-        .beginner-theme { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
-        .beginner-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+        .beginner-theme { 
+            background: linear-gradient(90deg, #d97706, #f59e0b); 
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .beginner-dot { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
 
         /* Category Header */
         .category-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 30px 0 15px 0;
+            margin: 28px 0 16px 0;
             padding-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .category-title-text {
             color: #f1f5f9;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
         }
 
         .category-pill {
             background: rgba(59, 130, 246, 0.1);
             color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.25);
-            font-size: 0.78rem;
-            padding: 3px 12px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            font-size: 0.75rem;
+            padding: 2px 10px;
             border-radius: 12px;
             font-weight: 600;
         }
@@ -737,8 +753,8 @@ def render_skills():
     """, unsafe_allow_html=True)
 
     # PAGE HEADER
-    st.markdown("<h1 style='font-size: 2.3rem; font-weight: 800; margin-bottom: 6px; color: #f8fafc;'>⚡ Technical Stack & Skills</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 25px;'>An interactive overview of my technical expertise, frameworks, and proficiency levels.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 6px; color: #f8fafc;'>⚡ Technical Stack & Skills</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;'>An interactive overview of my technical expertise, frameworks, and proficiency levels.</p>", unsafe_allow_html=True)
 
     # CATEGORY FILTER
     categories = sorted(list(set([s.get("category", "Uncategorized") for s in skills])))
@@ -765,7 +781,6 @@ def render_skills():
         </div>
         ''', unsafe_allow_html=True)
         
-        # Render cards using Streamlit columns for full compatibility
         cols = st.columns(3)
         for idx, skill in enumerate(cat_skills):
             skill_name = html.escape(str(skill.get('name', 'Unnamed Skill')))
@@ -783,7 +798,7 @@ def render_skills():
                 text_class = "beginner-text"
                 dot_class = "beginner-dot"
                 display_level = "Beginner"
-                progress_width = "45%"
+                progress_width = "40%"
             else:
                 theme_class = "intermediate-theme"
                 text_class = "intermediate-text"
@@ -808,7 +823,6 @@ def render_skills():
             '''
             with cols[idx % 3]:
                 st.markdown(card_html, unsafe_allow_html=True)
-
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
 # ==========================================
