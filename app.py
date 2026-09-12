@@ -2117,29 +2117,41 @@ def render_admin():
 # ==========================================
 
 def main():
-    pages = {
-        "Home": render_home,
-        "Skills": render_skills,
-        "Projects": render_projects,
-        "Services": render_services,
-        "Experience": render_experience,
-        "Contact": render_contact,
-        "Reviews":render_reviews,
-        "Admin": render_admin
-    }
+    # 1. Page Dictionary Definition
+    pages = {
+        "Home": render_home,
+        "Skills": render_skills,
+        "Projects": render_projects,
+        "Services": render_services,
+        "Experience": render_experience,
+        "Contact": render_contact,
+        "Reviews": render_reviews,
+        "Admin": render_admin
+    }
 
-    # 2. Navigation State Initialization & Validation
-    if "nav" not in st.session_state or st.session_state["nav"] not in pages:
-        st.session_state["nav"] = "Home"
+    # 2. Navigation State Initialization & Validation
+    if "nav" not in st.session_state or st.session_state["nav"] not in pages:
+        st.session_state["nav"] = "Home"
 
-    # 3. Safe Index Calculation
-    page_keys = list(pages.keys())
-    current_index = page_keys.index(st.session_state["nav"])
+    # 3. Safe Index Calculation
+    page_keys = list(pages.keys())
+    current_index = page_keys.index(st.session_state["nav"])
 
-    # 4. Sidebar Radio
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.radio(
-        "Go to", 
-        page_keys, 
-        index=current_index
-    )
+    # 4. Sidebar Radio Navigation
+    st.sidebar.title("Navigation")
+    selection = st.sidebar.radio(
+        "Go to", 
+        page_keys, 
+        index=current_index
+    )
+
+    # 5. State Synchronization
+    if selection != st.session_state["nav"]:
+        st.session_state["nav"] = selection
+        st.rerun()
+
+    # 6. Render Current Selected Page
+    pages[st.session_state["nav"]]()
+
+if __name__ == "__main__":
+    main()
