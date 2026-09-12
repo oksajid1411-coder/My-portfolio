@@ -598,134 +598,157 @@ import html
 # ==========================================
 # SKILLS PAGE (ANIMATED & GORGEOUS)
 # ==========================================
+
 def render_skills():
     # Safely fetch skills
     skills = get_skills() if 'get_skills' in globals() and callable(get_skills) else []
     
     if not skills:
-        st.info("No skills currently listed.")
+        st.info("💡 No skills currently listed in the database.")
         return
 
     # --------------------------------------
-    # HIGH-END STYLES & ANIMATIONS
+    # MODERN HIGH-END STYLES & ANIMATIONS
     # --------------------------------------
     st.markdown("""
     <style>
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 8px 32px 0 rgba(59, 130, 246, 0.25); }
-            100% { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        /* Card Container Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 18px;
+            margin-bottom: 25px;
         }
 
-        /* Glassmorphic Skill Card */
-        .pro-skill-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.85) 100%);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        /* Glassmorphic Ultra-Modern Card */
+        .modern-skill-card {
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 18px 16px;
-            text-align: left;
+            padding: 18px;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        /* Top Glowing Edge */
-        .pro-skill-card::before {
-            content: '';
+        .modern-skill-card:hover {
+            transform: translateY(-5px);
+            background: rgba(30, 41, 59, 0.75);
+            border-color: rgba(96, 165, 250, 0.4);
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Top Accent Glow Line */
+        .card-top-line {
             position: absolute;
-            top: 0; left: -100%; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, #60a5fa, transparent);
-            transition: all 0.6s ease;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
         }
 
-        .pro-skill-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(96, 165, 250, 0.5);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.3);
+        .modern-skill-card:hover .card-top-line {
+            opacity: 1;
         }
 
-        .pro-skill-card:hover::before {
-            left: 100%;
-        }
-
-        .skill-header-flex {
+        /* Header Info */
+        .skill-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 8px;
+            margin-bottom: 12px;
         }
 
-        .skill-name {
+        .skill-title {
             color: #f8fafc;
-            font-size: 1.02rem;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        /* Dynamic Skill Level Badges */
-        .level-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.70rem;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            transition: transform 0.3s ease;
-        }
-
-        .pro-skill-card:hover .level-badge {
-            transform: scale(1.08);
-        }
-
-        .level-advanced {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.35);
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.15);
-        }
-
-        .level-intermediate {
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
-        }
-
-        .level-beginner {
-            background: rgba(245, 158, 11, 0.15);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
-        }
-
-        /* Category Header Section */
-        .category-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 30px 0 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 10px;
-        }
-
-        .category-title {
-            color: #f8fafc;
-            font-size: 1.35rem;
+            font-size: 1.05rem;
             font-weight: 700;
             margin: 0;
+            letter-spacing: 0.2px;
         }
 
-        .category-count {
-            background: rgba(59, 130, 246, 0.15);
+        /* Dynamic Status Indicator */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .level-badge-container {
+            display: flex;
+            align-items: center;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress Bar Styling */
+        .progress-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Level Specific Colors */
+        .advanced-theme { background: linear-gradient(90deg, #10b981, #34d399); }
+        .advanced-text { color: #34d399; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); }
+        .advanced-dot { background: #34d399; box-shadow: 0 0 8px #34d399; }
+
+        .intermediate-theme { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .intermediate-text { color: #60a5fa; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.25); }
+        .intermediate-dot { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
+
+        .beginner-theme { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
+        .beginner-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+
+        /* Category Header Styles */
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 35px 0 18px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .category-title-text {
+            color: #f1f5f9;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-pill {
+            background: rgba(59, 130, 246, 0.1);
             color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 2px 10px;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            font-size: 0.78rem;
+            padding: 3px 12px;
             border-radius: 12px;
-            font-size: 0.8rem;
             font-weight: 600;
         }
     </style>
@@ -734,19 +757,19 @@ def render_skills():
     # --------------------------------------
     # PAGE HEADER
     # --------------------------------------
-    st.markdown("<h1 style='font-size: 2.2rem; font-weight: 800; margin-bottom: 5px;'>⚡ Technical Expertise</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 25px;'>Comprehensive breakdown of my technical stack and proficiency levels.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='font-size: 2.3rem; font-weight: 800; margin-bottom: 6px; color: #f8fafc;'>⚡ Technical Stack & Skills</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>An interactive overview of my technical expertise, frameworks, and proficiency levels.</p>", unsafe_allow_html=True)
 
     # --------------------------------------
     # CATEGORY FILTER
     # --------------------------------------
     categories = sorted(list(set([s.get("category", "Uncategorized") for s in skills])))
     
-    col_filter, _ = st.columns([1.2, 2])
+    col_filter, _ = st.columns([1.5, 2])
     with col_filter:
-        selected_cat = st.selectbox("🎯 Filter Expertise", ["All Categories"] + categories)
+        selected_cat = st.selectbox("🎯 Filter Category", ["All Stack"] + categories)
     
-    filtered_skills = skills if selected_cat == "All Categories" else [s for s in skills if s.get("category", "Uncategorized") == selected_cat]
+    filtered_skills = skills if selected_cat == "All Stack" else [s for s in skills if s.get("category", "Uncategorized") == selected_cat]
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -758,39 +781,62 @@ def render_skills():
     for cat in display_cats:
         cat_skills = [s for s in filtered_skills if s.get("category", "Uncategorized") == cat]
         
+        # Category Header
         st.markdown(f'''
-        <div class="category-container">
-            <h3 class="category-title">🔹 {html.escape(str(cat))}</h3>
-            <span class="category-count">{len(cat_skills)} Skills</span>
+        <div class="category-header">
+            <div class="category-title-text">
+                <span>💠 {html.escape(str(cat))}</span>
+            </div>
+            <span class="category-pill">{len(cat_skills)} Items</span>
         </div>
         ''', unsafe_allow_html=True)
         
-        cols = st.columns(4)
-        for idx, skill in enumerate(cat_skills):
+        # Generate Cards Grid HTML
+        cards_html = '<div class="skills-grid">'
+        
+        for skill in cat_skills:
             skill_name = html.escape(str(skill.get('name', 'Unnamed Skill')))
             raw_level = str(skill.get('level', 'Intermediate')).strip()
             level_lower = raw_level.lower()
             
+            # Level determinations
             if 'adv' in level_lower or 'expert' in level_lower:
-                badge_class = "level-advanced"
+                theme_class = "advanced-theme"
+                text_class = "advanced-text"
+                dot_class = "advanced-dot"
                 display_level = "Advanced"
+                progress_width = "90%"
             elif 'beg' in level_lower or 'basic' in level_lower:
-                badge_class = "level-beginner"
+                theme_class = "beginner-theme"
+                text_class = "beginner-text"
+                dot_class = "beginner-dot"
                 display_level = "Beginner"
+                progress_width = "45%"
             else:
-                badge_class = "level-intermediate"
+                theme_class = "intermediate-theme"
+                text_class = "intermediate-text"
+                dot_class = "intermediate-dot"
                 display_level = "Intermediate"
+                progress_width = "70%"
 
-            with cols[idx % 4]:
-                st.markdown(f'''
-                <div class="pro-skill-card">
-                    <div class="skill-header-flex">
-                        <span class="skill-name">{skill_name}</span>
-                        <span class="level-badge {badge_class}">{display_level}</span>
+            cards_html += f'''
+            <div class="modern-skill-card">
+                <div class="card-top-line {theme_class}"></div>
+                <div class="skill-info">
+                    <span class="skill-title">{skill_name}</span>
+                    <div class="level-badge-container {text_class}">
+                        <span class="status-dot {dot_class}"></span>
+                        {display_level}
                     </div>
                 </div>
-                ''', unsafe_allow_html=True)
-
+                <div class="progress-bg">
+                    <div class="progress-fill {theme_class}" style="width: {progress_width};"></div>
+                </div>
+            </div>
+            '''
+        
+        cards_html += '</div>'
+        st.markdown(cards_html, unsafe_allow_html=True)
 
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
