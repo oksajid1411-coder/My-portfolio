@@ -599,6 +599,9 @@ import html
 # SKILLS PAGE (ANIMATED & GORGEOUS)
 # ==========================================
 
+import html
+import streamlit as st
+
 def render_skills():
     # Safely fetch skills
     skills = get_skills() if 'get_skills' in globals() and callable(get_skills) else []
@@ -612,14 +615,6 @@ def render_skills():
     # --------------------------------------
     st.markdown("""
     <style>
-        /* Card Container Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
         /* Glassmorphic Ultra-Modern Card */
         .modern-skill-card {
             background: rgba(30, 41, 59, 0.45);
@@ -631,9 +626,7 @@ def render_skills():
             position: relative;
             overflow: hidden;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            margin-bottom: 15px;
         }
 
         .modern-skill-card:hover {
@@ -651,11 +644,6 @@ def render_skills():
             right: 0;
             height: 3px;
             opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-
-        .modern-skill-card:hover .card-top-line {
-            opacity: 1;
         }
 
         /* Header Info */
@@ -671,16 +659,15 @@ def render_skills():
             font-size: 1.05rem;
             font-weight: 700;
             margin: 0;
-            letter-spacing: 0.2px;
         }
 
-        /* Dynamic Status Indicator */
+        /* Status Indicator */
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 5px;
+            margin-right: 6px;
         }
 
         .level-badge-container {
@@ -691,7 +678,6 @@ def render_skills():
             padding: 3px 10px;
             border-radius: 20px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         /* Progress Bar Styling */
@@ -707,7 +693,6 @@ def render_skills():
         .progress-fill {
             height: 100%;
             border-radius: 10px;
-            transition: width 1s ease-in-out;
         }
 
         /* Level Specific Colors */
@@ -723,12 +708,12 @@ def render_skills():
         .beginner-text { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); }
         .beginner-dot { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
 
-        /* Category Header Styles */
+        /* Category Header */
         .category-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 35px 0 18px 0;
+            margin: 30px 0 15px 0;
             padding-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -737,9 +722,6 @@ def render_skills():
             color: #f1f5f9;
             font-size: 1.25rem;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .category-pill {
@@ -754,15 +736,11 @@ def render_skills():
     </style>
     """, unsafe_allow_html=True)
 
-    # --------------------------------------
     # PAGE HEADER
-    # --------------------------------------
     st.markdown("<h1 style='font-size: 2.3rem; font-weight: 800; margin-bottom: 6px; color: #f8fafc;'>⚡ Technical Stack & Skills</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 30px;'>An interactive overview of my technical expertise, frameworks, and proficiency levels.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 1rem; margin-bottom: 25px;'>An interactive overview of my technical expertise, frameworks, and proficiency levels.</p>", unsafe_allow_html=True)
 
-    # --------------------------------------
     # CATEGORY FILTER
-    # --------------------------------------
     categories = sorted(list(set([s.get("category", "Uncategorized") for s in skills])))
     
     col_filter, _ = st.columns([1.5, 2])
@@ -773,33 +751,27 @@ def render_skills():
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # --------------------------------------
     # RENDER SKILLS BY CATEGORY
-    # --------------------------------------
     display_cats = sorted(list(set([s.get("category", "Uncategorized") for s in filtered_skills])))
 
     for cat in display_cats:
         cat_skills = [s for s in filtered_skills if s.get("category", "Uncategorized") == cat]
         
-        # Category Header
+        # Header
         st.markdown(f'''
         <div class="category-header">
-            <div class="category-title-text">
-                <span>💠 {html.escape(str(cat))}</span>
-            </div>
+            <div class="category-title-text">🔹 {html.escape(str(cat))}</div>
             <span class="category-pill">{len(cat_skills)} Items</span>
         </div>
         ''', unsafe_allow_html=True)
         
-        # Generate Cards Grid HTML
-        cards_html = '<div class="skills-grid">'
-        
-        for skill in cat_skills:
+        # Render cards using Streamlit columns for full compatibility
+        cols = st.columns(3)
+        for idx, skill in enumerate(cat_skills):
             skill_name = html.escape(str(skill.get('name', 'Unnamed Skill')))
             raw_level = str(skill.get('level', 'Intermediate')).strip()
             level_lower = raw_level.lower()
             
-            # Level determinations
             if 'adv' in level_lower or 'expert' in level_lower:
                 theme_class = "advanced-theme"
                 text_class = "advanced-text"
@@ -819,7 +791,7 @@ def render_skills():
                 display_level = "Intermediate"
                 progress_width = "70%"
 
-            cards_html += f'''
+            card_html = f'''
             <div class="modern-skill-card">
                 <div class="card-top-line {theme_class}"></div>
                 <div class="skill-info">
@@ -834,9 +806,8 @@ def render_skills():
                 </div>
             </div>
             '''
-        
-        cards_html += '</div>'
-        st.markdown(cards_html, unsafe_allow_html=True)
+            with cols[idx % 3]:
+                st.markdown(card_html, unsafe_allow_html=True)
 
 # ==========================================
 # PROJECTS PAGE (ULTRA-PROFESSIONAL & ANIMATED)
