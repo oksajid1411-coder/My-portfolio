@@ -2115,63 +2115,32 @@ def render_admin():
 # ==========================================
 # MAIN APP (UPDATED & COMPLETE NAVIGATION)
 # ==========================================
+
 def main():
-    # 1. Page Dictionary Definition
-    pages = {
-        "Home": render_home,
-        "Skills": render_skills,
-        "Projects": render_projects,
-        "Services": render_services,
-        "Experience": render_experience,
-        "Reviews": render_reviews,
-        "Contact": render_contact,
-        "Admin": render_admin
-    }
+    # 1. Page Dictionary Definition (About সরানো হয়েছে কারণ তা Home-এ সংযুক্ত)
+    pages = {
+        "Home": render_home,
+        "Skills": render_skills,
+        "Projects": render_projects,
+        "Services": render_services,
+        "Experience": render_experience,
+        "Contact": render_contact,
+        "Reviews":render_reviews,
+        "Admin": render_admin
+    }
 
-    # 2. Navigation State Initialization & Validation
-    if "nav" not in st.session_state or st.session_state["nav"] not in pages:
-        st.session_state["nav"] = "Home"
+    # 2. Navigation State Initialization & Validation
+    if "nav" not in st.session_state or st.session_state["nav"] not in pages:
+        st.session_state["nav"] = "Home"
 
-    # 3. Safe Index Calculation
-    page_keys = list(pages.keys())
-    current_index = page_keys.index(st.session_state["nav"])
+    # 3. Safe Index Calculation
+    page_keys = list(pages.keys())
+    current_index = page_keys.index(st.session_state["nav"])
 
-    # 4. Sidebar Navigation Radio
-    st.sidebar.title("📌 Navigation")
-    selection = st.sidebar.radio(
-        "Go to", 
-        page_keys, 
-        index=current_index,
-        key="sidebar_nav"
-    )
-
-    # সাইডবারে ক্লিক করলে Session State আপডেট করা
-    if selection != st.session_state["nav"]:
-        st.session_state["nav"] = selection
-        st.rerun()
-
-    # 5. Top Navigation Tabs (UI Scaffolding)
-    # মূল পেজের ওপরে ট্যাব বার দেখানোর জন্য
-    tabs = st.tabs([f"📄 {page}" for page in page_keys])
-    
-    for idx, tab in enumerate(tabs):
-        page_name = page_keys[idx]
-        with tab:
-            if st.session_state["nav"] == page_name:
-                # যে পেজ সিলেক্টেড আছে সেটির Render Function কল হবে
-                pages[page_name]()
-            else:
-                # অন্য ট্যাবে ক্লিক করলে সেই পেজে সুইচের ব্যবস্থা
-                if st.button(f"Go to {page_name}", key=f"tab_btn_{page_name}"):
-                    st.session_state["nav"] = page_name
-                    st.rerun()
-
-if __name__ == "__main__":
-    main()
-    
-    # 5. Update State & Render Page
-    st.session_state["nav"] = selection
-    pages[selection]()
-
-if __name__ == "__main__":
-    main()
+    # 4. Sidebar Radio
+    st.sidebar.title("Navigation")
+    selection = st.sidebar.radio(
+        "Go to", 
+        page_keys, 
+        index=current_index
+    )
